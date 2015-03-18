@@ -1,0 +1,36 @@
+﻿@model Card
+
+@{
+    ViewBag.Title = Model.Year + "Score Card";
+}
+
+<div class="page-header">
+    <h2>ICO @Model.Year Global Value Tracking</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        @using (Html.Bootstrap().Begin(new Table().Condensed().Hover()))
+        {
+            <thead>
+            <th colspan="3">Area</th>
+            <th>Measure</th>
+            <th>Owner</th>
+            <th>FY<br/>Target</th>
+            <th>FY<br/>Total</th>
+            <th>JAS</th>
+            <th>OND</th>
+            <th>JFM</th>
+            <th>AMJ</th>
+            <th>Comment</th>
+            </thead>
+            @Html.DisplayFor(m=>m.Lines)
+        } 
+    </div>
+</div>
+
+@section scripts {
+<script type="text/javascript">
+
+</script>
+}

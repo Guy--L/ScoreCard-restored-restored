@@ -1,0 +1,19 @@
+﻿@model ScoreCard.Models.ScoreView
+
+@using (var form = Html.Bootstrap().Begin(new Form("SaveScore", "Home").Id("scoreform").Type(FormType.Horizontal).LabelWidthXs(3)))
+{
+    @Html.HiddenFor(m => m.line.LineId)
+    @Html.HiddenFor(m => m.score.ScoreId)
+    @Html.HiddenFor(m => m.score.YearEnding)
+    
+    <h2>@Model.line.item + " " + @Model.line.Description</h2>
+    <h3>@Model.line.ownerlist</h3>
+    
+    @Html.Bootstrap().TextBoxFor(m => m.score.Target)
+    @Html.Bootstrap().TextBoxFor(m => m.score.Q1)
+    @Html.Bootstrap().TextBoxFor(m => m.score.Q2)
+    @Html.Bootstrap().TextBoxFor(m => m.score.Q3)
+    @Html.Bootstrap().TextBoxFor(m => m.score.Q4)
+    @Html.Bootstrap().TextBoxFor(m => m.score.Comment)
+    
+}
