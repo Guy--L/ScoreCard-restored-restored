@@ -9,5 +9,7 @@
     [Q3] INT NULL, 
     [Q4] INT NULL, 
     [Comment] VARCHAR(50) NULL, 
-    CONSTRAINT [FK_Score_ToLine] FOREIGN KEY ([LineId]) REFERENCES [Line]([LineId])
+    [GroupId] INT NOT NULL, 
+    CONSTRAINT [FK_Score_ToLine] FOREIGN KEY ([LineId]) REFERENCES [Line]([LineId]), 
+    CONSTRAINT [FK_Score_ToGroup] FOREIGN KEY ([GroupId]) REFERENCES [Group]([GroupId])
 )

@@ -65,6 +65,7 @@
     <Build Include="Measure.sql" />
     <Build Include="Score.sql" />
     <Build Include="Hierarchy.sql" />
+    <Build Include="Group.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ScoreDB.refactorlog" />
@@ -72,5 +73,6 @@
   <ItemGroup>
     <None Include="ScoreDB.publish.xml" />
     <None Include="ScoreDB_1.publish.xml" />
+    <None Include="ScoreDB.guydev.publish.xml" />
   </ItemGroup>
 </Project>
