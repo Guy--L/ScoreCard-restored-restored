@@ -19,5 +19,20 @@ namespace ScoreCard
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Bootstrap.Configure();
         }
+
+        protected void Session_Start(object sender, EventArgs e)
+        {
+#if DEBUG
+            var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+            if (user == "GUYLISTER3546\\guy" || user == "NETFDOMAIN\\lister")
+                user = "lister.g.1";
+#else
+            var user = Thread.CurrentPrincipal.Identity.Name;
+#endif
+            //scheduleDB _db = new scheduleDB();
+            HttpContext.Current.Session["user"] = user;
+            //HttpContext.Current.Session["authority"] = _db.Fetch<User>(string.Format(Models.User.get_role, user)).FirstOrDefault();
+        }
+
     }
 }

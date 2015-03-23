@@ -36,6 +36,7 @@
         </footer>
     </div>
 
+    @Html.Raw(JSNLog.JavascriptLogging.Configure())
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

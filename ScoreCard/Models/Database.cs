@@ -6,7 +6,7 @@
 // 
 //     Connection String Name: `score`
 //     Provider:               `System.Data.SqlClient`
-//     Connection String:      `Data Source=GUYLISTER3546;Initial Catalog=ScoreCard;Integrated Security=True`
+//     Connection String:      `Data Source=GUYLISTER3546;Initial Catalog=ScoreCard;Integrated Security=True;Connect Timeout=15;Encrypt=False;TrustServerCertificate=False`
 //     Schema:                 `dbo`
 //     Include Views:          `True`
 
@@ -103,6 +103,7 @@ namespace ScoreCard.Models
 		}
 	}
 	
+
 	[TableName("Line")]
 	[PrimaryKey("LineId")]
 	[ExplicitColumns]
@@ -115,26 +116,13 @@ namespace ScoreCard.Models
 		[Column] public string Description { get; set; } 	
 	}
 
-	[TableName("Owner")]
-	[PrimaryKey("OwnerId")]
-	[ExplicitColumns]
-    public partial class Owner : scoreDB.Record<Owner>  
-    {		
-		[Column] public int OwnerId { get; set; } 		
-		[Column] public string IonName { get; set; } 		
-		[Column] public string FirstName { get; set; } 		
-		[Column] public string LastName { get; set; } 		
-		[Column] public int ManagerId { get; set; } 		
-		[Column] public bool IsAdmin { get; set; } 	
-	}
-
 	[TableName("Responsibility")]
 	[PrimaryKey("ResponsibilityId")]
 	[ExplicitColumns]
     public partial class Responsibility : scoreDB.Record<Responsibility>  
     {		
 		[Column] public int ResponsibilityId { get; set; } 		
-		[Column] public int OwnerId { get; set; } 		
+		[Column] public int WorkerId { get; set; } 		
 		[Column] public int LineId { get; set; } 	
 	}
 
@@ -151,7 +139,8 @@ namespace ScoreCard.Models
 		[Column] public int? Q2 { get; set; } 		
 		[Column] public int? Q3 { get; set; } 		
 		[Column] public int? Q4 { get; set; } 		
-		[Column] public string Comment { get; set; } 	
+		[Column] public string Comment { get; set; } 		
+		[Column] public int GroupId { get; set; } 	
 	}
 
 	[TableName("Measure")]
@@ -166,13 +155,59 @@ namespace ScoreCard.Models
 		[Column] public int DecimalPoint { get; set; } 	
 	}
 
-	[TableName("Hierarchy")]
-	[PrimaryKey("HierarchyId", AutoIncrement=false)]
+	[TableName("Group")]
+	[PrimaryKey("GroupId")]
 	[ExplicitColumns]
-    public partial class Hierarchy : scoreDB.Record<Hierarchy>  
+    public partial class Group : scoreDB.Record<Group>  
     {		
-		[Column] public string HierarchyId { get; set; } 		
-		[Column] public string Data { get; set; } 	
+		[Column] public int GroupId { get; set; } 		
+		[Column("Group")] public string _Group { get; set; }
+		
+		[Column] public string GroupName { get; set; } 	
+	}
+
+	[TableName("Site")]
+	[PrimaryKey("SiteId")]
+	[ExplicitColumns]
+    public partial class Site : scoreDB.Record<Site>  
+    {		
+		[Column] public int SiteId { get; set; } 		
+		[Column("Site")] public string _Site { get; set; }
+		
+		[Column] public string SiteName { get; set; } 	
+	}
+
+	[TableName("Worker")]
+	[PrimaryKey("WorkerId")]
+	[ExplicitColumns]
+    public partial class Worker : scoreDB.Record<Worker>  
+    {		
+		[Column] public int WorkerId { get; set; } 		
+		[Column] public string EmployeeNumber { get; set; } 		
+		[Column] public int? LevelId { get; set; } 		
+		[Column] public int? WorkDeptId { get; set; } 		
+		[Column] public int? FacilityId { get; set; } 		
+		[Column] public int? RoleId { get; set; } 		
+		[Column] public int GroupId { get; set; } 		
+		[Column] public string FirstName { get; set; } 		
+		[Column] public string LastName { get; set; } 		
+		[Column] public bool IsManager { get; set; } 		
+		[Column] public bool IsActive { get; set; } 		
+		[Column] public bool IsPartTime { get; set; } 		
+		[Column] public bool OnDisability { get; set; } 		
+		[Column] public string IonName { get; set; } 		
+		[Column] public bool IsAdmin { get; set; } 		
+		[Column] public int? ManagerId { get; set; } 	
+	}
+
+	[TableName("Presence")]
+	[PrimaryKey("PresenceId")]
+	[ExplicitColumns]
+    public partial class Presence : scoreDB.Record<Presence>  
+    {		
+		[Column] public int PresenceId { get; set; } 		
+		[Column] public int GroupId { get; set; } 		
+		[Column] public int SiteId { get; set; } 	
 	}
 
 }

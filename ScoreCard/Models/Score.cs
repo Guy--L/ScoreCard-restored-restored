@@ -7,7 +7,8 @@ namespace ScoreCard.Models
 {
     public partial class Score
     {
-        public int Total { get { return Q1.Value + Q2.Value + Q3.Value + Q4.Value; } }
+        public string Group { get; set; }
+        public int Total { get; set; }
 
         public Score()
         {
@@ -55,6 +56,18 @@ namespace ScoreCard.Models
             Q3 = t.Q3;
             Q4 = t.Q4;
             Comment = t.Comment;
+        }
+
+        public Score(List<Score> p)
+        {
+            GroupId = 0;
+            Group = "All";
+            Q1 = p.Sum(s => s.Q1);
+            Q2 = p.Sum(s => s.Q2);
+            Q3 = p.Sum(s => s.Q3);
+            Q4 = p.Sum(s => s.Q4);
+            Total = p.Sum(s => s.Total);
+            Target = p.Sum(s => s.Target);
         }
     }
 

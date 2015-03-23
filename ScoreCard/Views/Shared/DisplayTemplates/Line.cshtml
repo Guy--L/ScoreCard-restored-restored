@@ -5,29 +5,26 @@
 }
 @if (Model.symbol == "blank")
 {
-    <tr class="">
+    <tr class="topscore" data-lineid="@Model.LineId">
         <td>@Model.item</td>
         <td colspan="11">@Model.Description</td>
     </tr>
 }
 else
 {
-    var list = Model.owners.Select(o => o.FirstName.Substring(0, 1) + ". " + o.LastName);
-    var team = (list.Count() > 1) ? (list.Count() + " owners") : list.First();
-    var info = (list.Count() > 1) ? string.Join("\n", list) : "";
- 
-<tr data-lineid="@Model.LineId" data-scoreid="@Model.year.ScoreId">
+<tr data-lineid="@Model.LineId" data-scoreid="@Model.sub.ScoreId">
     <td></td>
     <td>@Model.item</td>
     <td>@Model.Description</td>
     <td>@Model.symbol</td>
-    <td title="@info">@team</td>
-    <td>@Model.year.Target</td>
-    <td>@Model.year.Total</td>
-    <td>@Model.year.Q1</td>
-    <td>@Model.year.Q2</td>
-    <td>@Model.year.Q3</td>
-    <td>@Model.year.Q4</td>
-    <td>@Model.year.Comment</td>
+    <td>@Model.owners</td>
+    <td>@Model.sub.Target</td>
+    <td>@Model.sub.Total</td>
+    <td>@Model.sub.Q1</td>
+    <td>@Model.sub.Q2</td>
+    <td>@Model.sub.Q3</td>
+    <td>@Model.sub.Q4</td>
+    <td>@Model.sub.Comment</td>
 </tr>
+@Html.DisplayFor(m=>m.scores)
 }

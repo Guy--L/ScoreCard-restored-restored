@@ -1,0 +1,17 @@
+﻿@model ScoreCard.Models.Score
+
+@{
+    Layout = null;
+}
+
+<tr data-lineid="@Model.LineId" data-scoreid="@Model.ScoreId">
+    <td colspan="4"></td>
+    <td>@Model.Group</td>
+    <td>@Model.Target</td>
+    <td>@Model.Total</td>
+    <td>@Model.Q1</td>
+    <td>@Model.Q2</td>
+    <td>@Model.Q3</td>
+    <td>@Model.Q4</td>
+    <td>@Model.Comment</td>
+</tr>
