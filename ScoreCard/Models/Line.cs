@@ -48,13 +48,15 @@ namespace ScoreCard.Models
 	            inner join linelist p on p.LineId = n.ParentLineId
 	            where n.LineId != n.ParentLineId
             )
-            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.Comment,
-			s.[target], s.q1, s.q2, s.q3, s.q4, s.q1+s.q2+s.q3+s.q4 as Total, g.[Group], g.groupid
+            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.Comment, s.ScoreId,
+			s.[target], s.q1, s.q2, s.q3, s.q4, s.sumscore as [Total], g.[Group], g.groupid
             from linelist q
             join Measure m on m.MeasureId = q.MeasureId
-			left join score s on q.lineid = s.lineid
+			left join (
+            select groupid, [target], q1, q2, q3, q4, q1+q2+q3+q4 as sumscore, comment, scoreid, lineid 
+            from score
+			where yearending = {0}) s on q.lineid = s.lineid
 			left join [group] g on s.groupid = g.groupid
-			where s.yearending = {0} or s.YearEnding is null
             order by item
         ";
 
@@ -72,6 +74,7 @@ namespace ScoreCard.Models
         [ResultColumn] public string item { get; set; }
         [ResultColumn] public string symbol { get; set; }
         [ResultColumn] public int DecimalPoint { get; set; }
+        [ResultColumn] public int Total { get; set; }
 
         public static List<Line> Card() 
         {
@@ -99,20 +102,16 @@ namespace ScoreCard.Models
         public Line current;
         public Line MapIt(Line ln, Score sc, Group gr)
         {
-            // Terminating call.  Since we can return null from this function
-            // we need to be ready for PetaPoco to callback later with null
-            // parameters
             if (ln == null)
                 return current;
 
-            // Is this the same author as the current one we're processing
             if (current != null && current.LineId == ln.LineId)
             {
-                // Yes, just add this post to the current author's collection of posts
                 if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
+                sc.LineId = ln.LineId;
+                sc.Decimal = ln.DecimalPoint;
                 current.scores.Add(sc);
 
-                // Return null to indicate we're not done with this author yet
                 return null;
             }
 
@@ -130,7 +129,12 @@ namespace ScoreCard.Models
             current.scores = new List<Score>();
             current.sub = new Score();
             if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
-            if (sc != null) current.scores.Add(sc);
+            if (sc != null)
+            {
+                sc.LineId = ln.LineId;
+                sc.Decimal = ln.DecimalPoint;
+                current.scores.Add(sc);
+            }
 
             // Return the now populated previous author (or null if first time through)
             return p;

@@ -4,14 +4,14 @@
     Layout = null;
 }
 
-<tr data-lineid="@Model.LineId" data-scoreid="@Model.ScoreId">
+<tr data-lineid="@Model.LineId" data-scoreid="@Model.ScoreId" class="subscore">
     <td colspan="4"></td>
     <td>@Model.Group</td>
-    <td>@Model.Target</td>
-    <td>@Model.Total</td>
-    <td>@Model.Q1</td>
-    <td>@Model.Q2</td>
-    <td>@Model.Q3</td>
-    <td>@Model.Q4</td>
-    <td>@Model.Comment</td>
+    <td>@Html.TextBoxFor(m => m.Target, new { mask = @Model.Decimal })</td>
+    <td>@Html.TextBoxFor(m => m.Total, new { @class = "yearval", mask = @Model.Decimal })</td>
+    <td>@Html.TextBoxFor(m => m.Q1, new { @class = "quarval", mask = @Model.Decimal })</td>
+    <td>@Html.TextBoxFor(m => m.Q2, new { @class = "quarval", mask = @Model.Decimal })</td>
+    <td>@Html.TextBoxFor(m => m.Q3, new { @class = "quarval", mask = @Model.Decimal })</td>
+    <td>@Html.TextBoxFor(m => m.Q4, new { @class = "quarval", mask = @Model.Decimal })</td>
+    <td>@Html.TextBoxFor(m => m.Comment)</td>
 </tr>

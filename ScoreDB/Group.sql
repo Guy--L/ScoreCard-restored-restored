@@ -2,5 +2,6 @@
 (
 	[GroupId] INT NOT NULL PRIMARY KEY IDENTITY, 
     [Group] VARCHAR(10) NOT NULL, 
-    [GroupName] VARCHAR(50) NOT NULL
+    [GroupName] VARCHAR(50) NOT NULL, 
+    [ADName] VARCHAR(50) NULL
 )

@@ -22,3 +22,21 @@ select,
 textarea {
     max-width: 280px;
 }
+
+table#scoreCard td {
+    padding: 0;
+}
+
+table#scoreCard .scoreheader > th {
+    text-align: center;
+    vertical-align: bottom;
+}
+
+tr.score td, tr.subscore td {
+    padding: 0;
+}
+
+tr.score input[type=text], tr.subscore input[type=text] {
+    max-width: 60px;
+    border: none;
+}

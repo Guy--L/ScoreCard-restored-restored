@@ -1,7 +1,7 @@
 ﻿@model Card
 
 @{
-    ViewBag.Title = Model.Year + "Score Card";
+    ViewBag.Title = Model.Year + " Score Card";
 }
 
 <div class="page-header">
@@ -10,9 +10,9 @@
 
 <div class="row">
     <div class="col-md-12">
-        @using (Html.Bootstrap().Begin(new Table().Condensed().Hover()))
+        @using (Html.Bootstrap().Begin(new Table().Id("scoreCard").Condensed().Hover()))
         {
-            <thead>
+            <tr class="scoreheader">
             <th colspan="3">Area</th>
             <th>Measure</th>
             <th>Owner</th>
@@ -23,7 +23,7 @@
             <th>JFM</th>
             <th>AMJ</th>
             <th>Comment</th>
-            </thead>
+            </tr>
             @Html.DisplayFor(m=>m.Lines)
         } 
     </div>
@@ -31,6 +31,42 @@
 
 @section scripts {
 <script type="text/javascript">
+    $(function () {
+        $('.subscore').hide();
+        $('tr.details').on('click', function () {
+            var caret = $('i.fa', $(this));
+            var scope = '.subscore[data-lineid=' + $(this).data('lineid') + ']';
+            if (caret.attr('class').indexOf('right') > 0) {
+                caret.removeClass("fa-caret-right").addClass("fa-caret-down");
+                $(scope).toggle();
+            } 
+            else {
+                caret.removeClass("fa-caret-down").addClass("fa-caret-right");
+                $(scope).toggle();
+            }
+        });
+        $('.quarval').on('change', function () {
+            var sum = 0;
+            var rw =  $(this).closest('tr');
+            $('.quarval', rw).each(function () {
+                sum += Number($(this).val());
+            });
+            $('.yearval', rw).val(sum);     // total on row
 
+            var path = $(this).attr('id').split('_');
+            if (path[3] == 'scores') {
+                var target = '#'+path.slice(0, 3).join('_') + '_sub' + path.slice(5).join('_');
+                var prefix = path.slice(0, 4).join('_');
+                var suffix = path.slice(5).join('_');
+                sum = 0;
+                var scope = '[data-lineid=' + rw.data('lineid') + ']';
+                var search = '[id^=' + prefix + '][id$=' + suffix + ']';
+                $(search, scope).each(function () {
+                    sum += Number($(this).val());
+                });
+                $(target).val(sum);         // total on column
+            }
+        });
+    });
 </script>
 }

@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using NPoco;
 
 namespace ScoreCard.Models
 {
     public partial class Score
     {
+        [ResultColumn] public int Total { get; set; }
         public string Group { get; set; }
-        public int Total { get; set; }
+        public int Decimal { get; set; }
 
         public Score()
         {
@@ -60,14 +62,23 @@ namespace ScoreCard.Models
 
         public Score(List<Score> p)
         {
-            GroupId = 0;
-            Group = "All";
             Q1 = p.Sum(s => s.Q1);
             Q2 = p.Sum(s => s.Q2);
             Q3 = p.Sum(s => s.Q3);
             Q4 = p.Sum(s => s.Q4);
             Total = p.Sum(s => s.Total);
             Target = p.Sum(s => s.Target);
+            Decimal = p.First().Decimal;
+            if (p.Count > 1)
+            {
+                GroupId = 0;
+                Group = "All";
+            }
+            else
+            {
+                GroupId = p.First().GroupId;
+                Group = p.First().Group;
+            }
         }
     }
 
