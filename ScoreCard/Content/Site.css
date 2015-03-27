@@ -40,3 +40,7 @@ tr.score input[type=text], tr.subscore input[type=text] {
     max-width: 60px;
     border: none;
 }
+
+td.owner {
+    font-size:smaller;
+}

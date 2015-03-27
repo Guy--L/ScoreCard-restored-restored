@@ -158,6 +158,7 @@
     </Compile>
     <Compile Include="Models\Line.cs" />
     <Compile Include="Models\Score.cs" />
+    <Compile Include="Models\Worker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

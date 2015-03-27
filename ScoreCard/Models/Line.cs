@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using NPoco;
@@ -15,6 +16,13 @@ namespace ScoreCard.Models
 
     public partial class Line
     {
+        private static string _lineowners = @"
+            select l.lineid, w.LastName, w.Firstname, w.WorkerId, w.IonName from line l
+            join responsibility r on l.LineId = r.LineId
+            join worker w on r.WorkerId = w.WorkerId
+            order by w.LastName, w.Firstname
+        ";
+
         private static string _linecardByYear = @"
             with linecard as (
                 SELECT lineid,groupid,
@@ -69,19 +77,32 @@ namespace ScoreCard.Models
 
         public List<Score> scores { get; set; }
         public Score sub { get; set; }
-        public string owners { get; set; }
+        public List<Worker> workers { get; set; }
+        public string owntip { get; set; }
+        public string owner { get; set; }
 
         [ResultColumn] public string item { get; set; }
         [ResultColumn] public string symbol { get; set; }
         [ResultColumn] public int DecimalPoint { get; set; }
-        [ResultColumn] public int Total { get; set; }
 
         public static List<Line> Card() 
         {
             List<Line> lines = null;
+            ILookup<int,Worker> owned;
             using (scoreDB s = new scoreDB()) {
-                lines = s.Fetch<Line, Score, Group, Line>(new LineOwners().MapIt, string.Format(_outline, 2014));
+                lines = s.Fetch<Line, Score, Group, Line>(new LineOwners().Scores2Line, string.Format(_outline, 2014));
+                owned = s.Fetch<Worker>(_lineowners).ToLookup(l => l.LineId);
             }
+            lines.ForEach(l => {
+                l.workers = owned[l.LineId].ToList();
+                if (l.workers.Any())
+                {
+                    l.owntip = string.Join(" \\ ", l.workers.Select(w => w.FirstName[0] + ". " + w.LastName).ToArray());
+                    var q = l.workers.First();
+                    l.owner = q.FirstName[0] + ". " + q.LastName + (l.workers.Count>1?("+"+(l.workers.Count-1)):"");
+                    Debug.WriteLine("line " + l.LineId + ": " + l.owntip + " " + l.owner);
+                }
+            });
             return lines;
         }
 
@@ -100,7 +121,7 @@ namespace ScoreCard.Models
     class LineOwners
     {
         public Line current;
-        public Line MapIt(Line ln, Score sc, Group gr)
+        public Line Scores2Line(Line ln, Score sc, Group gr)
         {
             if (ln == null)
                 return current;
