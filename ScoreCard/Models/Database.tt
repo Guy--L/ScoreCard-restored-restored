@@ -1,4 +1,4 @@
-<#@ include file="PetaPoco.Core.ttinclude" #>
+s<#@ include file="PetaPoco.Core.ttinclude" #>
 <#
 	// Settings
     ConnectionStringName = "score";			// Uses last connection string in config if not specified

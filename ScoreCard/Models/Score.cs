@@ -8,6 +8,9 @@ namespace ScoreCard.Models
 {
     public partial class Score
     {
+        private static string _update = @"update score set q{0} = {1} where scoreid = {2}";
+        private static string _comment = @"update score set comment = '{0}' where scoreid = {1}";
+
         [ResultColumn] public int Total { get; set; }
         public string Group { get; set; }
         public int Decimal { get; set; }
@@ -16,6 +19,22 @@ namespace ScoreCard.Models
         {
             Q1 = Q2 = Q3 = Q4 = 0;
             Target = 0;
+        }
+
+        public static void UpdateQuarter(int scoreid, int quarter, int value)
+        {
+            using (scoreDB s = new scoreDB())
+            {
+                s.Execute(string.Format(_update, quarter, value, scoreid));
+            }
+        }
+
+        public static void UpdateComment(int scoreid, string comment)
+        {
+            using (scoreDB s = new scoreDB())
+            {
+                s.Execute(string.Format(_comment, comment, scoreid));
+            }             
         }
 
         public Score(int id)
