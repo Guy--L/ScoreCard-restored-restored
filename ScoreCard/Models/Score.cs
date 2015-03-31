@@ -10,10 +10,13 @@ namespace ScoreCard.Models
     {
         private static string _update = @"update score set q{0} = {1} where scoreid = {2}";
         private static string _comment = @"update score set comment = '{0}' where scoreid = {1}";
+        private static string _insertq = @"insert into score (yearending, lineid, q{0}, groupid) values (2014, {1}, {2}, 0); SELECT SCOPE_IDENTITY()";
+        private static string _insertc = @"insert into score (yearending, lineid, comment, groupid) values (2014, {0}, {1}, 0); SELECT SCOPE_IDENTITY()";
 
         [ResultColumn] public int Total { get; set; }
         public string Group { get; set; }
         public int Decimal { get; set; }
+        public bool CanEdit { get; set; }
 
         public Score()
         {
@@ -21,20 +24,28 @@ namespace ScoreCard.Models
             Target = 0;
         }
 
-        public static void UpdateQuarter(int scoreid, int quarter, int value)
+        public static int SaveQuarter(int scoreid, int quarter, int value)
         {
             using (scoreDB s = new scoreDB())
             {
-                s.Execute(string.Format(_update, quarter, value, scoreid));
+                if (scoreid > 0)
+                    s.Execute(string.Format(_update, quarter, value, scoreid));
+                else
+                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertq, quarter, -scoreid, value));
             }
+            return scoreid;
         }
 
-        public static void UpdateComment(int scoreid, string comment)
+        public static int SaveComment(int scoreid, string comment)
         {
             using (scoreDB s = new scoreDB())
             {
-                s.Execute(string.Format(_comment, comment, scoreid));
+                if (scoreid > 0)
+                    s.Execute(string.Format(_comment, comment, scoreid));
+                else
+                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertc, -scoreid, comment));
             }             
+            return scoreid;
         }
 
         public Score(int id)
@@ -88,15 +99,13 @@ namespace ScoreCard.Models
             Total = p.Sum(s => s.Total);
             Target = p.Sum(s => s.Target);
             Decimal = p.First().Decimal;
-            if (p.Count > 1)
+            GroupId = 0;
+            Group = "All";
+            if (p.Count == 1 && p.First().GroupId == 0)
             {
-                GroupId = 0;
-                Group = "All";
-            }
-            else
-            {
-                GroupId = p.First().GroupId;
-                Group = p.First().Group;
+                ScoreId = p.First().ScoreId;
+                LineId = p.First().LineId;
+                p.Clear();
             }
         }
     }

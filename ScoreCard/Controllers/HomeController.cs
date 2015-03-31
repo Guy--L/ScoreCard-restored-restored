@@ -7,11 +7,26 @@ using ScoreCard.Models;
 
 namespace ScoreCard.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         public ActionResult Index()
         {
-            var card = new Card(2015);
+            scoreDB s = new scoreDB();
+
+            string usr = _user;
+            string who = "where ionname = @0";
+
+            if (string.IsNullOrWhiteSpace(usr))
+                return RedirectToAction("Contact");
+
+            string[] worker = usr.ToString().Split('\\');
+            usr = worker[worker.Length - 1];
+
+            Worker emp = s.FirstOrDefault<Worker>(who, usr);
+            if (emp == null)
+                return RedirectToAction("Contact");
+
+            var card = new Card(2015, emp);
             TempData["Card"] = card;
             return View(card);
         }
@@ -36,7 +51,7 @@ namespace ScoreCard.Controllers
 
         public ActionResult Contact()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Please contact your administrator to request access to this site.";
 
             return View();
         }

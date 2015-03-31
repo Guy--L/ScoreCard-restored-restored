@@ -11,14 +11,14 @@ namespace ScoreCard.Hubs
     {
         public void UpdateCell(int scoreid, int quarter, int value)
         {
-            Score.UpdateQuarter(scoreid, quarter, value);
-            Clients.All.reflectCell(scoreid, quarter, value);
+            var id = Score.SaveQuarter(scoreid, quarter, value);
+            Clients.Others.reflectCell(scoreid, quarter, value);
         }
 
         public void UpdateComment(int scoreid, string comment)
         {
-            Score.UpdateComment(scoreid, comment);
-            Clients.All.reflectComment(scoreid, comment);
+            var id = Score.SaveComment(scoreid, comment);
+            Clients.Others.reflectComment(scoreid, comment);
         }
     }
 }

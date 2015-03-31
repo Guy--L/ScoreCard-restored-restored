@@ -9,5 +9,6 @@ namespace ScoreCard.Models
     public partial class Worker
     {
         [ResultColumn] public int LineId { get; set; }
+        [ResultColumn] public string Group { get; set; }
     }
 }

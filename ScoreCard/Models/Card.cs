@@ -12,10 +12,10 @@ namespace ScoreCard.Models
 
         public Card() { }
 
-        public Card(int year)
+        public Card(int year, Worker w)
         {
             Year = year;
-            Lines = Line.Card();
+            Lines = Line.Card(w);
         }
     }
 }
