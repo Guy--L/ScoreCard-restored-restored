@@ -48,6 +48,23 @@ namespace ScoreCard.Models
             return scoreid;
         }
 
+        public string cue
+        {
+            get
+            {
+                var q = 0;
+                if (Q4 != 0) q = 4;
+                else if (Q3 != 0) q = 3;
+                else if (Q2 != 0) q = 2;
+                else if (Q1 != 0) q = 1;
+                if (Total == 0) return "";
+                double perform = ((double)Target * q) / (4.0 * (double)Total);
+                if (perform > 1.0) return " bg-danger text-danger";
+                if (perform < 1.0) return " bg-success text-success";
+                return " bg-primary text-primary";
+            }
+        }
+
         public Score(int id)
         {
             if (id == 0)
