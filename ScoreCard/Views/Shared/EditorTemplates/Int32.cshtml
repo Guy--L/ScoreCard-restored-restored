@@ -1,0 +1,9 @@
+﻿@model Nullable<Int32>
+
+@if (Model.HasValue && Model != 0)
+{
+    @Html.TextBoxFor(m=>m, new { mask = @ViewData["mask"], @class = @ViewData["Class"] })
+}
+else {
+    @Html.TextBox("", "", new { mask = @ViewData["mask"], @class = @ViewData["class"] })
+}

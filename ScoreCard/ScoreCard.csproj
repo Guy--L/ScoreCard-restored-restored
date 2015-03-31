@@ -57,9 +57,30 @@
     <Reference Include="JSNLog">
       <HintPath>..\packages\JSNLog.2.8.0.0\lib\net40\JSNLog.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.0\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
     <Reference Include="NPoco">
       <HintPath>..\packages\NPoco.2.6.88\lib\net40\NPoco.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="Portable.Licensing">
       <HintPath>..\packages\Portable.Licensing.1.1.0\lib\portable-net40+sl4+wp7+win8\Portable.Licensing.dll</HintPath>
@@ -146,10 +167,12 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\JSNLogConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Hubs\ScoreHub.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Database.cs">
       <AutoGen>True</AutoGen>
@@ -160,6 +183,7 @@
     <Compile Include="Models\Score.cs" />
     <Compile Include="Models\Worker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Readme\Elmah.txt" />
@@ -199,6 +223,8 @@
     <Content Include="Scripts\jquery.inputmask\jquery.inputmask.numeric.extensions.js" />
     <Content Include="Scripts\jquery.inputmask\jquery.inputmask.phone.extensions.js" />
     <Content Include="Scripts\jquery.inputmask\jquery.inputmask.regex.extensions.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.0.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.0.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -234,6 +260,8 @@
     <Content Include="TwitterBootstrapMvcLicense.lic" />
     <Content Include="Scripts\jsnlog.js.map" />
     <Content Include="Views\Shared\DisplayTemplates\Score.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\Int32.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Int32.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

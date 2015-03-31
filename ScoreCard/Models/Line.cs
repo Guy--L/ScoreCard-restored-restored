@@ -81,11 +81,13 @@ namespace ScoreCard.Models
         public string owntip { get; set; }
         public string owner { get; set; }
 
+        public bool CanEdit { get; set; }
+
         [ResultColumn] public string item { get; set; }
         [ResultColumn] public string symbol { get; set; }
         [ResultColumn] public int DecimalPoint { get; set; }
 
-        public static List<Line> Card() 
+        public static List<Line> Card(Worker login) 
         {
             List<Line> lines = null;
             ILookup<int,Worker> owned;
@@ -102,6 +104,12 @@ namespace ScoreCard.Models
                     l.owner = q.FirstName[0] + ". " + q.LastName + (l.workers.Count>1?("+"+(l.workers.Count-1)):"");
                     Debug.WriteLine("line " + l.LineId + ": " + l.owntip + " " + l.owner);
                 }
+                var IsOwner = l.workers.Any(w => w.WorkerId == login.WorkerId);
+                l.CanEdit = (IsOwner || login.IsAdmin) && (l.scores.Count == 0) && (login.GroupId != 5);
+                l.scores.ForEach(s =>
+                {
+                    s.CanEdit = IsOwner || login.IsAdmin || s.GroupId == login.GroupId;
+                });
             });
             return lines;
         }
@@ -129,16 +137,13 @@ namespace ScoreCard.Models
             if (current != null && current.LineId == ln.LineId)
             {
                 if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
+                else { sc.GroupId = 0; sc.Group = "All"; }
                 sc.LineId = ln.LineId;
                 sc.Decimal = ln.DecimalPoint;
                 current.scores.Add(sc);
 
                 return null;
             }
-
-            // This is a different author to the current one, or this is the 
-            // first time through and we don't have an author yet
-
 
             // Save the current author
             var p = current;
@@ -149,11 +154,12 @@ namespace ScoreCard.Models
             current = ln;
             current.scores = new List<Score>();
             current.sub = new Score();
-            if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
             if (sc != null)
             {
                 sc.LineId = ln.LineId;
                 sc.Decimal = ln.DecimalPoint;
+                if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
+                else { sc.GroupId = 0; sc.Group = "All"; }
                 current.scores.Add(sc);
             }
 

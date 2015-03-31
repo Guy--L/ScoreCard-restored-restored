@@ -2,13 +2,13 @@
 
 @{
     Layout = null;
-    bool exp = Model.scores.Count > 1;
+    bool exp = Model.scores.Count > 0;
 }
 @if (Model.symbol == "blank")
 {
     <tr class="topscore alert-info" data-lineid="@Model.LineId">
-        <td>@Model.item &nbsp;</td>
-        <td colspan="11">@Model.Description</td>
+        <td><strong>@Model.item &nbsp;</strong></td>
+        <td colspan="11"><strong>@Model.Description</strong></td>
     </tr>
 }
 else
@@ -19,13 +19,20 @@ else
     <td>@Model.Description</td>
     <td>@Model.symbol @if (exp){<i class="fa fa-caret-right"></i>}</td>
     <td class="owner" title="@Model.owntip">@Model.owner</td>
-    <td>@Html.TextBoxFor(m => m.sub.Target, new { mask = @Model.DecimalPoint, @readonly=true })</td>
-    <td>@Html.TextBoxFor(m => m.sub.Total, new { @class = "yearval", mask = @Model.DecimalPoint })</td>
-    <td>@Html.TextBoxFor(m => m.sub.Q1, new { @class = "quarval", mask = @Model.DecimalPoint })</td>
-    <td>@Html.TextBoxFor(m => m.sub.Q2, new { @class = "quarval", mask = @Model.DecimalPoint })</td>
-    <td>@Html.TextBoxFor(m => m.sub.Q3, new { @class = "quarval", mask = @Model.DecimalPoint })</td>
-    <td>@Html.TextBoxFor(m => m.sub.Q4, new { @class = "quarval", mask = @Model.DecimalPoint })</td>
-    <td>@Html.TextBoxFor(m => m.sub.Comment)</td>
+    <td>@Html.DisplayFor(m => m.sub.Target, new { @class = "targval", mask = @Model.DecimalPoint, ro=true })</td>
+    <td>@Html.DisplayFor(m => m.sub.Total, new { @class = "yearval"+Model.sub.cue, mask = @Model.DecimalPoint, ro=true })</td>
+    <td>@Html.DisplayFor(m => m.sub.Q1, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit })</td>
+    <td>@Html.DisplayFor(m => m.sub.Q2, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit })</td>
+    <td>@Html.DisplayFor(m => m.sub.Q3, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit })</td>
+    <td>@Html.DisplayFor(m => m.sub.Q4, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit })</td>
+    @if (Model.CanEdit)
+    {
+        <td>@Html.TextBoxFor(m => m.sub.Comment)</td>
+    }
+    else
+    {
+        <td>@Html.TextBoxFor(m => m.sub.Comment, new { @readonly = true })</td>
+    }
 </tr>
 @Html.DisplayFor(m=>m.scores)
 }

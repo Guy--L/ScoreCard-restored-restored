@@ -8,14 +8,61 @@ namespace ScoreCard.Models
 {
     public partial class Score
     {
+        private static string _update = @"update score set q{0} = {1} where scoreid = {2}";
+        private static string _comment = @"update score set comment = '{0}' where scoreid = {1}";
+        private static string _insertq = @"insert into score (yearending, lineid, q{0}, groupid) values (2014, {1}, {2}, 0); SELECT SCOPE_IDENTITY()";
+        private static string _insertc = @"insert into score (yearending, lineid, comment, groupid) values (2014, {0}, {1}, 0); SELECT SCOPE_IDENTITY()";
+
         [ResultColumn] public int Total { get; set; }
         public string Group { get; set; }
         public int Decimal { get; set; }
+        public bool CanEdit { get; set; }
 
         public Score()
         {
             Q1 = Q2 = Q3 = Q4 = 0;
             Target = 0;
+        }
+
+        public static int SaveQuarter(int scoreid, int quarter, int value)
+        {
+            using (scoreDB s = new scoreDB())
+            {
+                if (scoreid > 0)
+                    s.Execute(string.Format(_update, quarter, value, scoreid));
+                else
+                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertq, quarter, -scoreid, value));
+            }
+            return scoreid;
+        }
+
+        public static int SaveComment(int scoreid, string comment)
+        {
+            using (scoreDB s = new scoreDB())
+            {
+                if (scoreid > 0)
+                    s.Execute(string.Format(_comment, comment, scoreid));
+                else
+                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertc, -scoreid, comment));
+            }             
+            return scoreid;
+        }
+
+        public string cue
+        {
+            get
+            {
+                var q = 0;
+                if (Q4 != 0) q = 4;
+                else if (Q3 != 0) q = 3;
+                else if (Q2 != 0) q = 2;
+                else if (Q1 != 0) q = 1;
+                if (Total == 0) return "";
+                double perform = ((double)Target * q) / (4.0 * (double)Total);
+                if (perform > 1.0) return " bg-danger text-danger";
+                if (perform < 1.0) return " bg-success text-success";
+                return " bg-primary text-primary";
+            }
         }
 
         public Score(int id)
@@ -69,15 +116,13 @@ namespace ScoreCard.Models
             Total = p.Sum(s => s.Total);
             Target = p.Sum(s => s.Target);
             Decimal = p.First().Decimal;
-            if (p.Count > 1)
+            GroupId = 0;
+            Group = "All";
+            if (p.Count == 1 && p.First().GroupId == 0)
             {
-                GroupId = 0;
-                Group = "All";
-            }
-            else
-            {
-                GroupId = p.First().GroupId;
-                Group = p.First().Group;
+                ScoreId = p.First().ScoreId;
+                LineId = p.First().LineId;
+                p.Clear();
             }
         }
     }

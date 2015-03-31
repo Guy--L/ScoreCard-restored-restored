@@ -1,10 +1,16 @@
 ﻿$(function () {
     $.extend($.inputmask.defaults, {
-        showMaskOnFocus: false,
-        showMaskOnHover: false,
-        clearMaskOnLostFocus: true
+        showMaskOnFocus: true,
+        showMaskOnHover: true,
+        clearMaskOnLostFocus: false
     });
     $('[mask]').each(function (e) {
-        $(this).inputmask("decimal", { digits: $(this).attr('mask') });
+        $(this).inputmask({
+            alias: "numeric",
+            autoGroup: !0,
+            digits: $(this).attr('mask'),
+            digitsOptional: !1,
+            clearMaskOnLostFocus: !1
+        });
     });
 });
