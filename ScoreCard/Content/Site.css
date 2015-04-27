@@ -23,8 +23,48 @@ textarea {
     max-width: 280px;
 }
 
+.navbar-inverse {
+    background-color: rgb(7,39,158);
+}
+
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+    color: #ffffff;
+    background-color: transparent;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: #ffffef;
+}
+
+.navbar-inverse .navbar-text {
+    color: #ffffff;
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+    text-decoration: none;
+    background-color: #ffff01;
+}
+
+.table thead > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tfoot > tr > td {
+    padding: 0;
+    vertical-align: top;
+    border-right: 1px solid white;
+    border-bottom: none;
+    border-top: none;
+    font-weight: lighter;
+    color: rgb(7,39,158);
+    background-color: rgb(186,228,240);
+    margin: 2px;
+}
+
+tr.topscore {
+    color:  rgb(7,39,158);
+    background-color: rgb(170,214,176);
+}
+
 input:not([readonly]) {
-    background-color: rgba(233, 225, 160, 0.20);
+    background-color: rgba(176, 225, 239, 0.20);
+    /*border-color: blue;*/
 }
 
 table#scoreCard td {
@@ -43,8 +83,57 @@ tr.score td, tr.subscore td {
 tr.score input[type=text], tr.subscore input[type=text] {
     max-width: 60px;
     border: none;
+    text-align: right;
+    padding-top: 0;
+    padding-bottom: 2px;
+}
+
+.table tbody > tr.score.undertotal > td {
+    border-top: 1px solid black;
+}
+
+.table tbody > tr.subscore > td {
+    border-bottom: none;
+}
+
+.table tbody > tr.subscore.underline > td {
+    border-bottom: 1px solid black;
+}
+
+tr.score.undertotal input[type=text] {
+    border-bottom: double;
+    padding: 0;
+}
+
+tr.score.undertotal input[type=text].scoreComment {
+    border: none;
+}
+
+tr td input[type=text].scoreComment {
+    text-align: left;
 }
 
 td.owner {
     font-size:smaller;
 }
+
+input[class*=text-success] {
+  background-color: #dff0d8 !important;
+}
+
+input[class*=text-danger] {
+  background-color: #f2dede !important;
+}
+
+input[class*=text-warning] {
+  background-color: #fcf8e3 !important;
+}
+
+input[class*=text-info] {
+  background-color: #d9edf7 !important;
+}
+
+input[class*=text-primary] {
+  background-color: #0099cc !important;
+}
+

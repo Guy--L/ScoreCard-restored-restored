@@ -68,6 +68,7 @@
     <Build Include="Site.sql" />
     <Build Include="Worker.sql" />
     <Build Include="Presence.sql" />
+    <Build Include="Permit.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ScoreDB.refactorlog" />
@@ -76,5 +77,6 @@
     <None Include="ScoreDB.publish.xml" />
     <None Include="ScoreDB_1.publish.xml" />
     <None Include="ScoreDB.guydev.publish.xml" />
+    <None Include="Data\Workers.sql" />
   </ItemGroup>
 </Project>

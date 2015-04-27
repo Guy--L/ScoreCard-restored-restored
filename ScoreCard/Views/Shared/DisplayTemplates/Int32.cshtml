@@ -3,18 +3,18 @@
     var ro = ViewData["ro"] as bool?;
     var points = ViewData["mask"] as int?;
     var div = 1;
-    var format = "{0}";
+    var imask = "'alias': 'numeric'";
     if (points.HasValue && points.Value > 0) {
         div = Enumerable.Repeat(10, points.Value).Aggregate((i, j) => i * j);
-        format = "{0:0."+"00".Substring(0,points.Value)+"}";
+        imask = "'alias': 'decimal', 'digits': "+points.Value;
     }        
     double number = ((double)(Model ?? 0))/div;
-    var value = (number == 0.0) ? "" : string.Format(format, number);
+    var show = number == 0 ? "" : number.ToString();
 }
 @if (ro.HasValue && ro.Value) { 
-    @Html.TextBox("", value, new { mask = @points, @class = @ViewData["class"], @readonly=true })
+    @Html.TextBox("", show, new { data_inputmask = imask, @class = @ViewData["class"], @readonly=true })
 }
 else
 {
-    @Html.TextBox("", value, new { mask = @points, @class = @ViewData["class"] })
+    @Html.TextBox("", show, new { data_inputmask = imask, @class = @ViewData["class"] })
 }

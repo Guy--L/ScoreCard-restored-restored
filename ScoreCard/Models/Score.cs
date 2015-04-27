@@ -10,11 +10,11 @@ namespace ScoreCard.Models
     {
         private static string _update = @"update score set q{0} = {1} where scoreid = {2}";
         private static string _comment = @"update score set comment = '{0}' where scoreid = {1}";
-        private static string _insertq = @"insert into score (yearending, lineid, q{0}, groupid) values (2014, {1}, {2}, 0); SELECT SCOPE_IDENTITY()";
-        private static string _insertc = @"insert into score (yearending, lineid, comment, groupid) values (2014, {0}, {1}, 0); SELECT SCOPE_IDENTITY()";
+        private static string _insertc = @"insert into score (yearending, lineid, comment, groupid) values ({0}, {1}, {2}, 0); SELECT SCOPE_IDENTITY()";
 
-        [ResultColumn] public int Total { get; set; }
+        [ResultColumn] public int PriorTotal { get; set; }
         public string Group { get; set; }
+        public string Site { get; set; }
         public int Decimal { get; set; }
         public bool CanEdit { get; set; }
 
@@ -24,19 +24,20 @@ namespace ScoreCard.Models
             Target = 0;
         }
 
-        public static int SaveQuarter(int scoreid, int quarter, int value)
+        private static string _insertq = @"insert into score (yearending, lineid, q{1}, groupid) values ({0}, {2}, {3}, 0); SELECT SCOPE_IDENTITY()";
+        public static int SaveQuarter(int year, int scoreid, int quarter, int value)
         {
             using (scoreDB s = new scoreDB())
             {
                 if (scoreid > 0)
                     s.Execute(string.Format(_update, quarter, value, scoreid));
                 else
-                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertq, quarter, -scoreid, value));
+                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertq, year, quarter, -scoreid, value));
             }
             return scoreid;
         }
 
-        public static int SaveComment(int scoreid, string comment)
+        public static int SaveComment(int year, int scoreid, string comment)
         {
             using (scoreDB s = new scoreDB())
             {
@@ -59,9 +60,9 @@ namespace ScoreCard.Models
                 else if (Q1 != 0) q = 1;
                 if (Total == 0) return "";
                 double perform = ((double)Target * q) / (4.0 * (double)Total);
-                if (perform > 1.0) return " bg-danger text-danger";
-                if (perform < 1.0) return " bg-success text-success";
-                return " bg-primary text-primary";
+                if (perform > 1.0) return " text-danger";
+                if (perform < 1.0) return " text-success";
+                return " text-primary";
             }
         }
 
@@ -84,6 +85,7 @@ namespace ScoreCard.Models
             Q2 = t.Q2;
             Q3 = t.Q3;
             Q4 = t.Q4;
+            Total = Q1 + Q2 + Q3 + Q4;
             Comment = t.Comment;
         }
 
@@ -104,6 +106,7 @@ namespace ScoreCard.Models
             Q2 = t.Q2;
             Q3 = t.Q3;
             Q4 = t.Q4;
+            Total = Q1 + Q2 + Q3 + Q4;
             Comment = t.Comment;
         }
 
@@ -115,6 +118,7 @@ namespace ScoreCard.Models
             Q4 = p.Sum(s => s.Q4);
             Total = p.Sum(s => s.Total);
             Target = p.Sum(s => s.Target);
+            PriorTotal = p.Sum(s => s.PriorTotal);
             Decimal = p.First().Decimal;
             GroupId = 0;
             Group = "All";

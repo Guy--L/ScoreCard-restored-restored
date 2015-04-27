@@ -182,7 +182,7 @@ namespace ScoreCard.Controllers
         {
             
             ViewBag.built = built;
-            ViewBag.User = _user = Session.Get<string>("user");
+            ViewBag.User = _user = Session["user"] as string;
 
             base.OnActionExecuting(filterContext);
         }

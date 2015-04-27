@@ -26,7 +26,7 @@ namespace ScoreCard.Controllers
             if (emp == null)
                 return RedirectToAction("Contact");
 
-            var card = new Card(2015, emp);
+            var card = new Card((Session["year"] as int?), emp);
             TempData["Card"] = card;
             return View(card);
         }

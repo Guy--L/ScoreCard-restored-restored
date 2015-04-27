@@ -1,4 +1,4 @@
-s<#@ include file="PetaPoco.Core.ttinclude" #>
+<#@ include file="PetaPoco.Core.ttinclude" #>
 <#
 	// Settings
     ConnectionStringName = "score";			// Uses last connection string in config if not specified
@@ -16,6 +16,7 @@ s<#@ include file="PetaPoco.Core.ttinclude" #>
 
 	var tables = LoadTables();	
 	tables["__RefactorLog"].Ignore = true;
+
 /*
 	tables["sysdiagrams"].Ignore = true;
 	// Tweak Schema

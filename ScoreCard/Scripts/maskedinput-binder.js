@@ -1,8 +1,7 @@
 ﻿$(function () {
     $.extend($.inputmask.defaults, {
-        showMaskOnFocus: true,
-        showMaskOnHover: true,
-        clearMaskOnLostFocus: false
+        placeholder: ' ',
+        clearMaskOnLostFocus: true
     });
     $('[mask]').each(function (e) {
         $(this).inputmask({

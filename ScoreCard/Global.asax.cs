@@ -32,6 +32,7 @@ namespace ScoreCard
 #endif
             //scheduleDB _db = new scheduleDB();
             HttpContext.Current.Session["user"] = user;
+            HttpContext.Current.Session["year"] = DateTime.Now.AddMonths(6).Year;
             //HttpContext.Current.Session["authority"] = _db.Fetch<User>(string.Format(Models.User.get_role, user)).FirstOrDefault();
         }
 

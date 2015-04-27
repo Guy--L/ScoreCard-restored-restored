@@ -217,6 +217,8 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.fixedheadertable.js" />
+    <Content Include="Scripts\jquery.fixedheadertable.min.js" />
     <Content Include="Scripts\jquery.inputmask\jquery.inputmask.date.extensions.js" />
     <Content Include="Scripts\jquery.inputmask\jquery.inputmask.extensions.js" />
     <Content Include="Scripts\jquery.inputmask\jquery.inputmask.js" />

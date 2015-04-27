@@ -9,16 +9,22 @@ namespace ScoreCard.Hubs
 {
     public class ScoreHub : Hub
     {
-        public void UpdateCell(int scoreid, int quarter, int value)
+        public async void SetYear(int oldyear, int newyear)
         {
-            var id = Score.SaveQuarter(scoreid, quarter, value);
-            Clients.Others.reflectCell(scoreid, quarter, value);
+            if (oldyear != newyear) await Groups.Remove(Context.ConnectionId, oldyear.ToString());
+            await Groups.Add(Context.ConnectionId, newyear.ToString());
         }
 
-        public void UpdateComment(int scoreid, string comment)
+        public void UpdateCell(int year, int scoreid, int quarter, int value)
         {
-            var id = Score.SaveComment(scoreid, comment);
-            Clients.Others.reflectComment(scoreid, comment);
+            var id = Score.SaveQuarter(year, scoreid, quarter, value);
+            Clients.OthersInGroup(year.ToString()).reflectCell(scoreid, quarter, value);
+        }
+        
+        public void UpdateComment(int year, int scoreid, string comment)
+        {
+            var id = Score.SaveComment(year, scoreid, comment);
+            Clients.OthersInGroup(year.ToString()).reflectComment(scoreid, comment);
         }
     }
 }

@@ -6,32 +6,33 @@
 }
 @if (Model.symbol == "blank")
 {
-    <tr class="topscore alert-info" data-lineid="@Model.LineId">
-        <td><strong>@Model.item &nbsp;</strong></td>
-        <td colspan="11"><strong>@Model.Description</strong></td>
+    <tr class="topscore" data-lineid="@Model.LineId">
+        <td><strong>&nbsp;@Model.item &nbsp;</strong></td>
+        <td colspan="13"><strong>@Model.Description</strong></td>
     </tr>
 }
 else
 {
-<tr data-lineid="@Model.LineId" data-scoreid="@Model.sub.ScoreId" class="score @(exp?"details":"")">
+<tr data-lineid="@Model.LineId" data-scoreid="@Model.sub.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"details":"")">
     <td></td>
     <td>@Model.item  &nbsp;</td>
-    <td>@Model.Description</td>
+    <td colspan="2">@Model.Description</td>
     <td>@Model.symbol @if (exp){<i class="fa fa-caret-right"></i>}</td>
     <td class="owner" title="@Model.owntip">@Model.owner</td>
+    <td>@Html.DisplayFor(m => m.sub.PriorTotal, new { @class = "priorval", mask = @Model.DecimalPoint, ro = true })</td>
     <td>@Html.DisplayFor(m => m.sub.Target, new { @class = "targval", mask = @Model.DecimalPoint, ro=true })</td>
-    <td>@Html.DisplayFor(m => m.sub.Total, new { @class = "yearval"+Model.sub.cue, mask = @Model.DecimalPoint, ro=true })</td>
+    <td>@Html.DisplayFor(m => m.sub.Total, new { @class = "yearval", mask = @Model.DecimalPoint, ro=true })</td>
     <td>@Html.DisplayFor(m => m.sub.Q1, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit })</td>
     <td>@Html.DisplayFor(m => m.sub.Q2, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit })</td>
     <td>@Html.DisplayFor(m => m.sub.Q3, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit })</td>
     <td>@Html.DisplayFor(m => m.sub.Q4, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit })</td>
     @if (Model.CanEdit)
     {
-        <td>@Html.TextBoxFor(m => m.sub.Comment)</td>
+        <td>@Html.TextBoxFor(m => m.sub.Comment, new { @class = "scoreComment" })</td>
     }
     else
     {
-        <td>@Html.TextBoxFor(m => m.sub.Comment, new { @readonly = true })</td>
+        <td>@Html.TextBoxFor(m => m.sub.Comment, new { @class = "scoreComment", @readonly = true })</td>
     }
 </tr>
 @Html.DisplayFor(m=>m.scores)

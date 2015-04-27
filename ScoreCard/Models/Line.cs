@@ -48,23 +48,36 @@ namespace ScoreCard.Models
 	            1 as [level], n.[description], n.[order], n.LineId, n.MeasureId
 	            from line n
 	            where n.LineId = n.ParentLineId
+
 	            union all
-	            select cast(p.[item] + '.' + CONVERT(varchar(10), n.[order]) as varchar(10)) as item, 
+
+                select cast(p.[item] + '.' + CONVERT(varchar(10), n.[order]) as varchar(10)) as item, 
 				n.ParentLineId,
 	            p.[level]+1 as [level], n.[description], n.[order], n.LineId, n.MeasureId
 	            from line n
 	            inner join linelist p on p.LineId = n.ParentLineId
 	            where n.LineId != n.ParentLineId
             )
-            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.Comment, s.ScoreId,
-			s.[target], s.q1, s.q2, s.q3, s.q4, s.sumscore as [Total], g.[Group], g.groupid
+            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.Comment, s.ScoreId, t.sumscore as [PriorTotal],
+			s.[target], s.q1, s.q2, s.q3, s.q4, s.sumscore as [Total], g.[Group], g.groupid, x.Site, x.SiteId
             from linelist q
             join Measure m on m.MeasureId = q.MeasureId
 			left join (
-            select groupid, [target], q1, q2, q3, q4, q1+q2+q3+q4 as sumscore, comment, scoreid, lineid 
-            from score
-			where yearending = {0}) s on q.lineid = s.lineid
+                select groupid, [target], q1, q2, q3, q4, 
+					isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0) as sumscore, 
+					comment, scoreid, lineid, siteid 
+                from score
+			    where yearending = {0}) s 
+            on q.lineid = s.lineid
 			left join [group] g on s.groupid = g.groupid
+            left join site x on s.siteid = x.siteid
+			left join (
+                select groupid, 
+					isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0) as sumscore, 
+				    scoreid, lineid, siteid 
+                from score
+			    where yearending = {0}-1) t 
+            on q.lineid = t.lineid and t.groupid = s.groupid -- and t.siteid = x.siteid
             order by item
         ";
 
@@ -87,12 +100,12 @@ namespace ScoreCard.Models
         [ResultColumn] public string symbol { get; set; }
         [ResultColumn] public int DecimalPoint { get; set; }
 
-        public static List<Line> Card(Worker login) 
+        public static List<Line> Card(int year, Worker login) 
         {
             List<Line> lines = null;
             ILookup<int,Worker> owned;
             using (scoreDB s = new scoreDB()) {
-                lines = s.Fetch<Line, Score, Group, Line>(new LineOwners().Scores2Line, string.Format(_outline, 2014));
+                lines = s.Fetch<Line, Score, Group, Site, Line>(new LineOwners().Scores2Line, string.Format(_outline, year));
                 owned = s.Fetch<Worker>(_lineowners).ToLookup(l => l.LineId);
             }
             lines.ForEach(l => {
@@ -129,7 +142,7 @@ namespace ScoreCard.Models
     class LineOwners
     {
         public Line current;
-        public Line Scores2Line(Line ln, Score sc, Group gr)
+        public Line Scores2Line(Line ln, Score sc, Group gr, Site st)
         {
             if (ln == null)
                 return current;
@@ -138,6 +151,10 @@ namespace ScoreCard.Models
             {
                 if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
                 else { sc.GroupId = 0; sc.Group = "All"; }
+
+                if (st != null) { sc.SiteId = st.SiteId; sc.Site = st._Site; }
+                else { sc.SiteId = 0; sc.Site = "All"; }
+
                 sc.LineId = ln.LineId;
                 sc.Decimal = ln.DecimalPoint;
                 current.scores.Add(sc);

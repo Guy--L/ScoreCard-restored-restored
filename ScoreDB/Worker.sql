@@ -16,5 +16,6 @@
     [IonName] NVARCHAR(50) NULL, 
     [IsAdmin] BIT NOT NULL, 
     [ManagerId] INT NULL, 
+    [SiteId] INT NULL, 
     CONSTRAINT [FK_Worker_ToGroup] FOREIGN KEY ([GroupId]) REFERENCES [Group]([GroupId])
 )

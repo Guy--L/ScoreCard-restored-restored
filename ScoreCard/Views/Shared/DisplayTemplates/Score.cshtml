@@ -4,21 +4,22 @@
     Layout = null;
 }
 
-<tr data-lineid="@Model.LineId" data-scoreid="@Model.ScoreId" class="subscore">
-    <td colspan="4"></td>
-    <td><em>@Model.Group</em></td>
-    <td>@Html.DisplayFor(m => m.Target, new { @class = "targval", mask = @Model.Decimal, ro=true })</td>
-    <td>@Html.DisplayFor(m => m.Total, new { @class = "yearval"+@Model.cue, mask = @Model.Decimal, ro=true })</td>
+<tr data-lineid="@Model.LineId" data-scoreid="@Model.ScoreId" data-scale="@(Math.Pow(10,Model.Decimal))" class="subscore" style="display: none;">
+    <td colspan="2"></td>
+    <td colspan="4"><em>@Model.Group</em></td>
+    <td>@Html.DisplayFor(m => m.PriorTotal, new { @class = "priorval", mask = @Model.Decimal, ro = true })</td>
+    <td>@Html.DisplayFor(m => m.Target, new { @class = "targval", mask = @Model.Decimal, ro = true })</td>
+    <td>@Html.DisplayFor(m => m.Total, new { @class = "yearval", mask = @Model.Decimal, ro = true })</td>
     <td>@Html.DisplayFor(m => m.Q1, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit })</td>
     <td>@Html.DisplayFor(m => m.Q2, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit })</td>
     <td>@Html.DisplayFor(m => m.Q3, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit })</td>
     <td>@Html.DisplayFor(m => m.Q4, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit })</td>
     @if (Model.CanEdit)
     {
-        <td>@Html.TextBoxFor(m => m.Comment)</td>
+        <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment" })</td>
     }
     else
     {
-        <td>@Html.TextBoxFor(m => m.Comment, new { @readonly = true })</td>
+        <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment", @readonly = true })</td>
     }
 </tr>
