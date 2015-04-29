@@ -8,15 +8,15 @@
 @if (Model.symbol == "blank")
 {
     <tr class="topscore" data-lineid="@Model.LineId">
-        <td><strong>&nbsp;@Model.item &nbsp;</strong></td>
+        <td class="major"><strong>&nbsp;@Model.item &nbsp;</strong></td>
         <td colspan="13"><strong>@Model.Description</strong></td>
     </tr>
 }
 else
 {
 <tr data-lineid="@Model.LineId" data-scoreid="@Model.sub.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"")">
-    <td></td>
-    <td>@Model.item  &nbsp;</td>
+    <td class="major"></td>
+    <td class="minor">@Model.item  &nbsp;</td>
     <td colspan="2">@Model.Description</td>
     <td>@Model.symbol @if (exp){<i class="fa fa-caret-right"></i>}</td>
     <td class="owner" title="@Model.owntip">@Model.owner</td>
@@ -27,7 +27,14 @@ else
     <td>@Html.DisplayFor(m => m.sub.Q2, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "2" })</td>
     <td>@Html.DisplayFor(m => m.sub.Q3, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "3" })</td>
     <td>@Html.DisplayFor(m => m.sub.Q4, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "4" })</td>
-    <td>@Html.TextBoxFor(m => m.sub.Comment, new { @class = "scoreComment", @readonly = !@Model.CanEdit, id = prefix + "comment" })</td>
+    @if (Model.CanEdit)
+    {
+        <td>@Html.TextBoxFor(m => m.sub.Comment, new { @class = "scoreComment", id = prefix + "comment" })</td>
+    }
+    else
+    {
+        <td>@Html.TextBoxFor(m => m.sub.Comment, new { @class = "scoreComment", @readonly = "readonly", id = prefix + "comment" })</td>
+    }
 </tr>
 @Html.DisplayFor(m=>m.scores)
 }

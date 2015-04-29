@@ -57,6 +57,14 @@ textarea {
     margin: 2px;
 }
 
+.table thead th.major {
+    width: 30px !important;
+}
+
+.table thead th.minor {
+    width: 40px !important;
+}
+
 tr.topscore {
     color:  rgb(7,39,158);
     background-color: rgb(170,214,176);
@@ -67,8 +75,15 @@ input:not([readonly]) {
     /*border-color: blue;*/
 }
 
+table#scoreCard {
+    table-layout: fixed;
+    width: 100%;
+}
+
 table#scoreCard td {
+    overflow: hidden;
     padding: 0;
+    margin: 0;
 }
 
 table#scoreCard .scoreheader > th {
@@ -85,7 +100,7 @@ tr.score td {
 }
 
 tr.score input[type=text] {
-    max-width: 60px;
+    max-width: 70px;
     border: none;
     text-align: right;
     padding-top: 0;
@@ -129,6 +144,7 @@ tr.score.undertotal input[type=text].scoreComment {
 }
 
 tr td input[type=text].scoreComment {
+    max-width: 190px;
     text-align: left;
 }
 

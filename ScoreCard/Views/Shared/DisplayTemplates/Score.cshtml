@@ -18,7 +18,14 @@
     <td>@Html.DisplayFor(m => m.Q2, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit, id = prefix + "2" })</td>
     <td>@Html.DisplayFor(m => m.Q3, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit, id = prefix + "3" })</td>
     <td>@Html.DisplayFor(m => m.Q4, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit, id = prefix + "4" })</td>
-    <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment", @readonly = !@Model.CanEdit, id = prefix + "comment" })</td>
+    @if (Model.CanEdit)
+    {
+        <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment", id = prefix + "comment" })</td>
+    }
+    else
+    {
+        <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment", @readonly = "readonly", id = prefix + "comment" })</td>
+    }
 </tr>
 @if (rollup)
 {

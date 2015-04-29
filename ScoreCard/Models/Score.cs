@@ -8,10 +8,6 @@ namespace ScoreCard.Models
 {
     public partial class Score
     {
-        private static string _update = @"update score set q{0} = {1} where scoreid = {2}";
-        private static string _comment = @"update score set comment = '{0}' where scoreid = {1}";
-        private static string _insertc = @"insert into score (yearending, lineid, comment, groupid) values ({0}, {1}, {2}, 0); SELECT SCOPE_IDENTITY()";
-
         [ResultColumn] public int PriorTotal { get; set; }
         public string Group { get; set; }
         public string Site { get; set; }
@@ -25,6 +21,7 @@ namespace ScoreCard.Models
             Target = 0;
         }
 
+        private static string _update = @"update score set q{0} = {1} where scoreid = {2}";
         private static string _insertq = @"insert into score (yearending, lineid, q{1}, groupid) values ({0}, {2}, {3}, 0); SELECT SCOPE_IDENTITY()";
         public static int SaveQuarter(int year, int scoreid, int quarter, int value)
         {
@@ -38,6 +35,8 @@ namespace ScoreCard.Models
             return scoreid;
         }
 
+        private static string _comment = @"update score set comment = '{0}' where scoreid = {1}";
+        private static string _insertc = @"insert into score (yearending, lineid, comment, groupid) values ({0}, {1}, {2}, 0); SELECT SCOPE_IDENTITY()";
         public static int SaveComment(int year, int scoreid, string comment)
         {
             using (scoreDB s = new scoreDB())
@@ -45,7 +44,7 @@ namespace ScoreCard.Models
                 if (scoreid > 0)
                     s.Execute(string.Format(_comment, comment, scoreid));
                 else
-                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertc, -scoreid, comment));
+                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertc, year, -scoreid, comment));
             }             
             return scoreid;
         }

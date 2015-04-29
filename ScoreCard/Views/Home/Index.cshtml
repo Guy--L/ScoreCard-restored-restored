@@ -11,6 +11,22 @@
     <div class="col-md-12">
         @using (Html.Bootstrap().Begin(new Table().Id("scoreCard").Condensed().Hover()))
         {
+            <colgroup>
+            <col width="20px" />
+            <col width="30px" />
+            <col width="250px" />
+            <col width="100px" />
+            <col width="80px" />
+            <col width="80px" />
+            <col width="80px" />
+            <col width="80px" />
+            <col width="80px" />
+            <col width="80px" />
+            <col width="80px" />
+            <col width="80px" />
+            <col width="80px" />
+            <col width="200px" />
+            </colgroup>
             <thead>
             <tr class="scoreheader">
                 <th colspan="4">Area</th>
@@ -24,7 +40,8 @@
             </tr>
 
             <tr class="scoreheader">
-            <th colspan="2"></th>
+            <th></th>
+            <th></th>
             <th class="leftee"><em>Function</em></th>
             <th class="leftee">Site</th>
             <th>Total</th>
@@ -36,8 +53,10 @@
             <th>AMJ</th>
             <th>Comment</th>
             </tr>
-                </thead>
+            </thead>
+            <tbody>
             @Html.DisplayFor(m=>m.Lines)
+            </tbody>
         } 
     </div>
 </div>
@@ -60,6 +79,28 @@
         e.removeClass("text-danger text-success text-primary").addClass("text-" + cue);
         $(this).closest('td').removeClass("danger success primary").addClass(cue);
     }
+    function summer(rw, pre, suf)
+    {
+        var sum = 0;
+
+        sum = 0;
+        var scope = '[data-lineid=' + rw.data('lineid') + ']';
+        var search = '[id^=' + pre + '][id$=' + suf + ']';
+        $(search, scope).each(function () {
+            sum += Number($(this).val());
+        });
+
+        return sum;
+    }
+    function rowcalc(target) {
+        var sum = 0;
+        rw = $(target).closest('tr');
+        $('.quarval', rw).each(function() {
+            sum += Number($(this).val());
+        });
+        $(target, rw).val(sum);
+    }
+    // id is line_group_site_(quarter|comment|total|prior|target)
     function recalc(e, path) {
         var sum = 0;
         var rw = e.closest('tr');
@@ -67,34 +108,27 @@
         $('.quarval', rw).each(function () {
             var item = Number($(this).val());
             sum += item;
-            var p = $(this).attr('id').split('_');
-            var qrt = p[p.length-1][1];
-            if (item == 0 && qrt > q)
+            var p = $(this).attr('id').split('_');      // check for entries in value
+            var qrt = p[p.length-1];
+            if (item == 0 && qrt > q)                 // last non-zero value
                 q = qrt;
         });
         $('.yearval', rw).val(sum);     // total on row
-        //cuetarget($('.yearval', rw), Number($('.targval', rw).val() * q), Number(4 * sum));
+        //cuetarget($('.yearval', rw), Number($('.targval', rw).val() * q), Number(4 * sum));           // color target according to last entered value
 
-        if (path[3] == 'scores') {
-            var target = '#' + path.slice(0, 3).join('_') + '_sub' + path.slice(5).join('_');
-            var prefix = path.slice(0, 4).join('_');
-            var suffix = path.slice(5).join('_');
-            sum = 0;
-            var scope = '[data-lineid=' + rw.data('lineid') + ']';
-            var search = '[id^=' + prefix + '][id$=' + suffix + ']';
-            $(search, scope).each(function () {
-                sum += Number($(this).val());
-            });
-            $(target).val(sum);         // total on column
+        if (!isNaN(path[3])) {
+            var target = '#' + path[0]+'_'+path[1]+'_0_'+path[3];            // line_group_0_quarter
+            var prefix = path[0]+'_'+path[1]+'_';
+            var suffix = '_'+path[3];
+            $(target).val(summer(rw, prefix, suffix));                              // update quarter total on column for all sites in this group
 
-            scope = $(target).closest('tr');
-            target = '#' + path.slice(0, 3).join('_') + '_sub_Total'
-            search = '[id^=' + path.slice(0, 3).join('_') + '_sub_Q]';
-            sum = 0;
-            $(search, scope).each(function () {
-                sum += Number($(this).val());
-            });
-            $(target).val(sum);
+            target = '#'+ path[0]+'_0_0_'+path[3];                                 // line_0_0_quarter
+            prefix = path[0]+'_';
+            suffix = '_0_'+path[3];
+            $(target).val(summer(rw, prefix, suffix));                              // update quarter total for all groups on this line
+            
+            rowcalc('#' + path[0] + '_' + path[1] + '_0_total');                 // line_group_0_total
+            rowcalc('#' + path[0] + '_0_0_total');
         }
     }
     function toggler(e) { 
@@ -128,12 +162,11 @@
                 $(this).addClass("underline");
             }
         }
-     }
+    }
     $(function () {
         $(":input").inputmask();
-        $('tr.line').on('click', { rows: 'group' }, toggler);
-        $('tr.group').on('click', { rows: 'site' }, toggler);
-    });
+        $('#scoreCard tr.line').on('click', { rows: 'group' }, toggler);
+        $('#scoreCard tr.group').on('click', { rows: 'site' }, toggler);
         var card = $.connection.scoreHub;
         card.client.reflectCell = function (scoreid, quarterid, value) {
             var target = $('[id$=_' + quarterid + ']', '.site[data-scoreid=' + scoreid + ']');
@@ -173,5 +206,6 @@
                 card.server.updateComment(@Model.Year, sid, val);
             });
         });
+    });
 </script>
 }
