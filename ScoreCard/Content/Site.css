@@ -73,14 +73,18 @@ table#scoreCard td {
 
 table#scoreCard .scoreheader > th {
     text-align: center;
-    vertical-align: bottom;
+    vertical-align: middle;
 }
 
-tr.score td, tr.subscore td {
+table#scoreCard .scoreheader > th.leftee {
+    text-align: left;
+}
+
+tr.score td {
     padding: 0;
 }
 
-tr.score input[type=text], tr.subscore input[type=text] {
+tr.score input[type=text] {
     max-width: 60px;
     border: none;
     text-align: right;
@@ -88,23 +92,38 @@ tr.score input[type=text], tr.subscore input[type=text] {
     padding-bottom: 2px;
 }
 
-.table tbody > tr.score.undertotal > td {
+.table tbody > tr.line.score.undertotal > td {
     border-top: 1px solid black;
 }
 
-.table tbody > tr.subscore > td {
+.table tbody > tr.score > td {
     border-bottom: none;
 }
 
-.table tbody > tr.subscore.underline > td {
+.table tbody > tr.group.score.underline > td {
     border-bottom: 1px solid black;
 }
 
-tr.score.undertotal input[type=text] {
+tr.score.line.undertotal input[type=text] {
     border-bottom: double;
     padding: 0;
 }
 
+tr.score.group.undertotal td.subline {
+    border-top: 1px solid blue;
+}
+
+tr.score.site.underline.last td {
+    border-bottom: 1px solid black;
+}
+
+tr.score.site.underline td.subline { 
+    border-bottom: 1px solid blue;
+}
+tr.score.group.undertotal input[type=text ] {
+    border-bottom: 1px solid blue;
+    padding: 0;
+}
 tr.score.undertotal input[type=text].scoreComment {
     border: none;
 }

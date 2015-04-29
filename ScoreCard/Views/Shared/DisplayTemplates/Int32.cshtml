@@ -12,9 +12,9 @@
     var show = number == 0 ? "" : number.ToString();
 }
 @if (ro.HasValue && ro.Value) { 
-    @Html.TextBox("", show, new { data_inputmask = imask, @class = @ViewData["class"], @readonly=true })
+    @Html.TextBox("", show, new { data_inputmask = imask, @class = @ViewData["class"], @readonly=true, @id = @ViewData["id"] })
 }
 else
 {
-    @Html.TextBox("", show, new { data_inputmask = imask, @class = @ViewData["class"] })
+    @Html.TextBox("", show, new { data_inputmask = imask, @class = @ViewData["class"], @id = @ViewData["id"]  })
 }

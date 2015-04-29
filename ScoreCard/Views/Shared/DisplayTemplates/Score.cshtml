@@ -2,24 +2,25 @@
 
 @{
     Layout = null;
+    var rollup = Model.scores != null && Model.scores.Count > 0;
+    var prefix = Model.LineId + "_" + Model.GroupId + "_" + Model.SiteId + "_";
 }
 
-<tr data-lineid="@Model.LineId" data-scoreid="@Model.ScoreId" data-scale="@(Math.Pow(10,Model.Decimal))" class="subscore" style="display: none;">
+<tr data-lineid="@Model.LineId" data-scoreid="@Model.ScoreId" data-scale="@(Math.Pow(10,Model.Decimal))" data-groupid="@Model.GroupId"
+    data-siteid="@Model.SiteId" class="score @(rollup?"group":"site")" style="display: none;">
     <td colspan="2"></td>
-    <td colspan="4"><em>@Model.Group</em></td>
-    <td>@Html.DisplayFor(m => m.PriorTotal, new { @class = "priorval", mask = @Model.Decimal, ro = true })</td>
-    <td>@Html.DisplayFor(m => m.Target, new { @class = "targval", mask = @Model.Decimal, ro = true })</td>
-    <td>@Html.DisplayFor(m => m.Total, new { @class = "yearval", mask = @Model.Decimal, ro = true })</td>
-    <td>@Html.DisplayFor(m => m.Q1, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit })</td>
-    <td>@Html.DisplayFor(m => m.Q2, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit })</td>
-    <td>@Html.DisplayFor(m => m.Q3, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit })</td>
-    <td>@Html.DisplayFor(m => m.Q4, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit })</td>
-    @if (Model.CanEdit)
-    {
-        <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment" })</td>
-    }
-    else
-    {
-        <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment", @readonly = true })</td>
-    }
+    <td colspan="1" class="subline">@if (rollup){<em>@Model.Group</em> <i class="fa fa-caret-right"></i>}</td>
+    <td colspan="2" class="subline">@Model.Site</td><td></td>
+    <td>@Html.DisplayFor(m => m.PriorTotal, new { @class = "priorval", mask = @Model.Decimal, ro = true, id = prefix+"prior"})</td>
+    <td>@Html.DisplayFor(m => m.Target, new { @class = "targval", mask = @Model.Decimal, ro = true, id = prefix+"target" })</td>
+    <td>@Html.DisplayFor(m => m.Total, new { @class = "yearval", mask = @Model.Decimal, ro = true, id = prefix+"total" })</td>
+    <td>@Html.DisplayFor(m => m.Q1, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit, id = prefix + "1"})</td>
+    <td>@Html.DisplayFor(m => m.Q2, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit, id = prefix + "2" })</td>
+    <td>@Html.DisplayFor(m => m.Q3, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit, id = prefix + "3" })</td>
+    <td>@Html.DisplayFor(m => m.Q4, new { @class = "quarval", mask = @Model.Decimal, ro = !@Model.CanEdit, id = prefix + "4" })</td>
+    <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment", @readonly = !@Model.CanEdit, id = prefix + "comment" })</td>
 </tr>
+@if (rollup)
+{
+    @Html.DisplayFor(m => m.scores)
+}

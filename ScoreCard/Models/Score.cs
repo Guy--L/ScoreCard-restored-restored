@@ -17,6 +17,7 @@ namespace ScoreCard.Models
         public string Site { get; set; }
         public int Decimal { get; set; }
         public bool CanEdit { get; set; }
+        public List<Score> scores { get; set; }
 
         public Score()
         {
@@ -109,6 +110,7 @@ namespace ScoreCard.Models
             Total = Q1 + Q2 + Q3 + Q4;
             Comment = t.Comment;
         }
+
 
         public Score(List<Score> p)
         {

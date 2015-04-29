@@ -9,10 +9,10 @@ namespace ScoreCard.Hubs
 {
     public class ScoreHub : Hub
     {
-        public async void SetYear(int oldyear, int newyear)
+        public void SetYear(int oldyear, int newyear)
         {
-            if (oldyear != newyear) await Groups.Remove(Context.ConnectionId, oldyear.ToString());
-            await Groups.Add(Context.ConnectionId, newyear.ToString());
+            if (oldyear != newyear) Groups.Remove(Context.ConnectionId, oldyear.ToString());
+            Groups.Add(Context.ConnectionId, newyear.ToString());
         }
 
         public void UpdateCell(int year, int scoreid, int quarter, int value)

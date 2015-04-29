@@ -58,7 +58,12 @@ namespace ScoreCard.Models
 	            inner join linelist p on p.LineId = n.ParentLineId
 	            where n.LineId != n.ParentLineId
             )
-            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.Comment, s.ScoreId, t.sumscore as [PriorTotal],
+            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.Comment, s.ScoreId, 
+            (
+                select isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0)
+                from score
+			    where yearending = {0}-1 and lineid = q.lineid and groupid = s.groupid and siteid = s.siteid
+            ) as [PriorTotal],
 			s.[target], s.q1, s.q2, s.q3, s.q4, s.sumscore as [Total], g.[Group], g.groupid, x.Site, x.SiteId
             from linelist q
             join Measure m on m.MeasureId = q.MeasureId
@@ -71,13 +76,6 @@ namespace ScoreCard.Models
             on q.lineid = s.lineid
 			left join [group] g on s.groupid = g.groupid
             left join site x on s.siteid = x.siteid
-			left join (
-                select groupid, 
-					isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0) as sumscore, 
-				    scoreid, lineid, siteid 
-                from score
-			    where yearending = {0}-1) t 
-            on q.lineid = t.lineid and t.groupid = s.groupid -- and t.siteid = x.siteid
             order by item
         ";
 
@@ -115,14 +113,32 @@ namespace ScoreCard.Models
                     l.owntip = string.Join(" \\ ", l.workers.Select(w => w.FirstName[0] + ". " + w.LastName).ToArray());
                     var q = l.workers.First();
                     l.owner = q.FirstName[0] + ". " + q.LastName + (l.workers.Count>1?("+"+(l.workers.Count-1)):"");
-                    Debug.WriteLine("line " + l.LineId + ": " + l.owntip + " " + l.owner);
                 }
                 var IsOwner = l.workers.Any(w => w.WorkerId == login.WorkerId);
-                l.CanEdit = (IsOwner || login.IsAdmin) && (l.scores.Count == 0) && (login.GroupId != 5);
-                l.scores.ForEach(s =>
+                l.CanEdit = (IsOwner || login.IsAdmin) && (login.GroupId != 5);             // && (l.scores.Count == 0) 
+
+                var groups = l.scores.ToLookup(s => s.GroupId.Value);
+                var groupScores = new List<Score>();
+                foreach (var g in groups)
                 {
-                    s.CanEdit = IsOwner || login.IsAdmin || s.GroupId == login.GroupId;
-                });
+                    var list = groups[g.Key].ToList();
+                    var gScore = new Score(list);
+                    gScore.LineId = l.LineId;
+                    gScore.GroupId = g.Key;
+                    gScore.Group = g.First().Group;
+                    gScore.Site = "All";
+                    gScore.SiteId = 0;
+                    gScore.CanEdit = false;
+                    gScore.scores = list;
+                    groupScores.Add(gScore);
+                    Debug.WriteLine("line " + l.item + ": " + g.First().Group + " " + groups[g.Key].Count() + " scores " + gScore.scores.Count());
+                }
+                l.scores = groupScores;
+                Debug.WriteLine("line scores: " + groupScores.Count);
+                l.scores.ForEach(s => s.scores.ForEach(t =>
+                {
+                    t.CanEdit = IsOwner || login.IsAdmin || t.GroupId == login.GroupId || login.permits.Any(p => p.SiteId == t.SiteId);
+                }));
             });
             return lines;
         }
@@ -164,8 +180,8 @@ namespace ScoreCard.Models
 
             // Save the current author
             var p = current;
-            if (p!=null)
-                p.sub = (p.scores.Count() > 0)? new Score(p.scores): new Score();
+            if (p != null)
+                p.sub = (p.scores.Count() > 0) ? new Score(p.scores) : new Score();
 
             // Setup the new current author
             current = ln;
@@ -177,6 +193,10 @@ namespace ScoreCard.Models
                 sc.Decimal = ln.DecimalPoint;
                 if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
                 else { sc.GroupId = 0; sc.Group = "All"; }
+
+                if (st != null) { sc.SiteId = st.SiteId; sc.Site = st._Site; }
+                else { sc.SiteId = 0; sc.Site = "All"; }
+
                 current.scores.Add(sc);
             }
 

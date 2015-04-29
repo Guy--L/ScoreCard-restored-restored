@@ -14,7 +14,6 @@ namespace ScoreCard.Controllers
             scoreDB s = new scoreDB();
 
             string usr = _user;
-            string who = "where ionname = @0";
 
             if (string.IsNullOrWhiteSpace(usr))
                 return RedirectToAction("Contact");
@@ -22,8 +21,8 @@ namespace ScoreCard.Controllers
             string[] worker = usr.ToString().Split('\\');
             usr = worker[worker.Length - 1];
 
-            Worker emp = s.FirstOrDefault<Worker>(who, usr);
-            if (emp == null)
+            Worker emp = new Worker(usr);
+            if (emp.IonName == null)
                 return RedirectToAction("Contact");
 
             var card = new Card((Session["year"] as int?), emp);
