@@ -62,7 +62,7 @@ namespace ScoreCard.Models
             (
                 select isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0)
                 from score
-			    where yearending = {0}-1 and lineid = q.lineid and groupid = s.groupid and siteid = s.siteid
+			    where yearending = {0}-1 and lineid = q.lineid and groupid = s.groupid and siteid = s.siteid and groupid != 0 and siteid != 0
             ) as [PriorTotal],
 			s.[target], s.q1, s.q2, s.q3, s.q4, s.sumscore as [Total], g.[Group], g.groupid, x.Site, x.SiteId
             from linelist q

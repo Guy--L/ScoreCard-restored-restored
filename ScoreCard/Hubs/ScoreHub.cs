@@ -17,13 +17,19 @@ namespace ScoreCard.Hubs
 
         public void UpdateCell(int year, int scoreid, int quarter, int value)
         {
-            var id = Score.SaveQuarter(year, scoreid, quarter, value);
+            Score.SaveQuarter(year, scoreid, quarter, value);
             Clients.OthersInGroup(year.ToString()).reflectCell(scoreid, quarter, value);
         }
-        
+
+        public void UpdateTarget(int year, int scoreid, int value)
+        {
+            Score.SaveTarget(year, scoreid, value);
+            Clients.OthersInGroup(year.ToString()).reflectTarget(scoreid, value);
+        }
+
         public void UpdateComment(int year, int scoreid, string comment)
         {
-            var id = Score.SaveComment(year, scoreid, comment);
+            Score.SaveComment(year, scoreid, comment);
             Clients.OthersInGroup(year.ToString()).reflectComment(scoreid, comment);
         }
     }

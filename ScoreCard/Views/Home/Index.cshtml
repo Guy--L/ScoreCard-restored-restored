@@ -16,16 +16,16 @@
             <col width="30px" />
             <col width="250px" />
             <col width="100px" />
+            <col width="70px" />
             <col width="80px" />
-            <col width="80px" />
-            <col width="80px" />
-            <col width="80px" />
-            <col width="80px" />
-            <col width="80px" />
-            <col width="80px" />
-            <col width="80px" />
-            <col width="80px" />
-            <col width="200px" />
+            <col width="70px" />
+            <col width="70px" />
+            <col width="70px" />
+            <col width="70px" />
+            <col width="70px" />
+            <col width="70px" />
+            <col width="70px" />
+            <col width="180px" />
             </colgroup>
             <thead>
             <tr class="scoreheader">
@@ -87,8 +87,14 @@
         var scope = '[data-lineid=' + rw.data('lineid') + ']';
         var search = '[id^=' + pre + '][id$=' + suf + ']';
         $(search, scope).each(function () {
-            sum += Number($(this).val());
+            var i = $(this).attr('id');
+            var s = i.length - pre.length - suf.length;
+            var x = i.substr(pre.length, s);
+            if (x!='0')
+                sum += Number($(this).val());
+            console.log($(this).attr('id')+': '+x+' '+$(this).val() + ' E '+ sum);
         });
+        console.log('-----');
 
         return sum;
     }
@@ -116,7 +122,7 @@
         $('.yearval', rw).val(sum);     // total on row
         //cuetarget($('.yearval', rw), Number($('.targval', rw).val() * q), Number(4 * sum));           // color target according to last entered value
 
-        if (!isNaN(path[3])) {
+        if (!isNaN(path[3]) && path[1]!='0') {                                         // no vertical sum needed if line total was edited
             var target = '#' + path[0]+'_'+path[1]+'_0_'+path[3];            // line_group_0_quarter
             var prefix = path[0]+'_'+path[1]+'_';
             var suffix = '_'+path[3];
@@ -167,23 +173,29 @@
         $(":input").inputmask();
         $('#scoreCard tr.line').on('click', { rows: 'group' }, toggler);
         $('#scoreCard tr.group').on('click', { rows: 'site' }, toggler);
+        console.log("start to hub");
         var card = $.connection.scoreHub;
+        console.log("hub to card");
         card.client.reflectCell = function (scoreid, quarterid, value) {
-            var target = $('[id$=_' + quarterid + ']', '.site[data-scoreid=' + scoreid + ']');
+            var target = $('[id$=_' + quarterid + ']', '[data-scoreid=' + scoreid + ']');
             var row = target.closest('tr');
             var scale = row.data('scale');
             target.val(value / (+scale));
             var path = target.attr('id').split('_');
             recalc(target, path);
         };
+        card.client.reflectTarget = function (scoreid, value) {
+            var target = $('[id$=_target]', '[data-scoreid=' + scoreid + ']');
+            target.val(value);
+        };
         card.client.reflectComment = function (scoreid, comment) {
-            var target = $('[id$=_comment]', '.site[data-scoreid=' + scoreid + ']');
+            var target = $('[id$=_comment]', '[data-scoreid=' + scoreid + ']');
             target.val(comment);
         };
         $.connection.hub.start().done(function () {
-
+            console.log("hub started");
             card.server.setYear(@Model.Year, @Model.Year);
-            
+            console.log("year set to "+@Model.Year);
             $('.quarval').on('change', function () {
                 var path = $(this).attr('id').split('_');
                 var row = $(this).closest('tr');
@@ -191,7 +203,8 @@
                 if (sid == 0)
                     sid = -Number(row.data('lineid'));
                 var scale = row.data('scale');
-                var qid = Number(path[path.length - 1][1]);
+                var qid = Number(path[3]);
+                console.log('year, sid, qid, value '+@Model.Year+', '+sid+', '+qid+', '+Number($(this).val()*scale));
                 card.server.updateCell(@Model.Year, sid, qid, Number($(this).val()*scale));
                 recalc($(this), path);
             });

@@ -100,7 +100,7 @@ tr.score td {
 }
 
 tr.score input[type=text] {
-    max-width: 70px;
+    max-width: 65px;
     border: none;
     text-align: right;
     padding-top: 0;
@@ -144,7 +144,7 @@ tr.score.undertotal input[type=text].scoreComment {
 }
 
 tr td input[type=text].scoreComment {
-    max-width: 190px;
+    max-width: 175px;
     text-align: left;
 }
 

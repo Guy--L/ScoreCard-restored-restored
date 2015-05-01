@@ -9,6 +9,12 @@ namespace ScoreCard.Controllers
 {
     public class HomeController : BaseController
     {
+        public ActionResult Year(int year)
+        {
+            Session["year"] = year;
+            return RedirectToAction("Index");
+        }
+
         public ActionResult Index()
         {
             scoreDB s = new scoreDB();

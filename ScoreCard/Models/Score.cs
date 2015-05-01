@@ -22,31 +22,30 @@ namespace ScoreCard.Models
         }
 
         private static string _update = @"update score set q{0} = {1} where scoreid = {2}";
-        private static string _insertq = @"insert into score (yearending, lineid, q{1}, groupid) values ({0}, {2}, {3}, 0); SELECT SCOPE_IDENTITY()";
-        public static int SaveQuarter(int year, int scoreid, int quarter, int value)
+        public static void SaveQuarter(int year, int scoreid, int quarter, int value)
         {
             using (scoreDB s = new scoreDB())
             {
-                if (scoreid > 0)
                     s.Execute(string.Format(_update, quarter, value, scoreid));
-                else
-                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertq, year, quarter, -scoreid, value));
             }
-            return scoreid;
         }
 
         private static string _comment = @"update score set comment = '{0}' where scoreid = {1}";
-        private static string _insertc = @"insert into score (yearending, lineid, comment, groupid) values ({0}, {1}, {2}, 0); SELECT SCOPE_IDENTITY()";
-        public static int SaveComment(int year, int scoreid, string comment)
+        public static void SaveComment(int year, int scoreid, string comment)
         {
             using (scoreDB s = new scoreDB())
             {
-                if (scoreid > 0)
                     s.Execute(string.Format(_comment, comment, scoreid));
-                else
-                    scoreid = -s.ExecuteScalar<int>(string.Format(_insertc, year, -scoreid, comment));
-            }             
-            return scoreid;
+            }
+        }
+
+        private static string _target = @"update score set target = '{0}' where scoreid = {1}";
+        public static void SaveTarget(int year, int scoreid, int target)
+        {
+            using (scoreDB s = new scoreDB())
+            {
+                    s.Execute(string.Format(_target, target, scoreid));
+            }
         }
 
         public string cue
