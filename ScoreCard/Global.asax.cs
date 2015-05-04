@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using ScoreCard.Models;
 using TwitterBootstrapMVC;
 
 namespace ScoreCard
@@ -33,6 +34,12 @@ namespace ScoreCard
             //scheduleDB _db = new scheduleDB();
             HttpContext.Current.Session["user"] = user;
             HttpContext.Current.Session["year"] = DateTime.Now.AddMonths(6).Year;
+            string[] worker = user.ToString().Split('\\');
+            user = worker[worker.Length - 1];
+
+            Worker emp = new Worker(user);
+            HttpContext.Current.Session["worker"] = emp;
+
             //HttpContext.Current.Session["authority"] = _db.Fetch<User>(string.Format(Models.User.get_role, user)).FirstOrDefault();
         }
 

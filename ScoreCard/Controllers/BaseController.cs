@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using ScoreCard.Models;
 
 namespace ScoreCard.Controllers
 {
@@ -49,6 +50,7 @@ namespace ScoreCard.Controllers
         public static string built;
         protected bool _timeout;
         protected string _user;
+        protected Worker _worker;
 
         //private static User _user;
         //protected bool _IsAdmin;
@@ -183,6 +185,7 @@ namespace ScoreCard.Controllers
             
             ViewBag.built = built;
             ViewBag.User = _user = Session["user"] as string;
+            ViewBag.Worker = _worker = Session["worker"] as Worker;
 
             base.OnActionExecuting(filterContext);
         }

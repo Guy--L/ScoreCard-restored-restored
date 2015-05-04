@@ -24,10 +24,7 @@ namespace ScoreCard.Controllers
             if (string.IsNullOrWhiteSpace(usr))
                 return RedirectToAction("Contact");
 
-            string[] worker = usr.ToString().Split('\\');
-            usr = worker[worker.Length - 1];
-
-            Worker emp = new Worker(usr);
+            Worker emp = Session["worker"] as Worker;
             if (emp.IonName == null)
                 return RedirectToAction("Contact");
 

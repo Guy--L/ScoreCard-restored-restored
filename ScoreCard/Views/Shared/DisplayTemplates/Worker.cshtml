@@ -1,0 +1,11 @@
+﻿@model ScoreCard.Models.Worker
+<tr data-id="@Model.WorkerId">
+    <td>@Model.WorkerId</td>
+    <td title="is an admin">@Html.Raw((Model.IsAdmin ? "<i class='fa fa-briefcase'></i><div class='hidden'>admin</div>" : ""))</td>
+    <td>@Model.IonName</td>
+    <td>@Model.LastName</td>
+    <td>@Model.FirstName</td>
+    <td>@Model.Group</td>
+    <td>@Model.Site</td>
+    <td title="is notworking">@Html.Raw((Model.IsActive ? "<div class='hidden'>active</div>" : "<i class='fa fa-ban'></i><div class='hidden'>notworking</div>"))</td>
+</tr>

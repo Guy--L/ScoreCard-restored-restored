@@ -1,0 +1,65 @@
+﻿@model ScoreCard.Models.Workers
+
+<div class="container">
+<br />
+<table id="emps" class="table table-striped table-hover table-condensed table-bordered">
+    <thead>
+        <tr>
+            <th colspan="3">
+                @if (Model.IsAdmin) { 
+                <button class="btn btn-success btn-xs" id="addperson">
+                    <i class="fa fa-plus fa-white"></i> Add New Person
+                </button>
+                }
+            </th>
+            <th colspan="5">
+                <b class="center">List of ICO Contributors</b>
+            </th>
+        </tr>
+        <tr>
+            <th>ID</th>
+            <th title="is an admin"><i class="fa fa-briefcase"></i></th>
+            <th>Ion Name</th>
+            <th>Last Name</th>
+            <th>First Name</th>
+            <th>Group/Function</th>
+            <th>Site</th>
+            <th title="is inactive"><i class="fa fa-ban"></i></th>
+        </tr>
+    </thead>
+    <tbody>
+        @Html.DisplayFor(m => m.list)
+    </tbody>
+</table>
+</div>
+
+@section scripts {
+<script type="text/javascript">
+    function attachDT() {
+        q = $('#emps').dataTable({
+            "sDom": "<'row'<'col-xs-6'f><'col-xs-6'i>>t",
+            "oSearch": {"sSearch": "active"},
+            "bPaginate": false,
+            "oLanguage": {
+                "sInfo": "_TOTAL_ employee(s)",
+                "sInfoFiltered": "(of _MAX_ unfiltered)",
+                "sProcessing": "<i class='icon-spinner icon-spin'></i>"
+            },
+            "aoColumnDefs": [
+                { "bVisible": false, "aTargets": [0] }
+            ]
+        });
+    }
+    $(function () {
+        attachDT();
+        $('#emps tbody').on('click', 'tr', function () {
+            var id = $(this).data('id');
+            id = (id != '') ? id : 0;
+            location.href = '@Url.Action("Worker","Admin",null,Request.Url.Scheme)/' + id;
+        });
+        $('#addperson').on('click', function () {
+            location.href = '@Url.Action("Worker","Admin",null,Request.Url.Scheme)/0';
+        });
+    });
+</script>
+}

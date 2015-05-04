@@ -16,6 +16,10 @@ namespace ScoreCard
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
+            bundles.Add(new ScriptBundle("~/bundles/dataTables").Include(
+                        "~/Scripts/DataTables/jquery.dataTables.js"));
+
+
             bundles.Add(new ScriptBundle("~/bundles/jquerymask").Include(
                         "~/Scripts/jquery.inputmask/jquery.inputmask.js",
                         "~/Scripts/jquery.inputmask/jquery.inputmask.extensions.js",
@@ -36,6 +40,9 @@ namespace ScoreCard
                       "~/Content/bootstrap.css",
                       "~/Content/font-awesome.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/Content/dataTables").Include(
+                "~/Content/DataTables/dataTables.bootstrap.css"));
         }
     }
 }

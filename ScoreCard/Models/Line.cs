@@ -7,6 +7,12 @@ using NPoco;
 
 namespace ScoreCard.Models
 {
+    public class Lines
+    {
+        public List<Line> list { get; set; }
+        public bool IsAdmin { get; set; }
+    }
+
     public class LineView
     {
         public Line ln {get; set;}
@@ -16,6 +22,10 @@ namespace ScoreCard.Models
 
     public partial class Line
     {
+        public static string _lines = @"
+            select  * from Line
+        ";
+
         private static string _lineowners = @"
             select l.lineid, w.LastName, w.Firstname, w.WorkerId, w.IonName from line l
             join responsibility r on l.LineId = r.LineId
