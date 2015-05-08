@@ -42,6 +42,5 @@ namespace ScoreCard
 
             //HttpContext.Current.Session["authority"] = _db.Fetch<User>(string.Format(Models.User.get_role, user)).FirstOrDefault();
         }
-
     }
 }

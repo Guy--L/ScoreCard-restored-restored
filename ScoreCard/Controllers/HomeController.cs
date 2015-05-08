@@ -26,7 +26,7 @@ namespace ScoreCard.Controllers
 
             Worker emp = Session["worker"] as Worker;
             if (emp.IonName == null)
-                return RedirectToAction("Contact");
+                return RedirectToAction(Setting.AllowCorrection?"ContactCorrection":"Contact");
 
             var card = new Card((Session["year"] as int?), emp);
             TempData["Card"] = card;
@@ -48,6 +48,37 @@ namespace ScoreCard.Controllers
         public ActionResult SaveScore(ScoreView sv)
         {
             sv.Save();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public ActionResult ContactCorrection()
+        {
+            string[] worker = _user.ToString().Split('\\');
+            var user = worker[worker.Length - 1];
+            user = user.Substring(0, user.IndexOf('.'));
+
+            List<Worker> w = Worker.Candidates(user);
+            if (w == null || w.Count == 0)
+                RedirectToAction("Contact");
+
+            return View(w);
+        }
+
+        [HttpPost]
+        public ActionResult Correction(int workerid)
+        {
+            Worker w = null;
+            string[] worker = _user.ToString().Split('\\');
+
+            using (scoreDB s = new scoreDB())
+            {
+                w = s.Fetch<Worker>(" where workerid = @0", workerid).SingleOrDefault();
+                if (w == null)
+                    RedirectToAction("Contact");
+                w.IonName = worker[worker.Length - 1];
+                w.Update();
+            }
+            Session["worker"] = w;
             return RedirectToAction("Index", "Home");
         }
 

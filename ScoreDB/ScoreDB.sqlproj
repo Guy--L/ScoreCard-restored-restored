@@ -69,6 +69,7 @@
     <Build Include="Worker.sql" />
     <Build Include="Presence.sql" />
     <Build Include="Permit.sql" />
+    <Build Include="Settings.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ScoreDB.refactorlog" />

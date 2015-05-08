@@ -1,0 +1,23 @@
+﻿@model List<Worker>
+
+<div class="container">
+    @using (var form = Html.Bootstrap().Begin(new Form("Correction", "Home").Id("correction").Type(FormType.Horizontal).LabelWidthXs(5)))
+    {
+        @Html.Hidden("workerid")
+        <h3>To correct your IonName in this database please click on the button below containing your name</h3>
+        
+        foreach (var w in Model)
+        {
+            @Html.Bootstrap().SubmitButton().Data(new { id = w.WorkerId }).Text(w.FirstName + " " + w.LastName).Class("namer")
+        }    
+    }
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('.namer').on('click', function (e) {
+                $('#workerid').val($(this).data('id'));
+            });
+        });
+    </script>
+}

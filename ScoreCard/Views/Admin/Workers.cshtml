@@ -25,6 +25,8 @@
             <th>Group/Function</th>
             <th>Site</th>
             <th title="is inactive"><i class="fa fa-ban"></i></th>
+            <th>Owned Pages</th>
+            <th>Sites Managed</th>
         </tr>
     </thead>
     <tbody>
@@ -56,6 +58,16 @@
             var id = $(this).data('id');
             id = (id != '') ? id : 0;
             location.href = '@Url.Action("Worker","Admin",null,Request.Url.Scheme)/' + id;
+        });
+        $('#emps tbody').on('click', 'button', function (e) {
+            e.stopPropagation();
+            var wid = $(this).closest('tr').data('id');
+            wid = (wid != '') ? wid : 0;
+            if ($(this).hasClass('pagebtn'))
+                location.href = '@Url.Action("Owner", "Admin", null, Request.Url.Scheme)/' + wid;
+            else
+                location.href = '@Url.Action("Editor", "Admin", null, Request.Url.Scheme)/' + wid;
+
         });
         $('#addperson').on('click', function () {
             location.href = '@Url.Action("Worker","Admin",null,Request.Url.Scheme)/0';

@@ -182,6 +182,7 @@
     </Compile>
     <Compile Include="Models\Line.cs" />
     <Compile Include="Models\Score.cs" />
+    <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\Worker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -347,6 +348,7 @@
     <Content Include="Views\Admin\Workers.cshtml" />
     <Content Include="Views\Admin\Worker.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Worker.cshtml" />
+    <Content Include="Views\Home\ContactCorrection.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

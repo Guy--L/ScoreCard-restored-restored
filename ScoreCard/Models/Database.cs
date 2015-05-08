@@ -104,6 +104,15 @@ namespace ScoreCard.Models
 	}
 	
 
+	[TableName("Settings")]
+	[PrimaryKey("SettingsId", AutoIncrement=false)]
+	[ExplicitColumns]
+    public partial class Setting : scoreDB.Record<Setting>  
+    {		
+		[Column] public int SettingsId { get; set; } 		
+		[Column] public bool AllowIonCorrection { get; set; } 	
+	}
+
 	[TableName("Line")]
 	[PrimaryKey("LineId")]
 	[ExplicitColumns]

@@ -15,6 +15,7 @@ namespace ScoreCard.Models
 
     public partial class Worker
     {
+        private static string beginswith = @" where ionname like @0";
         private static string who  = @" where ionname = @0";
         private static string _permit = @" where workerid = @0";
 
@@ -30,6 +31,8 @@ namespace ScoreCard.Models
                               ,w.[SiteId]
                               ,g.[Group]
                               ,s.[Site]
+                              ,(select count(responsibilityid) from responsibility where workerid = w.[WorkerId]) as Pages
+                              ,(select count(permitid) from [permit] where workerid = w.[WorkerId]) as Sites
                   FROM [dbo].[Worker] w
                     join [Group] g on g.groupid = w.groupid
                     join Site s on s.siteid = w.siteid
@@ -39,9 +42,21 @@ namespace ScoreCard.Models
         public List<Permit> permits { get; set; }
         [ResultColumn] public string Group { get; set; }
         [ResultColumn] public string Site { get; set; }
+        [ResultColumn] public int Pages { get; set; }
+        [ResultColumn] public int Sites { get; set; }
 
         public Worker()
         { }
+
+        public static List<Worker> Candidates(string start)
+        {
+            List<Worker> match = null;
+            using (scoreDB s = new scoreDB())
+            {
+                match = s.Fetch<Worker>(beginswith, start+'%');
+            }
+            return match;
+        }
 
         public Worker(string ion)
         {
@@ -74,9 +89,18 @@ namespace ScoreCard.Models
     public class WorkerView 
     {
         public Worker w { get; set; }
-        public SelectList groups;
-        public SelectList sites;
+        public List<Group> groups;
+        public List<Site> sites;
+        public List<Permit> permits;
+
+        public int[] permitids { get; set; }
+        public int[] lineids { get; set; }
+
+        public SelectList groupList;
+        public SelectList siteList;
         public SelectList managers;
+        public SelectList permitList;
+        public SelectList lines;
 
         public WorkerView()
         { }
@@ -95,17 +119,20 @@ namespace ScoreCard.Models
                         SiteId = 0
                     };
                 }
+                sites = db.Fetch<Site>("");
+                siteList = new SelectList(sites, "SiteId", "_Site", w.FacilityId);
+                groups = db.Fetch<Group>("");
+                groupList = new SelectList(groups, "GroupId", "_Group", w.GroupId);
 
-                sites = AddNone(new SelectList(db.Fetch<Site>(""), "SiteId", "_Site", w.FacilityId));
-                groups = AddNone(new SelectList(db.Fetch<Group>(""), "GroupId", "_Group", w.GroupId));
-                managers = AddNone(new SelectList(db.Fetch<Worker>("where IsManager = 1"), "WorkerId", "LastName", w.ManagerId));
+                permits = db.Fetch<Permit>(" where workerid = @0", id);
+
             }
         }
 
         private SelectList AddNone(SelectList list)
         {
             List<SelectListItem> _list = list.ToList();
-            _list.Insert(0, new SelectListItem() { Value = "0", Text = "" });
+            _list.Insert(0, new SelectListItem() { Value = "0", Text = "All" });
             return new SelectList((IEnumerable<SelectListItem>)_list, "Value", "Text");
         }
     }

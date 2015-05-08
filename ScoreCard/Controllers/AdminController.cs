@@ -84,5 +84,25 @@ namespace ScoreCard.Controllers
             }
             return View(p);
         }
+
+        public ActionResult Editor(int id)
+        {
+            return View(new WorkerView(id));
+        }
+        
+        [HttpPost]
+        public ActionResult UpdateEditor(WorkerView w)
+        {
+            return View();
+        }
+
+        public ActionResult Owner(int id)
+        {
+            using (scoreDB db = new scoreDB())
+            {
+
+            }
+            return View();
+        }
     }
 }
