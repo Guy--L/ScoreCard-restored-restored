@@ -300,6 +300,7 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.bootstrap-duallistbox.js" />
     <Content Include="Scripts\jquery.inputmask\jquery.inputmask.date.extensions.js" />
     <Content Include="Scripts\jquery.inputmask\jquery.inputmask.extensions.js" />
     <Content Include="Scripts\jquery.inputmask\jquery.inputmask.js" />
@@ -349,6 +350,7 @@
     <Content Include="Views\Admin\Worker.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Worker.cshtml" />
     <Content Include="Views\Home\ContactCorrection.cshtml" />
+    <Content Include="Views\Admin\Editor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

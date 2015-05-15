@@ -1,0 +1,65 @@
+﻿@model ScoreCard.Models.WorkerView
+
+@{
+    ViewBag.Title = "Select Edit Rights for " + Model.w.FirstName + " " + Model.w.LastName;
+    List<IHtmlString> buttons = new List<IHtmlString>() {
+            Html.Bootstrap().SubmitButton().Text("Save").Id("save").Style(ButtonStyle.Success),
+            Html.Raw(" "),
+            Html.Bootstrap().SubmitButton().Text("Cancel").Id("cancel").Style(ButtonStyle.Danger)
+    };
+}
+<h3>@ViewBag.Title</h3>
+<div class="row-fluid">
+    @using (var form = Html.Bootstrap().Begin(new Form("UpdateEditor", "Admin").Id("editorform")))
+    {
+        @Html.HiddenFor(m => m.Cancel)
+        @Html.HiddenFor(m => m.w.WorkerId)
+        <div class="col-md-2">
+            @Html.Bootstrap().LabelFor(m => m.groups).LabelText("Groups")
+            <div class="list-group">
+                @foreach (var b in Model.groupList)
+                {
+                    var grp = Model.groups.Single(q => q.GroupId == b.Key);
+                    <a href="#" class="list-group-item grpli" data-id="@grp.GroupId"><span class="badge">@b.Value</span>@grp._Group</a>
+                }
+            </div>
+        </div>
+        <div class="col-md-3">
+            @Html.Bootstrap().LabelFor(m => m.sites).LabelText("Sites")
+            @Html.Bootstrap().ListBoxFor(m => m.siteids, Model.siteList).HtmlAttributes(new  { size = 22 })
+            <br />
+            @(form.FormGroup().CustomControls(buttons.ToArray()))
+        </div>
+    }
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        var sites = $('#@Html.IdFor(m=>m.siteids)');
+        var map = @Model.jRights;
+        var gid = 0;
+        $('.grpli').on('click', function () {
+            gid = $(this).data('id');
+            sites.val(map[gid]);
+            $('label[for="sites"]').text('Sites permitted for '+$(this).text().replace(/\d+/g, ''));
+        });
+        $('#cancel').on('click',function () {
+            $('#@Html.IdFor(m=>m.Cancel)').val(true);
+        });
+        sites.on('click', function() {
+            var picked = sites.val();
+            var badge = picked.length;
+            if ($.inArray(0,picked)!=-1) {
+                picked = [0];
+                badge = '*';
+            }
+            map[gid]=picked;
+            $('[data-id="'+gid+'"] span').text(badge);
+        });
+        $('#save').on('click', function () {
+            var chart = $(this).data('id');
+        });
+    </script>
+}
+
+

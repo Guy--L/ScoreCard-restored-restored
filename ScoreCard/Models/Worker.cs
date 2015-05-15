@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using NPoco;
 
 namespace ScoreCard.Models
@@ -92,15 +93,24 @@ namespace ScoreCard.Models
         public List<Group> groups;
         public List<Site> sites;
         public List<Permit> permits;
+        public List<Line> lines;
 
+        public bool Cancel { get; set; }
         public int[] permitids { get; set; }
         public int[] lineids { get; set; }
+        public ILookup<int, int> rights { get; set; }
 
-        public SelectList groupList;
-        public SelectList siteList;
+        public Dictionary<int, int> groupList;
+        public IEnumerable<SelectListItem> siteList;
+
+        public int[] groupids;
+        public int[] siteids;
+
         public SelectList managers;
         public SelectList permitList;
-        public SelectList lines;
+        public SelectList lineList;
+
+        public string jRights { get; set; }
 
         public WorkerView()
         { }
@@ -120,13 +130,23 @@ namespace ScoreCard.Models
                     };
                 }
                 sites = db.Fetch<Site>("");
-                siteList = new SelectList(sites, "SiteId", "_Site", w.FacilityId);
+                siteList = sites.Select(x => new SelectListItem
+                {
+                    Value = x.SiteId.ToString(),
+                    Text = x._Site
+                });
+
                 groups = db.Fetch<Group>("");
-                groupList = new SelectList(groups, "GroupId", "_Group", w.GroupId);
 
                 permits = db.Fetch<Permit>(" where workerid = @0", id);
+                rights = permits.ToLookup(p => p.GroupId, p => p.SiteId);
+                groupList = groups.ToDictionary(g => g.GroupId, g => permits.Exists(p=>p.GroupId==g.GroupId)?rights[g.GroupId].Count():0);
 
+                lines = db.Fetch<Line>(Line._itemlist);
+
+                jRights = "[" + string.Join(",", groups.Select(r => "[" + string.Join(",", rights[r.GroupId].ToArray()) + "]").ToArray()) + "]";
             }
+            Cancel = false;
         }
 
         private SelectList AddNone(SelectList list)

@@ -15,9 +15,8 @@ namespace ScoreCard.Models
 
     public class LineView
     {
-        public Line ln {get; set;}
-        public string owners { get; set; }
-        public int? total { get; set; }
+        public List<Line> list { get; set; }
+        public int[] owned { get; set; }
     }
 
     public partial class Line
@@ -52,8 +51,8 @@ namespace ScoreCard.Models
             where s.yearending = {0} or s.yearending is null and l.lineid is not null
         ";
 
-        private static string _outline = @"
-            with linelist as (
+        private static string _linelist = @"
+            ;with linelist as (
 	            select cast(n.[order] as varchar(10)) as item, n.ParentLineId,
 	            1 as [level], n.[description], n.[order], n.LineId, n.MeasureId
 	            from line n
@@ -67,7 +66,9 @@ namespace ScoreCard.Models
 	            from line n
 	            inner join linelist p on p.LineId = n.ParentLineId
 	            where n.LineId != n.ParentLineId
-            )
+            )";
+
+        private static string _outline = _linelist + @"
             select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.Comment, s.ScoreId, 
             (
                 select isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0)
@@ -87,6 +88,10 @@ namespace ScoreCard.Models
 			left join [group] g on s.groupid = g.groupid
             left join site x on s.siteid = x.siteid
             order by item
+        ";
+
+        public static string _itemlist = _linelist + @"
+            select q.LineId, q.item, q.[description] from linelist q order by item;
         ";
 
         private static string _linebyid = @"
