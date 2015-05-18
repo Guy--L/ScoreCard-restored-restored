@@ -26,11 +26,6 @@
             @form.FormGroup().CheckBoxFor(m => m.w.IsActive)
             @form.FormGroup().CheckBoxFor(m => m.w.IsManager)
         </div>
-        <div class="col-xs-5">
-            @form.FormGroup().DropDownListFor(m => m.w.ManagerId, Model.managers).Size(InputSize.Small).WidthXs(6).Label().LabelText("Manager")
-            @form.FormGroup().DropDownListFor(m => m.w.SiteId, Model.sites).Size(InputSize.Small).WidthXs(6).Label().LabelText("Site")
-            @form.FormGroup().DropDownListFor(m => m.w.GroupId, Model.sites).Size(InputSize.Small).WidthXs(6).Label().LabelText("Group")            
-        </div>
     </div>    
     <div class="row">
         @(form.FormGroup().CustomControls(buttons.ToArray()))

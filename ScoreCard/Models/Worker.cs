@@ -20,6 +20,20 @@ namespace ScoreCard.Models
         private static string who  = @" where ionname = @0";
         private static string _permit = @" where workerid = @0";
 
+        private static string _responsibility = @"
+            merge responsibility with (holdlock) as t
+            using lines as s
+            on t.workerid = {0} and s.lineid = t.lineid and s.lineid in ({1})
+            when not matched by t
+                insert (lineid, workerid) values (s.lineid, {0})
+            when not matched by s
+                delete; 
+        ";
+
+        private static string _permit = @"
+            merge permit with (holdlock) as t
+            using 
+        ";
         public static string _workers = @" 
                 SELECT 
                                w.[WorkerId]
@@ -94,6 +108,7 @@ namespace ScoreCard.Models
         public List<Site> sites;
         public List<Permit> permits;
         public List<Line> lines;
+        public List<Responsibility> owned;
 
         public bool Cancel { get; set; }
         public int[] permitids { get; set; }
@@ -102,15 +117,16 @@ namespace ScoreCard.Models
 
         public Dictionary<int, int> groupList;
         public IEnumerable<SelectListItem> siteList;
+        public IEnumerable<SelectListItem> lineList;
 
         public int[] groupids;
         public int[] siteids;
 
         public SelectList managers;
         public SelectList permitList;
-        public SelectList lineList;
 
         public string jRights { get; set; }
+        public string lineRights { get; set; }
 
         public WorkerView()
         { }
@@ -143,10 +159,25 @@ namespace ScoreCard.Models
                 groupList = groups.ToDictionary(g => g.GroupId, g => permits.Exists(p=>p.GroupId==g.GroupId)?rights[g.GroupId].Count():0);
 
                 lines = db.Fetch<Line>(Line._itemlist);
+                lineList = lines.Select(y => new SelectListItem
+                {
+                    Value = y.LineId.ToString(),
+                    Text = y.ItemDesc
+                });
 
+                owned = db.Fetch<Responsibility>(" where workerid = @0", id);
+
+                lineRights = "[" + string.Join(",", owned.Select(t => t.LineId).ToArray()) + "]";
                 jRights = "[" + string.Join(",", groups.Select(r => "[" + string.Join(",", rights[r.GroupId].ToArray()) + "]").ToArray()) + "]";
             }
             Cancel = false;
+        }
+
+        public void Save()
+        {
+            w.Save();
+
+
         }
 
         private SelectList AddNone(SelectList list)

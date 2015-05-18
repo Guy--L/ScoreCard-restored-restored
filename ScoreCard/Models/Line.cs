@@ -51,8 +51,7 @@ namespace ScoreCard.Models
             where s.yearending = {0} or s.yearending is null and l.lineid is not null
         ";
 
-        private static string _linelist = @"
-            ;with linelist as (
+        private static string _linelist = @";with linelist as (
 	            select cast(n.[order] as varchar(10)) as item, n.ParentLineId,
 	            1 as [level], n.[description], n.[order], n.LineId, n.MeasureId
 	            from line n
@@ -91,7 +90,11 @@ namespace ScoreCard.Models
         ";
 
         public static string _itemlist = _linelist + @"
-            select q.LineId, q.item, q.[description] from linelist q order by item;
+			select q.LineId, q.item as item, q.[description]
+			from linelist q
+			join measure m on m.measureid = q.measureid
+			where symbol != 'blank'
+			order by item;
         ";
 
         private static string _linebyid = @"
@@ -106,6 +109,7 @@ namespace ScoreCard.Models
         public List<Worker> workers { get; set; }
         public string owntip { get; set; }
         public string owner { get; set; }
+        public string ItemDesc { get { return item + " " + Description; } }
 
         public bool CanEdit { get; set; }
 
