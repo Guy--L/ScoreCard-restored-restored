@@ -20,20 +20,6 @@ namespace ScoreCard.Models
         private static string who  = @" where ionname = @0";
         private static string _permit = @" where workerid = @0";
 
-        private static string _responsibility = @"
-            merge responsibility with (holdlock) as t
-            using lines as s
-            on t.workerid = {0} and s.lineid = t.lineid and s.lineid in ({1})
-            when not matched by t
-                insert (lineid, workerid) values (s.lineid, {0})
-            when not matched by s
-                delete; 
-        ";
-
-        private static string _permit = @"
-            merge permit with (holdlock) as t
-            using 
-        ";
         public static string _workers = @" 
                 SELECT 
                                w.[WorkerId]
@@ -103,6 +89,26 @@ namespace ScoreCard.Models
 
     public class WorkerView 
     {
+        private static string _responsibility = @"
+            merge responsibility with (holdlock) as t
+            using line as s
+            on t.workerid = {0} and s.lineid = t.lineid and s.lineid in ({1})
+            when not matched by target and s.lineid in ({1}) then
+                insert (lineid, workerid) values (s.lineid, {0})
+            when not matched by source and t.workerid = {0} then
+                delete;
+        ";
+
+        private static string _permitted = @"
+            merge permit with (holdlock) as t
+            using (values {0}) s (groupid, siteid)
+            on t.groupid = s.groupid and t.siteid = s.siteid and t.workerid = {1}
+            when not matched by target then
+                insert (groupid, siteid, workerid) values (s.groupid, s.siteid, {1})
+            when not matched by source and t.workerid = {1} then
+                delete;
+        ";
+
         public Worker w { get; set; }
         public List<Group> groups;
         public List<Site> sites;
@@ -119,7 +125,7 @@ namespace ScoreCard.Models
         public IEnumerable<SelectListItem> siteList;
         public IEnumerable<SelectListItem> lineList;
 
-        public int[] groupids;
+        public string groupids { get; set; }
         public int[] siteids;
 
         public SelectList managers;
@@ -153,6 +159,7 @@ namespace ScoreCard.Models
                 });
 
                 groups = db.Fetch<Group>("");
+                groupids = new JavaScriptSerializer().Serialize(groups.Select(g => g.GroupId).ToArray());
 
                 permits = db.Fetch<Permit>(" where workerid = @0", id);
                 rights = permits.ToLookup(p => p.GroupId, p => p.SiteId);
@@ -175,9 +182,23 @@ namespace ScoreCard.Models
 
         public void Save()
         {
-            w.Save();
+            var admin = w.IsAdmin;
+            w = new Worker(w.IonName);
 
+            if (admin != w.IsAdmin)
+            {
+                w.IsAdmin = admin;
+                w.Save();
+            }
 
+            var rights = new JavaScriptSerializer().Deserialize<int[][]>(jRights);
+            var groups = new JavaScriptSerializer().Deserialize<int[]>(groupids);
+            var localrights = string.Join(",", groups.Select((g, i) => rights[i].Length > 0 ? string.Join(",", rights[i].Select(s => "(" + g.ToString() + "," + s.ToString() + ")").ToArray()) : null).Where(t=>t != null).ToArray());
+            using (scoreDB s = new scoreDB())
+            {
+                var merge = string.Format(_responsibility, w.WorkerId, string.Join(",", lineids)) + string.Format(_permitted, localrights, w.WorkerId);
+                s.Execute(merge);
+            }
         }
 
         private SelectList AddNone(SelectList list)

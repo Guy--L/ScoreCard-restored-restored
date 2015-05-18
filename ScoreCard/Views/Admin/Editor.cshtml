@@ -15,6 +15,8 @@
         @Html.HiddenFor(m => m.Cancel)
         @Html.HiddenFor(m => m.w.WorkerId)
         @Html.HiddenFor(m => m.jRights)
+        @Html.HiddenFor(m => m.w.IonName)
+        @Html.HiddenFor(m => m.groupids)
         <div class="row-fluid">
             @form.FormGroup().CheckBoxFor(m => m.w.IsAdmin)
         </div>
@@ -83,9 +85,10 @@
             console.log(picked);
             if ($.inArray("0",picked)!=-1) {
                 picked = [0];
-                badge = '<i class="fa fa-asterisk"></i>';
+                badge = '*';
             }
             map[gid]=picked;
+            console.log(map);
             $('[data-id="'+gid+'"] span').text(badge);
         });
         lines.on('click', function() {
@@ -94,8 +97,8 @@
             linemap = picked;
         });
         $('#save').on('click', function () {
-            $('#@Html.IdFor(m=>m.jRights)').val(map);
-            $('#@Html.IdFor(m=>m.lineRights)').val(linemap);
+            console.log(map);
+            $('#@Html.IdFor(m=>m.jRights)').val(JSON.stringify(map));
         });
         $(function() {
             lines.val(@Model.lineRights);

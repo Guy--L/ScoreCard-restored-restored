@@ -91,18 +91,13 @@ namespace ScoreCard.Controllers
         }
         
         [HttpPost]
-        public ActionResult UpdateEditor(WorkerView w)
+        public ActionResult UpdateEditor(WorkerView wv)
         {
-            return View();
-        }
+            if (wv.Cancel)
+                return RedirectToAction("Workers");
 
-        public ActionResult Owner(int id)
-        {
-            using (scoreDB db = new scoreDB())
-            {
-
-            }
-            return View();
+            wv.Save();
+            return RedirectToAction("Workers");
         }
     }
 }
