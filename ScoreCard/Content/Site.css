@@ -56,6 +56,10 @@ textarea {
     margin: 2px;
 }
 
+.list-group-item span.badge {
+        background-color: rgb(7,39,158);
+}
+
 .table thead th.major {
     width: 30px !important;
 }
@@ -64,9 +68,14 @@ textarea {
     width: 40px !important;
 }
 
-tr.topscore {
+tr.topscore, .panel-default > .panel-heading {
     color:  rgb(7,39,158);
     background-color: rgb(170,214,176);
+}
+
+.panel-default > .panel-body {
+    color:  rgb(7,39,158);
+    background-color: rgba(176, 225, 239, 0.20);
 }
 
 input:not([readonly]) {

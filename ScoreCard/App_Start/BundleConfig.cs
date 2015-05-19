@@ -19,7 +19,6 @@ namespace ScoreCard
             bundles.Add(new ScriptBundle("~/bundles/dataTables").Include(
                         "~/Scripts/DataTables/jquery.dataTables.js"));
 
-
             bundles.Add(new ScriptBundle("~/bundles/jquerymask").Include(
                         "~/Scripts/jquery.inputmask/jquery.inputmask.js",
                         "~/Scripts/jquery.inputmask/jquery.inputmask.extensions.js",

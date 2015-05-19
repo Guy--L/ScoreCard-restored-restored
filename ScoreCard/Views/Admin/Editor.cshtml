@@ -74,7 +74,7 @@
         $('.grpli').on('click', function () {
             gid = $(this).data('id');
             sites.val(map[gid]);
-            $('label[for="sites"]').text('Sites as '+$(this).text().replace(/\d+/g, ''));
+            $('label[for="sites"]').text('Sites as '+$(this).text().replace(/(\d+|All)/g, ''));
         });
         $('#cancel').on('click',function () {
             $('#@Html.IdFor(m=>m.Cancel)').val(true);
@@ -85,7 +85,7 @@
             console.log(picked);
             if ($.inArray("0",picked)!=-1) {
                 picked = [0];
-                badge = '*';
+                badge = 'All';
             }
             map[gid]=picked;
             console.log(map);

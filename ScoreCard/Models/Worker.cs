@@ -121,7 +121,7 @@ namespace ScoreCard.Models
         public int[] lineids { get; set; }
         public ILookup<int, int> rights { get; set; }
 
-        public Dictionary<int, int> groupList;
+        public Dictionary<int, string> groupList;
         public IEnumerable<SelectListItem> siteList;
         public IEnumerable<SelectListItem> lineList;
 
@@ -133,6 +133,12 @@ namespace ScoreCard.Models
 
         public string jRights { get; set; }
         public string lineRights { get; set; }
+
+        private string badger(int gid)
+        {
+            return permits.Exists(p => p.GroupId == gid) ? 
+                (rights[gid].Contains(0)?"All":rights[gid].Count().ToString()) : "0";
+        }
 
         public WorkerView()
         { }
@@ -163,7 +169,7 @@ namespace ScoreCard.Models
 
                 permits = db.Fetch<Permit>(" where workerid = @0", id);
                 rights = permits.ToLookup(p => p.GroupId, p => p.SiteId);
-                groupList = groups.ToDictionary(g => g.GroupId, g => permits.Exists(p=>p.GroupId==g.GroupId)?rights[g.GroupId].Count():0);
+                groupList = groups.ToDictionary(g => g.GroupId, g => badger(g.GroupId));
 
                 lines = db.Fetch<Line>(Line._itemlist);
                 lineList = lines.Select(y => new SelectListItem

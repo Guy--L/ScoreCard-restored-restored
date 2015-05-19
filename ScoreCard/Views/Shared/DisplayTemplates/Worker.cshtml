@@ -8,6 +8,5 @@
     <td>@Model.Group</td>
     <td>@Model.Site</td>
     <td title="is notworking">@Html.Raw((Model.IsActive ? "<div class='hidden'>active</div>" : "<i class='fa fa-ban'></i><div class='hidden'>notworking</div>"))</td>
-    <td><button class="btn btn-success btn-xs pagebtn">@Model.Pages Owned</button></td>
-    <td><button class="btn btn-success btn-xs sitebtn">@Model.Sites Managed</button></td>
+    <td><button class="btn btn-success btn-xs sitebtn">@Model.Pages line(s) owned / @Model.Sites local right(s) </button></td>
 </tr>

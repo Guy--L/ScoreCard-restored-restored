@@ -11,8 +11,6 @@
     @*<meta name="viewport" content="width=device-width">*@
     <title>@ViewBag.Title - ICO ScoreCard</title>
     @Styles.Render("~/Content/css")
-    @Styles.Render("~/Content/jqueryui")
-    @Styles.Render("~/Content/bootstrap/base")
     @Styles.Render("~/Content/dataTables")
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -32,18 +30,10 @@
                     <li>@Html.ActionLink("Card", "Index", "Home")</li>
                     @if (ViewBag.Worker != null && ViewBag.Worker.IsAdmin)
                     {
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown">Maintain <span class="caret"></span></a>
-                        <ul class="dropdown-menu navbar-inverse">
-                            <li>@Html.ActionLink("Contributors", "Workers", "Admin")</li>
-                            <li>@Html.ActionLink("Line Owners", "Owners", "Admin")</li>
-                        </ul>
-                    </li>
+                        <li>@Html.ActionLink("Users", "Workers", "Admin")</li>
                     }
-                    @*<li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>*@
                 </ul>
-                <p class="nav navbar-text navbar-right"><i class="fa fa-user"> </i>Welcome @User.Identity.Name</p>
+                <p class="nav navbar-text navbar-right"><i class="fa fa-user"></i> Welcome @User.Identity.Name</p>
             </div>
         </div>
     </div>
