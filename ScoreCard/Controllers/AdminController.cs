@@ -69,6 +69,8 @@ namespace ScoreCard.Controllers
         [HttpPost]
         public ActionResult SaveWorker(WorkerView wv)
         {
+            wv.w.GroupId = 0;
+            wv.w.SiteId = 0;
             wv.w.Save();
             return RedirectToAction("Workers");
         }
@@ -98,6 +100,33 @@ namespace ScoreCard.Controllers
 
             wv.Save();
             return RedirectToAction("Workers");
+        }
+
+        public ActionResult AddYear()
+        {
+            int nextyearending;
+            using (scoreDB s = new scoreDB())
+            {
+                nextyearending = s.Fetch<int>("select distinct yearending from score").Max() + 1;
+            }
+            return View(nextyearending);
+        }
+
+        [HttpPost]
+        public ActionResult NewYear(int newyear)
+        {
+            using (scoreDB s = new scoreDB())
+            {
+                var years = s.Fetch<int>("select distinct yearending from score");
+                if (years.Contains(newyear))
+                {
+                    Error("Cannot add templates for existing year " + newyear);
+                    return RedirectToAction("Workers");
+                }
+
+                s.Execute(Score._blankyear, newyear);
+                return RedirectToAction("Workers");
+            }
         }
     }
 }
