@@ -112,19 +112,18 @@ namespace ScoreCard.Controllers
             return View(nextyearending);
         }
 
-        [HttpPost]
-        public ActionResult NewYear(int newyear)
+        public ActionResult NewYear(int id)
         {
             using (scoreDB s = new scoreDB())
             {
                 var years = s.Fetch<int>("select distinct yearending from score");
-                if (years.Contains(newyear))
+                if (years.Contains(id))
                 {
-                    Error("Cannot add templates for existing year " + newyear);
+                    Error("Cannot add templates for existing year " + id);
                     return RedirectToAction("Workers");
                 }
 
-                s.Execute(Score._blankyear, newyear);
+                s.Execute(Score._blankyear, id);
                 return RedirectToAction("Workers");
             }
         }

@@ -351,6 +351,7 @@
     <Content Include="Views\Shared\DisplayTemplates\Worker.cshtml" />
     <Content Include="Views\Home\ContactCorrection.cshtml" />
     <Content Include="Views\Admin\Editor.cshtml" />
+    <Content Include="Views\Admin\AddYear.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

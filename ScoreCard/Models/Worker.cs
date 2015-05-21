@@ -157,14 +157,14 @@ namespace ScoreCard.Models
                         SiteId = 0
                     };
                 }
-                sites = db.Fetch<Site>("");
+                sites = db.Fetch<Site>("").Where(s => s.SiteId != 0).ToList();
                 siteList = sites.Select(x => new SelectListItem
                 {
                     Value = x.SiteId.ToString(),
-                    Text = x._Site
+                    Text = x.SiteName
                 });
 
-                groups = db.Fetch<Group>("");
+                groups = db.Fetch<Group>("").Where(g => g._Group != "VP").ToList();
                 groupids = new JavaScriptSerializer().Serialize(groups.Select(g => g.GroupId).ToArray());
 
                 permits = db.Fetch<Permit>(" where workerid = @0", id);
@@ -199,7 +199,7 @@ namespace ScoreCard.Models
 
             var rights = new JavaScriptSerializer().Deserialize<int[][]>(jRights);
             var groups = new JavaScriptSerializer().Deserialize<int[]>(groupids);
-            var localrights = string.Join(",", groups.Select((g, i) => rights[i].Length > 0 ? string.Join(",", rights[i].Select(s => "(" + g.ToString() + "," + s.ToString() + ")").ToArray()) : null).Where(t=>t != null).ToArray());
+            var localrights = string.Join(",", groups.Select(g => rights[g].Length > 0 ? string.Join(",", rights[g].Select(s => "(" + g.ToString() + "," + s.ToString() + ")").ToArray()) : null).Where(t=>t != null).ToArray());
             using (scoreDB s = new scoreDB())
             {
                 var merge = string.Format(_responsibility, w.WorkerId, string.Join(",", lineids)) + string.Format(_permitted, localrights, w.WorkerId);

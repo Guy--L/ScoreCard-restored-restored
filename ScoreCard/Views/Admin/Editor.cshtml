@@ -18,7 +18,11 @@
         @Html.HiddenFor(m => m.w.IonName)
         @Html.HiddenFor(m => m.groupids)
         <div class="row-fluid">
-            @form.FormGroup().CheckBoxFor(m => m.w.IsAdmin)
+            <div class="col-md-12">
+                <div class="well well-sm">
+                    @form.FormGroup().CheckBoxFor(m => m.w.IsAdmin).Label().LabelHtml(Html.Raw("Is an Administrator? &nbsp;<i class='fa fa-briefcase'></i>")).ShowRequiredStar(false)
+                 </div>
+            </div>
         </div>
         <div class="row-fluid">
             <div class="col-md-6">
@@ -30,11 +34,19 @@
                         <div class="col-md-6">
                             @Html.Bootstrap().LabelFor(m => m.groups).LabelText("Groups")
                             <div class="list-group">
-                                @foreach (var b in Model.groupList)
+                                @foreach (var b in Model.groupList.Skip(1))
                                 {
                                     var grp = Model.groups.Single(q => q.GroupId == b.Key);
                                     <a href="#" class="list-group-item grpli" data-id="@grp.GroupId"><span class="badge">@b.Value</span>@grp._Group</a>
                                 }
+                            </div>
+                            <div class="alert alert-danger">
+                                <i class="fa fa-question"></i><br /><small>
+                                <ol>
+                                    <li>Select <b>Group</b> above</li>
+                                    <li>Select <b>Sites</b> using Ctrl-Click on the right</li>
+                                </ol>
+                                </small>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -58,7 +70,9 @@
             </div>
         </div>
         <div class="row-fluid">
-            @(form.FormGroup().CustomControls(buttons.ToArray()))
+            <div class="col-md-offset-5">
+                @(form.FormGroup().CustomControls(buttons.ToArray()))
+            </div>
         </div>
     }
 
@@ -81,18 +95,14 @@
         });
         sites.on('click', function() {
             var picked = sites.val();
+            if (picked == null) picked = [];
             var badge = picked.length;
-            console.log(picked);
-            if ($.inArray("0",picked)!=-1) {
-                picked = [0];
-                badge = 'All';
-            }
             map[gid]=picked;
-            console.log(map);
             $('[data-id="'+gid+'"] span').text(badge);
         });
         lines.on('click', function() {
             var picked = lines.val();
+            if (picked == null) picked = [];
             var owned = picked.length;
             linemap = picked;
         });
@@ -102,6 +112,15 @@
         });
         $(function() {
             lines.val(@Model.lineRights);
+            $('.grpli').each(function () {
+                var grid = $(this).data('id');
+                if (map != null && map[grid] != null && map[grid].length == 0)
+                    return true;
+                sites.val(map[grid]);
+                $('label[for="sites"]').text('Sites as '+$(this).text().replace(/(\d+|All)/g, ''));
+                $(this).focus();
+                return false;
+            });
         });
     </script>
 }

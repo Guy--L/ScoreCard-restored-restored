@@ -68,9 +68,23 @@ textarea {
     width: 40px !important;
 }
 
-tr.topscore, .panel-default > .panel-heading {
+a.list-group-item:hover, a.list-group-item:focus {
+    text-decoration: none;
+    background-color:  rgb(176, 225, 239);
+}
+
+a.list-group-item {
+    color: rgb(7,39,158);
+}
+
+tr.topscore, .panel-default > .panel-heading, .well-sm {
     color:  rgb(7,39,158);
     background-color: rgb(170,214,176);
+}
+
+.well-sm {
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 .panel-default > .panel-body {

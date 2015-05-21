@@ -1,0 +1,31 @@
+﻿@model Int32
+@{
+    ViewBag.Title = "AddYear";
+}
+
+<h2>Create template score records for fiscal year ending @Model?</h2>
+
+<div class="row">
+    @Html.Bootstrap().SubmitButton().Text("Yes").Id("createyear").Style(ButtonStyle.Success)
+    &nbsp;
+    @Html.Bootstrap().SubmitButton().Text("No").Id("cancel").Style(ButtonStyle.Danger)
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(function () {
+            $('#cancel').on('click', function (e) {
+                e.preventDefault();
+                location.href = '@Url.Action("Workers", "Admin",null,Request.Url.Scheme)';
+            });
+            $('#createyear').on('click', function (e) {
+                e.preventDefault();
+                location.href = '@Url.Action("NewYear", "Admin",null,Request.Url.Scheme)/@Model';
+            });
+        });
+    </script>
+}
+
+
+
