@@ -3,6 +3,7 @@
 @{
     Layout = null;
     bool exp = Model.scores.Count > 0;
+    bool avg = Model.symbol == "%";
     var prefix = Model.LineId + "_0_0_";
 }
 @if (Model.symbol == "blank")
@@ -14,7 +15,7 @@
 }
 else
 {
-<tr data-lineid="@Model.LineId" data-scoreid="@Model.sub.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"")">
+<tr data-lineid="@Model.LineId" data-scoreid="@Model.sub.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"") @(avg?"avg":"")">
     <td class="major"></td>
     <td class="minor">@Model.item  &nbsp;</td>
     <td colspan="2">@Model.Description</td>

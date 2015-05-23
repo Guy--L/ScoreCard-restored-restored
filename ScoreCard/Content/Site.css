@@ -92,7 +92,7 @@ tr.topscore, .panel-default > .panel-heading, .well-sm {
     background-color: rgba(176, 225, 239, 0.20);
 }
 
-input:not([readonly]) {
+input:not([disabled]) {
     background-color: rgba(176, 225, 239, 0.20);
     /*border-color: blue;*/
 }

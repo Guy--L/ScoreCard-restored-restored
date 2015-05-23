@@ -30,6 +30,15 @@ namespace ScoreCard.Models
         }
     }
 
+    public static class MyExtensions 
+    {
+        public static int divisor<Score>(this List<Score> list,  Func<Score, int?> member)
+        {
+            var count = list.Where(s=>member(s).HasValue && member(s)!=0).Sum(s=>1);
+            return count==0?1:count;
+        }
+    }
+
     public partial class Score
     {
         [ResultColumn] public int PriorTotal { get; set; }
@@ -37,6 +46,7 @@ namespace ScoreCard.Models
         public string Site { get; set; }
         public int Decimal { get; set; }
         public bool CanEdit { get; set; }
+        public bool avg { get; set; }
         public List<Score> scores { get; set; }
 
         public Score()
@@ -133,7 +143,6 @@ namespace ScoreCard.Models
             Comment = t.Comment;
         }
 
-
         public Score(List<Score> p)
         {
             Q1 = p.Sum(s => s.Q1);
@@ -144,6 +153,17 @@ namespace ScoreCard.Models
             Target = p.Sum(s => s.Target);
             PriorTotal = p.Sum(s => s.PriorTotal);
             Decimal = p.First().Decimal;
+            avg = p.First().avg;
+            if (avg)
+            {
+                Q1 /= p.divisor(s => s.Q1);
+                Q2 /= p.divisor(s => s.Q2);
+                Q3 /= p.divisor(s => s.Q3);
+                Q4 /= p.divisor(s => s.Q4);
+                Total /= p.divisor(s => s.Total);
+                Target /= p.divisor(s => s.Target);
+                PriorTotal /= p.divisor(s => s.PriorTotal);
+            }
             GroupId = 0;
             Group = "All";
             if (p.Count == 1 && p.First().GroupId == 0)

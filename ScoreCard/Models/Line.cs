@@ -143,6 +143,7 @@ namespace ScoreCard.Models
                     var list = groups[g.Key].ToList();
                     var gScore = new Score(list);
                     gScore.LineId = l.LineId;
+                    gScore.avg = l.symbol == "%";
                     gScore.GroupId = g.Key;
                     gScore.Group = g.First().Group;
                     gScore.Site = "All";
@@ -192,6 +193,7 @@ namespace ScoreCard.Models
 
                 sc.LineId = ln.LineId;
                 sc.Decimal = ln.DecimalPoint;
+                sc.avg = ln.symbol == "%";
                 current.scores.Add(sc);
 
                 return null;
@@ -210,6 +212,7 @@ namespace ScoreCard.Models
             {
                 sc.LineId = ln.LineId;
                 sc.Decimal = ln.DecimalPoint;
+                sc.avg = ln.symbol == "%";
                 if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
                 else { sc.GroupId = 0; sc.Group = "All"; }
 

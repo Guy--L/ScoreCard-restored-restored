@@ -12,7 +12,7 @@
     var show = number == 0 ? "" : number.ToString();
 }
 @if (ro.HasValue && ro.Value) { 
-    @Html.TextBox("", show, new { data_inputmask = imask, @class = @ViewData["class"], @readonly=true, @id = @ViewData["id"] })
+    @Html.TextBox("", show, new { data_inputmask = imask, @class = @ViewData["class"], @disabled=true, @id = @ViewData["id"] })
 }
 else
 {
