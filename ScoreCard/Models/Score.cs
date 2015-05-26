@@ -82,6 +82,16 @@ namespace ScoreCard.Models
             }
         }
 
+        public int count()
+        {
+                var n =
+                    ((Q1.HasValue && Q1.Value != 0) ? 1 : 0)
+                + ((Q2.HasValue && Q2.Value != 0) ? 1 : 0)
+                + ((Q3.HasValue && Q3.Value != 0) ? 1 : 0)
+                + ((Q4.HasValue && Q4.Value != 0) ? 1 : 0);
+                return n == 0 ? 1 : n;
+        }
+
         public string cue
         {
             get

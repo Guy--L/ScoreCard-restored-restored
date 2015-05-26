@@ -194,17 +194,22 @@ namespace ScoreCard.Models
                 sc.LineId = ln.LineId;
                 sc.Decimal = ln.DecimalPoint;
                 sc.avg = ln.symbol == "%";
+                if (sc.avg)
+                {
+                    sc.Total /= sc.count();
+                    sc.PriorTotal /= 4;
+                }
                 current.scores.Add(sc);
 
                 return null;
             }
 
-            // Save the current author
+            // Save the current line
             var p = current;
             if (p != null)
                 p.sub = (p.scores.Count() > 0) ? new Score(p.scores) : new Score();
 
-            // Setup the new current author
+            // Setup the new current line
             current = ln;
             current.scores = new List<Score>();
             current.sub = new Score();
@@ -213,6 +218,13 @@ namespace ScoreCard.Models
                 sc.LineId = ln.LineId;
                 sc.Decimal = ln.DecimalPoint;
                 sc.avg = ln.symbol == "%";
+
+                if (sc.avg)
+                {
+                    sc.Total /= sc.count();
+                    sc.PriorTotal /= 4;
+                }
+
                 if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
                 else { sc.GroupId = 0; sc.Group = "All"; }
 

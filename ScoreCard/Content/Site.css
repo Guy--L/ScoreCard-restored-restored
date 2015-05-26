@@ -108,6 +108,7 @@ table#scoreCard td {
     margin: 0;
 }
 
+table#emps thead > tr > th,
 table#scoreCard .scoreheader > th {
     text-align: center;
     vertical-align: middle;
