@@ -135,6 +135,9 @@
         }
     }
     function retarget(e, path) {
+        if (path[1] == "0" && path[2] == "0")
+            return;
+
         var target = '#' + path[0]+'_'+path[1]+'_0_'+path[3];            // line_group_0_target
         var prefix = path[0]+'_'+path[1]+'_';
         var suffix = '_'+path[3];
@@ -179,13 +182,6 @@
             }
         }
     }
-    function quarsum(t)
-    {
-    }
-    function targsum(t)
-    {
-        return sid;
-    }
     $(function () {
         $(":input").inputmask();
         $('#scoreCard tr.line').on('click', { rows: 'group' }, toggler);
@@ -201,7 +197,6 @@
         };
         card.client.reflectTarget = function (scoreid, value) {
             var target = $('[id$=_target]', '[data-scoreid=' + scoreid + ']');
-            console.log("reflecting "+value+" onto "+scoreid);
             target.val(value);
         };
         card.client.reflectComment = function (scoreid, comment) {
