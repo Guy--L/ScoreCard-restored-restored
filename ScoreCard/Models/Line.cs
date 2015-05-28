@@ -68,7 +68,7 @@ namespace ScoreCard.Models
             )";
 
         private static string _outline = _linelist + @"
-            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.Comment, s.ScoreId, 
+            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.ScoreId, s.Comment,
             (
                 select isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0)
                 from score
@@ -141,6 +141,8 @@ namespace ScoreCard.Models
                 foreach (var g in groups)
                 {
                     var list = groups[g.Key].ToList();
+                    if (groups.Count() == 1)
+                        continue;
                     var gScore = new Score(list);
                     gScore.LineId = l.LineId;
                     gScore.avg = l.symbol == "%";
@@ -180,61 +182,23 @@ namespace ScoreCard.Models
         public Line current;
         public Line Scores2Line(Line ln, Score sc, Group gr, Site st)
         {
-            if (ln == null)
-                return current;
-
-            if (current != null && current.LineId == ln.LineId)
+            if (ln != null && current != null && current.LineId == ln.LineId)
             {
-                if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
-                else { sc.GroupId = 0; sc.Group = "All"; }
-
-                if (st != null) { sc.SiteId = st.SiteId; sc.Site = st._Site; }
-                else { sc.SiteId = 0; sc.Site = "All"; }
-
-                sc.LineId = ln.LineId;
-                sc.Decimal = ln.DecimalPoint;
-                sc.avg = ln.symbol == "%";
-                if (sc.avg)
-                {
-                    sc.Total /= sc.count();
-                    sc.PriorTotal /= 4;
-                }
-                current.scores.Add(sc);
-
-                return null;
+                current.scores.Add(sc.link(ln, gr, st));
+                return null;                                           // new score only
             }
 
-            // Save the current line
-            var p = current;
+            var p = current;                                        // seal up previous line
             if (p != null)
                 p.sub = (p.scores.Count() > 0) ? new Score(p.scores) : new Score();
 
-            // Setup the new current line
-            current = ln;
+            if (ln == null) return current;                     // last line
+
+            current = ln;                                            // next line
             current.scores = new List<Score>();
-            current.sub = new Score();
-            if (sc != null)
-            {
-                sc.LineId = ln.LineId;
-                sc.Decimal = ln.DecimalPoint;
-                sc.avg = ln.symbol == "%";
-
-                if (sc.avg)
-                {
-                    sc.Total /= sc.count();
-                    sc.PriorTotal /= 4;
-                }
-
-                if (gr != null) { sc.GroupId = gr.GroupId; sc.Group = gr._Group; }
-                else { sc.GroupId = 0; sc.Group = "All"; }
-
-                if (st != null) { sc.SiteId = st.SiteId; sc.Site = st._Site; }
-                else { sc.SiteId = 0; sc.Site = "All"; }
-
-                current.scores.Add(sc);
-            }
-
-            // Return the now populated previous author (or null if first time through)
+            
+            if (sc == null) return p;                             // title line
+            current.scores.Add(sc.link(ln, gr, st));        
             return p;
         }
     }

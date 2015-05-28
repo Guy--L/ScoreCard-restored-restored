@@ -68,7 +68,7 @@ textarea {
     width: 40px !important;
 }
 
-a.list-group-item:hover, a.list-group-item:focus {
+a.list-group-item:focus {
     text-decoration: none;
     background-color:  rgb(176, 225, 239);
 }
@@ -171,8 +171,9 @@ tr td input[type=text].scoreComment {
     text-align: left;
 }
 
-td.owner {
-    font-size:smaller;
+table#scoreCard td.owner {
+    font-size: .8em;
+    padding-top: 3px;
 }
 
 input[class*=text-success] {

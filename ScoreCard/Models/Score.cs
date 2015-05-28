@@ -82,6 +82,24 @@ namespace ScoreCard.Models
             }
         }
 
+        public Score link(Line ln, Group gr, Site st)
+        {
+            GroupId = gr.GroupId;
+            Group = gr._Group;
+            SiteId = st.SiteId;
+            Site = st._Site;
+
+            LineId = ln.LineId;
+            Decimal = ln.DecimalPoint;
+            avg = ln.symbol == "%";
+            if (avg)
+            {
+                Total /= count();
+                PriorTotal /= 4;
+            }
+            return this;
+        }
+
         public int count()
         {
                 var n =
@@ -92,22 +110,22 @@ namespace ScoreCard.Models
                 return n == 0 ? 1 : n;
         }
 
-        public string cue
-        {
-            get
-            {
-                var q = 0;
-                if (Q4 != 0) q = 4;
-                else if (Q3 != 0) q = 3;
-                else if (Q2 != 0) q = 2;
-                else if (Q1 != 0) q = 1;
-                if (Total == 0) return "";
-                double perform = ((double)Target * q) / (4.0 * (double)Total);
-                if (perform > 1.0) return " text-danger";
-                if (perform < 1.0) return " text-success";
-                return " text-primary";
-            }
-        }
+        //public string cue
+        //{
+        //    get
+        //    {
+        //        var q = 0;
+        //        if (Q4 != 0) q = 4;
+        //        else if (Q3 != 0) q = 3;
+        //        else if (Q2 != 0) q = 2;
+        //        else if (Q1 != 0) q = 1;
+        //        if (Total == 0) return "";
+        //        double perform = ((double)Target * q) / (4.0 * (double)Total);
+        //        if (perform > 1.0) return " text-danger";
+        //        if (perform < 1.0) return " text-success";
+        //        return " text-primary";
+        //    }
+        //}
 
         public Score(int id)
         {
@@ -154,6 +172,48 @@ namespace ScoreCard.Models
         }
 
         public Score(List<Score> p)
+        {
+            Score ln = null;
+            var lns = p.Where(q => q.GroupId == 0 && q.SiteId == 0);
+            p = p.Where(q => q.GroupId != 0 || q.SiteId != 0).ToList();
+
+            var pregrouped = p.Select(q => q.GroupId).Distinct().Count() == 1;
+
+            if (lns == null || lns.Count() == 0)
+                ln = new Score() { Q1 = 0, Q2 = 0, Q3 = 0, Q4 = 0, Total = 0, Target = 0, PriorTotal = 0, avg = p.First().avg, ScoreId = -p.First().ScoreId, Decimal = p.First().Decimal };
+            else
+            {
+                if (lns.Count() > 1)
+                {
+                    Elmah.ErrorSignal.FromCurrentContext().Raise(new Exception("Multiple summary scoreids " + string.Join(",", lns.Select(n => n.ScoreId.ToString()).ToArray()) + " encountered for lineid " + lns.First().LineId));
+                }
+                ln = lns.First();
+            }
+
+            ScoreId = ln.ScoreId;
+            Decimal = ln.Decimal;
+            avg = ln.avg;
+
+            Q1 = (ln.Q1==0)?p.Sum(s => s.Q1):ln.Q1;
+            Q2 = (ln.Q2 == 0) ? p.Sum(s => s.Q2) : ln.Q2;
+            Q3 = (ln.Q3 == 0) ? p.Sum(s => s.Q3) : ln.Q3;
+            Q4 = (ln.Q4 == 0) ? p.Sum(s => s.Q4) : ln.Q4;
+            Total = (ln.Total == 0) ? p.Sum(s => s.Total) : ln.Total;
+            Target = (ln.Target == 0) ? p.Sum(s => s.Target) : ln.Target;
+            PriorTotal = (ln.PriorTotal == 0) ? p.Sum(s => s.PriorTotal) : ln.PriorTotal;
+            if (avg)
+            {
+                if (ln.Q1 == 0) Q1 /= p.divisor(s => s.Q1);
+                if (ln.Q2 == 0) Q2 /= p.divisor(s => s.Q2);
+                if (ln.Q3 == 0) Q3 /= p.divisor(s => s.Q3);
+                if (ln.Q4 == 0) Q4 /= p.divisor(s => s.Q4);
+                if (ln.Total == 0) Total /= p.divisor(s => s.Total);
+                if (ln.Target == 0) Target /= p.divisor(s => s.Target);
+                if (ln.PriorTotal == 0) PriorTotal /= p.divisor(s => s.PriorTotal);
+            }
+        }
+
+        public void Attach(List<Score> p)
         {
             Q1 = p.Sum(s => s.Q1);
             Q2 = p.Sum(s => s.Q2);
@@ -666,7 +726,7 @@ INSERT INTO [dbo].[Score]  ([YearEnding],[LineId],[GroupId],[SiteId]) VALUES
 	(@@year,25,2,19),
 	(@@year,25,2,20),
 	(@@year,25,2,21),
-	(@@year,29,0,0),
+	(@@year,26,0,0),
 	(@@year,26,2,1),
 	(@@year,26,2,2),
 	(@@year,26,2,3),
