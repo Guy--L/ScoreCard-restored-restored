@@ -2,8 +2,9 @@
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
-    <TargetDatabaseName>ScoreDB</TargetDatabaseName>
+    <TargetDatabaseName>ScoreCard</TargetDatabaseName>
     <DeployScriptFileName>ScoreDB.sql</DeployScriptFileName>
+    <TargetConnectionString>Data Source=155.118.175.18;User ID=TimeTracker;Pooling=False</TargetConnectionString>
     <ProfileVersionNumber>1</ProfileVersionNumber>
   </PropertyGroup>
 </Project>
