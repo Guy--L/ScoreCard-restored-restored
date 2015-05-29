@@ -97,6 +97,12 @@ input:not([disabled]) {
     /*border-color: blue;*/
 }
 
+.form-horizontal .sitelist .radio {
+    padding-top: 0;
+    min-height: 18px;
+    line-height: 18px;
+}
+
 table#scoreCard {
     table-layout: fixed;
     width: 100%;

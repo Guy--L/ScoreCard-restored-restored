@@ -27,6 +27,12 @@
             @form.FormGroup().CheckBoxFor(m => m.w.IsActive)
             @form.FormGroup().CheckBoxFor(m => m.w.IsManager)
         </div>
+        <div class="col-xs-3">
+            @form.FormGroup().RadioButtonListFor(m => m.w.GroupId, m => m.homegroups, g => g.GroupId, g => g._Group).SelectedValues(g => g.GroupId == Model.w.GroupId).Label().LabelText("Member of")
+        </div>
+        <div class="col-xs-3">
+            @form.FormGroup().RadioButtonListFor(m => m.w.SiteId, m => m.homesites, g => g.SiteId, g => g._Site).SelectedValues(g => g.SiteId == Model.w.SiteId).ContainerClass("sitelist").Label().LabelText("Home Site")
+        </div> 
     </div>    
     <div class="row">
         @(form.FormGroup().CustomControls(buttons.ToArray()))

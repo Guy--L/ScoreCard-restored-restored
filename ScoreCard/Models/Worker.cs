@@ -35,8 +35,8 @@ namespace ScoreCard.Models
                               ,(select count(responsibilityid) from responsibility where workerid = w.[WorkerId]) as Pages
                               ,(select count(permitid) from [permit] where workerid = w.[WorkerId]) as Sites
                   FROM [dbo].[Worker] w
-                    join [Group] g on g.groupid = w.groupid
-                    join Site s on s.siteid = w.siteid
+                    left join [Group] g on g.groupid = w.groupid
+                    left join Site s on s.siteid = w.siteid
         ";
 
         [ResultColumn] public int LineId { get; set; }
@@ -111,7 +111,9 @@ namespace ScoreCard.Models
 
         public Worker w { get; set; }
         public List<Group> groups;
+        public List<Group> homegroups;
         public List<Site> sites;
+        public List<Site> homesites;
         public List<Permit> permits;
         public List<Line> lines;
         public List<Responsibility> owned;
@@ -157,14 +159,18 @@ namespace ScoreCard.Models
                         SiteId = 0
                     };
                 }
-                sites = db.Fetch<Site>("").Where(s => s.SiteId != 0).ToList();
+                sites = db.Fetch<Site>("");
+                homesites = sites;
+                sites = sites.Where(s => s.SiteId != 0).ToList();
                 siteList = sites.Select(x => new SelectListItem
                 {
                     Value = x.SiteId.ToString(),
                     Text = x.SiteName
                 });
 
-                groups = db.Fetch<Group>("").Where(g => g._Group != "VP").ToList();
+                homegroups = db.Fetch<Group>("");
+                groups = homegroups.Where(g => g._Group != "VP").ToList();
+                homegroups = homegroups.Where(g => g.GroupId != 0).ToList();
                 groupids = new JavaScriptSerializer().Serialize(groups.Select(g => g.GroupId).ToArray());
 
                 permits = db.Fetch<Permit>(" where workerid = @0", id);

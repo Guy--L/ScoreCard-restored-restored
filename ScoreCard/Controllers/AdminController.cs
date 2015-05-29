@@ -69,8 +69,8 @@ namespace ScoreCard.Controllers
         [HttpPost]
         public ActionResult SaveWorker(WorkerView wv)
         {
-            wv.w.GroupId = 0;
-            wv.w.SiteId = 0;
+            //wv.w.GroupId = 0;
+            //wv.w.SiteId = 0;
             wv.w.Save();
             return RedirectToAction("Workers");
         }
