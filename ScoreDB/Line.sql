@@ -2,7 +2,7 @@
 (
 	[LineId] INT NOT NULL PRIMARY KEY IDENTITY, 
     [ParentLineId] INT NOT NULL, 
-    [Order] INT NOT NULL, 
+    [Order] CHAR NOT NULL, 
     [MeasureId] INT NOT NULL, 
     [Description] VARCHAR(200) NOT NULL, 
     CONSTRAINT [FK_Line_ToLine] FOREIGN KEY ([ParentLineId]) REFERENCES [Line]([LineId]), 

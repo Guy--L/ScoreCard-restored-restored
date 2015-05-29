@@ -120,7 +120,7 @@ namespace ScoreCard.Models
     {		
 		[Column] public int LineId { get; set; } 		
 		[Column] public int ParentLineId { get; set; } 		
-		[Column] public int Order { get; set; } 		
+		[Column] public string Order { get; set; } 		
 		[Column] public int MeasureId { get; set; } 		
 		[Column] public string Description { get; set; } 	
 	}
@@ -221,15 +221,6 @@ namespace ScoreCard.Models
 		[Column] public string Comment { get; set; } 		
 		[Column] public int? GroupId { get; set; } 		
 		[Column] public int? SiteId { get; set; } 	
-	}
-
-	[TableName("trights")]
-	[ExplicitColumns]
-    public partial class tright : scoreDB.Record<tright>  
-    {		
-		[Column] public string ion { get; set; } 		
-		[Column] public string grp { get; set; } 		
-		[Column] public string ste { get; set; } 	
 	}
 
 	[TableName("Permit")]

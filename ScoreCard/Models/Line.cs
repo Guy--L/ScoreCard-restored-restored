@@ -59,7 +59,7 @@ namespace ScoreCard.Models
 
 	            union all
 
-                select cast(p.[item] + '.' + CONVERT(varchar(10), n.[order]) as varchar(10)) as item, 
+                select cast(p.[item] + iif(p.[level]=1,'.','') + CONVERT(varchar(10), n.[order]) as varchar(10)) as item, 
 				n.ParentLineId,
 	            p.[level]+1 as [level], n.[description], n.[order], n.LineId, n.MeasureId
 	            from line n
