@@ -267,7 +267,7 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\FontAwesome.otf" />
-    <Content Include="ProductionCsnStrings.config">
+    <Content Include="ProductionCxnStrings.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\DataTables\css\dataTables.responsive.scss" />
