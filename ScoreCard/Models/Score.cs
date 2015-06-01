@@ -32,7 +32,7 @@ namespace ScoreCard.Models
 
     public static class MyExtensions 
     {
-        public static int divisor<Score>(this List<Score> list,  Func<Score, int?> member)
+        public static int divisor<Score>(this IEnumerable<Score> list,  Func<Score, int?> member)
         {
             var count = list.Where(s=>member(s).HasValue && member(s)!=0).Sum(s=>1);
             return count==0?1:count;
@@ -97,16 +97,23 @@ namespace ScoreCard.Models
                 Total /= count();
                 PriorTotal /= 4;
             }
-            return this;
+
+            if (GroupId == 0 && SiteId == 0)
+            {
+                ln.topdown = this;
+                return null;                    // overriding line-level score
+            }
+
+            return this;                        // site-level score
         }
 
         public int count()
         {
                 var n =
-                    ((Q1.HasValue && Q1.Value != 0) ? 1 : 0)
-                + ((Q2.HasValue && Q2.Value != 0) ? 1 : 0)
-                + ((Q3.HasValue && Q3.Value != 0) ? 1 : 0)
-                + ((Q4.HasValue && Q4.Value != 0) ? 1 : 0);
+                      ((Q1.HasValue && Q1.Value != 0) ? 1 : 0)
+                    + ((Q2.HasValue && Q2.Value != 0) ? 1 : 0)
+                    + ((Q3.HasValue && Q3.Value != 0) ? 1 : 0)
+                    + ((Q4.HasValue && Q4.Value != 0) ? 1 : 0);
                 return n == 0 ? 1 : n;
         }
 
@@ -174,13 +181,25 @@ namespace ScoreCard.Models
         public Score(List<Score> p)
         {
             Score ln = null;
-            var lns = p.Where(q => q.GroupId == 0 && q.SiteId == 0);
-            p = p.Where(q => q.GroupId != 0 || q.SiteId != 0).ToList();
+            if (p == null || p.Any(q => q.GroupId == null || q.SiteId == null))
+                ln = new Score();
 
-            var pregrouped = p.Select(q => q.GroupId).Distinct().Count() == 1;
+            var lns = p.Where(q => q.GroupId == 0 && q.SiteId == 0);
+            var r = p.Where(q => q.GroupId != 0 || q.SiteId != 0);
 
             if (lns == null || lns.Count() == 0)
-                ln = new Score() { Q1 = 0, Q2 = 0, Q3 = 0, Q4 = 0, Total = 0, Target = 0, PriorTotal = 0, avg = p.First().avg, ScoreId = -p.First().ScoreId, Decimal = p.First().Decimal };
+                ln = new Score() { 
+                    Q1 = 0, 
+                    Q2 = 0, 
+                    Q3 = 0, 
+                    Q4 = 0, 
+                    Total = 0, 
+                    Target = 0, 
+                    PriorTotal = 0, 
+                    avg = r.First().avg, 
+                    ScoreId = -r.First().ScoreId, 
+                    Decimal = r.First().Decimal 
+                };
             else
             {
                 if (lns.Count() > 1)
@@ -194,22 +213,22 @@ namespace ScoreCard.Models
             Decimal = ln.Decimal;
             avg = ln.avg;
 
-            Q1 = (ln.Q1==0)?p.Sum(s => s.Q1):ln.Q1;
-            Q2 = (ln.Q2 == 0) ? p.Sum(s => s.Q2) : ln.Q2;
-            Q3 = (ln.Q3 == 0) ? p.Sum(s => s.Q3) : ln.Q3;
-            Q4 = (ln.Q4 == 0) ? p.Sum(s => s.Q4) : ln.Q4;
-            Total = (ln.Total == 0) ? p.Sum(s => s.Total) : ln.Total;
-            Target = (ln.Target == 0) ? p.Sum(s => s.Target) : ln.Target;
-            PriorTotal = (ln.PriorTotal == 0) ? p.Sum(s => s.PriorTotal) : ln.PriorTotal;
+            Q1 = (ln.Q1==0)?r.Sum(s => s.Q1):ln.Q1;
+            Q2 = (ln.Q2 == 0) ? r.Sum(s => s.Q2) : ln.Q2;
+            Q3 = (ln.Q3 == 0) ? r.Sum(s => s.Q3) : ln.Q3;
+            Q4 = (ln.Q4 == 0) ? r.Sum(s => s.Q4) : ln.Q4;
+            Total = (ln.Total == 0) ? r.Sum(s => s.Total) : ln.Total;
+            Target = (ln.Target == 0) ? r.Sum(s => s.Target) : ln.Target;
+            PriorTotal = (ln.PriorTotal == 0) ? r.Sum(s => s.PriorTotal) : ln.PriorTotal;
             if (avg)
             {
-                if (ln.Q1 == 0) Q1 /= p.divisor(s => s.Q1);
-                if (ln.Q2 == 0) Q2 /= p.divisor(s => s.Q2);
-                if (ln.Q3 == 0) Q3 /= p.divisor(s => s.Q3);
-                if (ln.Q4 == 0) Q4 /= p.divisor(s => s.Q4);
-                if (ln.Total == 0) Total /= p.divisor(s => s.Total);
-                if (ln.Target == 0) Target /= p.divisor(s => s.Target);
-                if (ln.PriorTotal == 0) PriorTotal /= p.divisor(s => s.PriorTotal);
+                if (ln.Q1 == 0) Q1 /= r.divisor(s => s.Q1);
+                if (ln.Q2 == 0) Q2 /= r.divisor(s => s.Q2);
+                if (ln.Q3 == 0) Q3 /= r.divisor(s => s.Q3);
+                if (ln.Q4 == 0) Q4 /= r.divisor(s => s.Q4);
+                if (ln.Total == 0) Total /= r.divisor(s => s.Total);
+                if (ln.Target == 0) Target /= r.divisor(s => s.Target);
+                if (ln.PriorTotal == 0) PriorTotal /= r.divisor(s => s.PriorTotal);
             }
         }
 
@@ -841,6 +860,11 @@ INSERT INTO [dbo].[Score]  ([YearEnding],[LineId],[GroupId],[SiteId]) VALUES
 	(@@year,33,0,0),
 	(@@year,34,0,0),
 	(@@year,35,0,0),
+	(@@year,35,7,22),
+	(@@year,35,7,23),
+	(@@year,35,7,24),
+	(@@year,35,7,25),
+	(@@year,35,7,26),
 	(@@year,36,0,0),
 	(@@year,36,1,1),
 	(@@year,36,1,2),

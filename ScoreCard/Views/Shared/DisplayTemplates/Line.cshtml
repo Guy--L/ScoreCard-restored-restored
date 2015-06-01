@@ -15,27 +15,30 @@
 }
 else
 {
-<tr data-lineid="@Model.LineId" data-scoreid="@Model.sub.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"") @(avg?"avg":"")">
+<tr data-lineid="@Model.LineId" data-scoreid="@Model.topdown.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"") @(avg?"avg":"")">
     <td class="major"></td>
     <td class="minor">@Model.item</td>
     <td colspan="2">@Model.Description</td>
     <td>@Model.symbol @if (exp){<i class="fa fa-caret-right"></i>}</td>
     <td class="owner" title="@Model.owntip">@Model.owner</td>
-    <td>@Html.DisplayFor(m => m.sub.PriorTotal, new { @class = "priorval", mask = @Model.DecimalPoint, ro = true, id = prefix+"prior" })</td>
-    <td>@Html.DisplayFor(m => m.sub.Target, new { @class = "targval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "target" })</td>
-    <td>@Html.DisplayFor(m => m.sub.Total, new { @class = "yearval", mask = @Model.DecimalPoint, ro = true, id = prefix + "total" })</td>
-    <td>@Html.DisplayFor(m => m.sub.Q1, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "1" })</td>
-    <td>@Html.DisplayFor(m => m.sub.Q2, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "2" })</td>
-    <td>@Html.DisplayFor(m => m.sub.Q3, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "3" })</td>
-    <td>@Html.DisplayFor(m => m.sub.Q4, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "4" })</td>
+    <td>@Html.DisplayFor(m => m.topdown.PriorTotal, new { @class = "priorval", mask = @Model.DecimalPoint, ro = true, id = prefix + "prior" })</td>
+    <td>@Html.DisplayFor(m => m.topdown.Target, new { @class = "targval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "target" })</td>
+    <td>@Html.DisplayFor(m => m.topdown.Total, new { @class = "yearval", mask = @Model.DecimalPoint, ro = true, id = prefix + "total" })</td>
+    <td>@Html.DisplayFor(m => m.topdown.Q1, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "1" })</td>
+    <td>@Html.DisplayFor(m => m.topdown.Q2, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "2" })</td>
+    <td>@Html.DisplayFor(m => m.topdown.Q3, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "3" })</td>
+    <td>@Html.DisplayFor(m => m.topdown.Q4, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "4" })</td>
     @if (Model.CanEdit)
     {
-        <td>@Html.TextBoxFor(m => m.sub.Comment, new { @class = "scoreComment", id = prefix + "comment" })</td>
+        <td>@Html.TextBoxFor(m => m.topdown.Comment, new { @class = "scoreComment", id = prefix + "comment" })</td>
     }
     else
     {
-        <td>@Html.TextBoxFor(m => m.sub.Comment, new { @class = "scoreComment", @readonly = "readonly", id = prefix + "comment" })</td>
+        <td>@Html.TextBoxFor(m => m.topdown.Comment, new { @class = "scoreComment", @readonly = "readonly", id = prefix + "comment" })</td>
     }
 </tr>
+    if (Model.scores.Count() > 0) { 
+        @Html.DisplayFor(m=>m.bottomup)
+    }
 @Html.DisplayFor(m=>m.scores)
 }

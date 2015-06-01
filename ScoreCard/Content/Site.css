@@ -177,6 +177,11 @@ tr td input[type=text].scoreComment {
     text-align: left;
 }
 
+tr td > input[type=text].scoreComment:disabled {
+    font-style: italic;
+    opacity: 0.5;
+}
+
 table#scoreCard td.owner {
     font-size: .8em;
     padding-top: 3px;

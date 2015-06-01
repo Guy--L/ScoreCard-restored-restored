@@ -8,7 +8,8 @@
 }
 
 <tr data-lineid="@Model.LineId" data-scoreid="@Model.ScoreId" data-scale="@(Math.Pow(10,Model.Decimal))" data-groupid="@Model.GroupId"
-    data-siteid="@Model.SiteId" class="score @(rollup?"group":"site") @(Model.avg?"avg":"")" style="display: none;">
+    data-siteid="@Model.SiteId" class="score @(rollup?"group":"site") @(Model.avg?"avg":"")" style="display: none;"
+    @if (rollup) {<text>title="@Model.Comment"</text>}>
     <td colspan="2"></td>
     <td colspan="1" class="subline">@if (rollup){<em>@Model.Group</em> <i class="fa fa-caret-right"></i>}</td>
     <td colspan="2" class="subline">@Model.Site</td>
@@ -26,7 +27,7 @@
     }
     else
     {
-        <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment", @readonly = "readonly", id = prefix + "comment" })</td>
+        <td>@Html.TextBoxFor(m => m.Comment, new { @class = "scoreComment", @disabled = true, id = prefix + "comment" })</td>
     }
 </tr>
 @if (rollup)

@@ -86,7 +86,7 @@ namespace ScoreCard.Models
             on q.lineid = s.lineid
 			left join [group] g on s.groupid = g.groupid
             left join site x on s.siteid = x.siteid
-            order by item
+            order by item, groupid
         ";
 
         public static string _itemlist = _linelist + @"
@@ -105,7 +105,8 @@ namespace ScoreCard.Models
         ";
 
         public List<Score> scores { get; set; }
-        public Score sub { get; set; }
+        public Score topdown { get; set; }
+        public Score bottomup { get; set; }
         public List<Worker> workers { get; set; }
         public string owntip { get; set; }
         public string owner { get; set; }
@@ -134,33 +135,38 @@ namespace ScoreCard.Models
                     l.owner = q.FirstName[0] + ". " + q.LastName + (l.workers.Count>1?("+"+(l.workers.Count-1)):"");
                 }
                 var IsOwner = l.workers.Any(w => w.WorkerId == login.WorkerId);
-                l.CanEdit = (IsOwner || login.IsAdmin) && (login.GroupId != 5);             // && (l.scores.Count == 0) 
+                l.CanEdit = (IsOwner || login.IsAdmin) && (login.GroupId != 5);     // && (l.scores.Count == 0) 
 
-                var groups = l.scores.ToLookup(s => s.GroupId.Value);
-                var groupScores = new List<Score>();
-                foreach (var g in groups)
+                var groups = l.scores.ToLookup(s => s.GroupId.Value);               // partition site scores by group
+                var groupScores = new List<Score>();                                // create group subtotals
+                
+                foreach (var g in groups)                                           // skip over the All site
                 {
-                    var list = groups[g.Key].ToList();
-                    if (groups.Count() == 1)
-                        continue;
-                    var gScore = new Score(list);
-                    gScore.LineId = l.LineId;
+                    var list = groups[g.Key].ToList();                              // get site scores in group
+                    var entries = list.Count(s => s.Total.HasValue && s.Total.Value > 0);
+                    var gScore = new Score(list);                                   // create new score for group subtotal
+                    gScore.LineId = l.LineId;                           
                     gScore.avg = l.symbol == "%";
-                    gScore.GroupId = g.Key;
+                    gScore.GroupId = g.Key;                                         // group subtotal has same groupid...
                     gScore.Group = g.First().Group;
-                    gScore.Site = "All";
+                    gScore.Site = "All";                                            // its for all sites, a subtotal
                     gScore.SiteId = 0;
                     gScore.CanEdit = false;
-                    gScore.scores = list;
+                    if (entries>0)
+                        gScore.Comment = " " + (gScore.avg? "averaged": "summed")+ " over " + entries + " site" + (entries == 1 ? "" : "s");
+                    gScore.scores = list;                                           // have children sites be in subtotal 
                     groupScores.Add(gScore);
                     Debug.WriteLine("line " + l.item + ": " + g.First().Group + " " + groups[g.Key].Count() + " scores " + gScore.scores.Count());
                 }
-                l.scores = groupScores;
-                Debug.WriteLine("line scores: " + groupScores.Count);
-                l.scores.ForEach(s => s.scores.ForEach(t =>
+                l.scores = groupScores;                                             // have subtotals be in total for line
+                Debug.WriteLine(groupScores.Count + " groups in line " + l.item);
+                l.scores.ForEach(s =>
                 {
-                    t.CanEdit = IsOwner || login.IsAdmin || t.GroupId == login.GroupId || login.permits.Any(p => p.SiteId == t.SiteId);
-                }));
+                    if (s.scores != null) s.scores.ForEach(t =>
+                    {
+                        t.CanEdit = IsOwner || login.IsAdmin || t.GroupId == login.GroupId || login.permits.Any(p => p.SiteId == t.SiteId);
+                    });
+                });
             });
             return lines;
         }
@@ -182,23 +188,25 @@ namespace ScoreCard.Models
         public Line current;
         public Line Scores2Line(Line ln, Score sc, Group gr, Site st)
         {
+            Score s = null;
             if (ln != null && current != null && current.LineId == ln.LineId)
             {
-                current.scores.Add(sc.link(ln, gr, st));
-                return null;                                           // new score only
+                s = sc.link(ln, gr, st);
+                if (s != null) current.scores.Add(s);
+                return null;                                    // new score only
             }
-
-            var p = current;                                        // seal up previous line
-            if (p != null)
-                p.sub = (p.scores.Count() > 0) ? new Score(p.scores) : new Score();
+            var p = current;                                    // seal up previous line
+            if (p != null && p.scores.Count() > 0)              // if scores by site
+                p.bottomup = new Score(p.scores);               // create subtotal line
 
             if (ln == null) return current;                     // last line
 
-            current = ln;                                            // next line
+            current = ln;                                       // next line
             current.scores = new List<Score>();
             
-            if (sc == null) return p;                             // title line
-            current.scores.Add(sc.link(ln, gr, st));        
+            if (sc == null) return p;                           // title line
+            s = sc.link(ln, gr, st);
+            if (s != null) current.scores.Add(s);
             return p;
         }
     }
