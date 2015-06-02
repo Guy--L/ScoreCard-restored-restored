@@ -104,6 +104,14 @@ namespace ScoreCard.Models
             where r.LineId = {0}
         ";
 
+        public int? topPriorTotal { get { return this.top(x => x.PriorTotal); } }
+        public int? topTarget { get { return this.top(x => x.Target); } }
+        public int? topTotal { get { return this.top(x => x.Total); } }
+        public int? topQ1 { get { return this.top(x => x.Q1 ); } }
+        public int? topQ2 { get { return this.top(x => x.Q2 ); } }
+        public int? topQ3 { get { return this.top(x => x.Q3 ); } }
+        public int? topQ4 { get { return this.top(x => x.Q4 ); } }
+
         public List<Score> scores { get; set; }
         public Score topdown { get; set; }
         public Score bottomup { get; set; }
@@ -158,6 +166,8 @@ namespace ScoreCard.Models
                     groupScores.Add(gScore);
                     Debug.WriteLine("line " + l.item + ": " + g.First().Group + " " + groups[g.Key].Count() + " scores " + gScore.scores.Count());
                 }
+                if (l.bottomup != null)
+                    l.bottomup.Comment = " line differs from detail";
                 l.scores = groupScores;                                             // have subtotals be in total for line
                 Debug.WriteLine(groupScores.Count + " groups in line " + l.item);
                 l.scores.ForEach(s =>
@@ -191,12 +201,12 @@ namespace ScoreCard.Models
             Score s = null;
             if (ln != null && current != null && current.LineId == ln.LineId)
             {
-                s = sc.link(ln, gr, st);
+                s = sc.link(ln, gr, st);                        // attach score to line, groups and sites to score
                 if (s != null) current.scores.Add(s);
                 return null;                                    // new score only
             }
             var p = current;                                    // seal up previous line
-            if (p != null && p.scores.Count() > 0)              // if scores by site
+            if (p != null && p.scores.Count() > 0)              // if there are scores by site
                 p.bottomup = new Score(p.scores);               // create subtotal line
 
             if (ln == null) return current;                     // last line

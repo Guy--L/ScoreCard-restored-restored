@@ -37,6 +37,12 @@ namespace ScoreCard.Models
             var count = list.Where(s=>member(s).HasValue && member(s)!=0).Sum(s=>1);
             return count==0?1:count;
         }
+
+        public static int? top(this Line ln, Func<Score, int?> m)
+        {
+            var topd = m(ln.topdown).HasValue && m(ln.topdown).Value != 0;
+            return topd ? m(ln.topdown).Value : m(ln.bottomup).Value;
+        }
     }
 
     public partial class Score
@@ -90,6 +96,7 @@ namespace ScoreCard.Models
             Site = st._Site;
 
             LineId = ln.LineId;
+
             Decimal = ln.DecimalPoint;
             avg = ln.symbol == "%";
             if (avg)
@@ -182,7 +189,7 @@ namespace ScoreCard.Models
         {
             Score ln = null;
             if (p == null || p.Any(q => q.GroupId == null || q.SiteId == null))
-                ln = new Score();
+                ln = new Score() { LineId = (p == null) ? 0 : p.First().LineId };
 
             var lns = p.Where(q => q.GroupId == 0 && q.SiteId == 0);
             var r = p.Where(q => q.GroupId != 0 || q.SiteId != 0);
@@ -198,7 +205,8 @@ namespace ScoreCard.Models
                     PriorTotal = 0, 
                     avg = r.First().avg, 
                     ScoreId = -r.First().ScoreId, 
-                    Decimal = r.First().Decimal 
+                    Decimal = r.First().Decimal,
+                    LineId = r.First().LineId
                 };
             else
             {
@@ -209,6 +217,7 @@ namespace ScoreCard.Models
                 ln = lns.First();
             }
 
+            LineId = ln.LineId;
             ScoreId = ln.ScoreId;
             Decimal = ln.Decimal;
             avg = ln.avg;

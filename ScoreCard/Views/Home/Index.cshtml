@@ -101,11 +101,13 @@
         $(target, rw).val(sum);
     }
     // id is line_group_site_(quarter|comment|total|prior|target)
+    // id for actual is line___(quarter|comment|total|prior|target)
     function recalc(e, path) {
         var sum = 0;
         var n = 0;
         var rw = e.closest('tr');
         var q = 0;
+        var sync = 0;
 
         $('.quarval', rw).each(function () {
             var item = Number($(this).val());
@@ -118,37 +120,103 @@
         });
         if (rw.hasClass('avg')) sum /= (n==0?1:n);
         $('.yearval', rw).val(sum);     // total on row
-            //cuetarget($('.yearval', rw), Number($('.targval', rw).val() * q), Number(4 * sum));           // color target according to last entered value
-        if (!isNaN(path[3]) && path[1]!='0') {                                         // no vertical sum needed if line total was edited
-            var target = '#' + path[0]+'_'+path[1]+'_0_'+path[3];            // line_group_0_(quarter|target)
+        //cuetarget($('.yearval', rw), Number($('.targval', rw).val() * q), Number(4 * sum));           
+        // color target according to last entered value
+        if (!isNaN(path[3]) && path[1]!='0') {                          // no vertical sum needed if line total was edited
+            var target = '#' + path[0]+'_'+path[1]+'_0_'+path[3];       // line_group_0_(quarter|target)
             var prefix = path[0]+'_'+path[1]+'_';
             var suffix = '_'+path[3];
-            $(target).val(summer(rw, prefix, suffix));                              // update (quarter|target) total on column for all sites in this group
+            $(target).val(summer(rw, prefix, suffix));                  // update (quarter|target) total on column for all sites in this group
 
-            target = '#'+ path[0]+'_0_0_'+path[3];                                 // line_0_0_(quarter|target)
+            target = '#'+ path[0]+'___'+path[3];                      // line_0_0_(quarter|target)
+            linetr = '#'+path[0]+'_0_0_'+path[3];
             prefix = path[0]+'_';
             suffix = '_0_'+path[3];
-            $(target).val(summer(rw, prefix, suffix));                              // update quarter total for all groups on this line
+            var upd = summer(rw, prefix, suffix);
+            var tar = $(linetr).closest('tr').data('scoreid');
+            var hider = false;
+            if ($(target).val()==$(linetr).val()) {
+                $(linetr).val(upd);
+                rowcalc('#' + path[0] + '_0_0_total');                      // line_0_0_total
+                sync = tar;
+            }
+            else {
+                hider = (upd == $(linetr).val());
+            }
 
-            rowcalc('#' + path[0] + '_' + path[1] + '_0_total');                 // line_group_0_total
-            rowcalc('#' + path[0] + '_0_0_total');                                    // line_0_0_total
+            $(target).val(upd);                  // update quarter total for all groups on this line
+
+            if (hider) {                 
+                var actual = detail($(linetr));
+                if (actual == null) {
+                    $(linetr).closest('tr').addClass('undertotal');
+                    $(target).closest('tr').removeClass('undertotal').hide();
+                }
+                sync = tar;
+            }
+
+            rowcalc('#' + path[0] + '_' + path[1] + '_0_total');        // line_group_0_total
+            rowcalc('#' + path[0] + '___total');                      // line_0_0_total
         }
+        return sync;
     }
     function retarget(e, path) {
         if (path[1] == "0" && path[2] == "0")
-            return;
+            return 0;
 
         var target = '#' + path[0]+'_'+path[1]+'_0_'+path[3];            // line_group_0_target
         var prefix = path[0]+'_'+path[1]+'_';
         var suffix = '_'+path[3];
         var rw = e.closest('tr');
+        var sync = 0;
 
         $(target).val(summer(rw, prefix, suffix));                              // update target total on column for all sites in this group
 
-        target = '#'+ path[0]+'_0_0_'+path[3];                                 // line_0_0_target
+        target = '#'+ path[0]+'___'+path[3];                                 // line_0_0_target
+        linetr = '#'+path[0]+'_0_0_'+path[3];
         prefix = path[0]+'_';
         suffix = '_0_'+path[3];
-        $(target).val(summer(rw, prefix, suffix));                              // update quarter total for all groups on this line
+        var upd = summer(rw, prefix, suffix);
+        var tar = $(linetr).closest('tr').data('scoreid');
+        var hider = false;
+        if ($(target).val()==$(linetr).val()) {
+            $(linetr).val(upd);
+            sync = tar;
+        }
+        else {
+            hider = (upd == $(linetr).val());
+        }
+        $(target).val(upd);         // update quarter total for all groups on this line
+
+        if (hider) {
+            var actual = detail($(linetr));
+            if (actual == null) {
+                $(linetr).closest('tr').addClass('undertotal');
+                $(target).closest('tr').removeClass('undertotal').hide();
+            }
+            sync = tar;
+        }
+
+        return sync;
+    }
+    // determine if the line and the details match.  
+    // if any don't, return the actual line to show it.
+    function detail(e) {
+        var rw = e.closest('tr');
+        var next = rw.next();
+        if (!next.hasClass('actual'))
+            return null;
+        if ($('.targval', rw).val() != $('.targval', next).val())
+            return next;
+        var diff = false;
+        var actual = $.makeArray($('.quarval', next));
+        var col = 0;
+        $('.quarval', rw).each(function(){
+            diff = ($(actual[col]).val() != $(this).val())
+            col++;
+            if (diff) return false;
+        });
+        return diff? next: null;
     }
     function toggler(e) {
         var caret = $('i.fa', e.currentTarget);
@@ -159,9 +227,11 @@
         if (caret.attr('class').indexOf('right') > 0) {
             var range = $(scope);
             caret.removeClass("fa-caret-right").addClass("fa-caret-down");
-            $(this).addClass("undertotal");
             range.last().addClass("underline");
             range.show();
+            var actual = detail($(this));
+            if (actual) actual.show().addClass("undertotal");
+            else $(this).addClass("undertotal");
             if ($(this).hasClass("underline")) {
                 range.last().addClass("last");
                 $(this).removeClass("underline");
@@ -169,7 +239,7 @@
         }
         else {
             if (e.data.rows == 'group')
-                scope = scope + ',' + scope.replace('group', 'site');
+                scope = scope + ',' + scope.replace('group', 'site') + ',' + scope.replace('group', 'actual');
             var range = $(scope);
             caret = $('i.fa', scope).add(caret);
             caret.removeClass("fa-caret-down").addClass("fa-caret-right");
@@ -198,6 +268,8 @@
         card.client.reflectTarget = function (scoreid, value) {
             var target = $('[id$=_target]', '[data-scoreid=' + scoreid + ']');
             target.val(value);
+            var path = target.attr('id').split('_');
+            retarget(target, path);
         };
         card.client.reflectComment = function (scoreid, comment) {
             var target = $('[id$=_comment]', '[data-scoreid=' + scoreid + ']');
@@ -220,7 +292,10 @@
                 var qid = Number(path[3]);
                 console.log('year, sid, qid, value '+@Model.Year+', '+sid+', '+qid+', '+Number($(this).val()*scale));
                 card.server.updateCell(@Model.Year, sid, qid, Number($(this).val()*scale));
-                recalc($(this), path);
+                var clr = recalc($(this), path);
+                if (clr > 0) {
+                    card.server.updateCell(@Model.Year, clr, qid, 0);
+                }
             });
             $('.targval').on('change', function() {
                 var path = $(this).attr('id').split('_');
@@ -231,7 +306,10 @@
                 var scale = row.data('scale');
                 console.log('year, sid, value '+@Model.Year+', '+sid+', '+Number($(this).val()*scale));
                 card.server.updateTarget(@Model.Year, sid, Number($(this).val()*scale));
-                retarget($(this), path);
+                var clr = retarget($(this), path);
+                if (clr > 0) {
+                    card.server.updateTarget(@Model.Year, clr, 0);
+                }
             });
             $('.scoreComment').on('change', function () {
                 var row = $(this).closest('tr');

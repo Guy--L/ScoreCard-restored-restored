@@ -28,7 +28,10 @@ namespace ScoreCard.Controllers
             if (emp.IonName == null)
                 return RedirectToAction(Setting.AllowCorrection?"ContactCorrection":"Contact");
 
-            var card = new Card((Session["year"] as int?), emp);
+            int? year = Session["year"] as int?;
+            year = year.HasValue ? year.Value : DateTime.Now.AddMonths(6).Year;
+            Session["year"] = year;
+            var card = new Card(year.Value, emp);
             TempData["Card"] = card;
             return View(card);
         }

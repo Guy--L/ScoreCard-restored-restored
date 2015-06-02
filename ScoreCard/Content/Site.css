@@ -153,6 +153,11 @@ tr.score.line.undertotal input[type=text] {
     padding: 0;
 }
 
+tr.score.actual.undertotal input[type=text] {
+    border-bottom: double blue;
+    padding: 0;
+}
+
 tr.score.group.undertotal td.subline {
     border-top: 1px solid blue;
 }

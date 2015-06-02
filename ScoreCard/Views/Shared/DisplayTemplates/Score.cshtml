@@ -4,14 +4,16 @@
     // 14 columns
     Layout = null;
     var rollup = Model.scores != null && Model.scores.Count > 0;
+    var actual = Model.GroupId == null && Model.SiteId == null;
     var prefix = Model.LineId + "_" + Model.GroupId + "_" + Model.SiteId + "_";
+    var group = rollup?"<em>" + Model.Group + "</em> <i class='fa fa-caret-right'></i>":(actual?"All Detail "+(Model.avg?"Average":"Sum"):"");
 }
 
 <tr data-lineid="@Model.LineId" data-scoreid="@Model.ScoreId" data-scale="@(Math.Pow(10,Model.Decimal))" data-groupid="@Model.GroupId"
-    data-siteid="@Model.SiteId" class="score @(rollup?"group":"site") @(Model.avg?"avg":"")" style="display: none;"
+    data-siteid="@Model.SiteId" class="score @(rollup?"group":(actual?"actual":"site")) @(Model.avg?"avg":"")" style="display: none;"
     @if (rollup) {<text>title="@Model.Comment"</text>}>
     <td colspan="2"></td>
-    <td colspan="1" class="subline">@if (rollup){<em>@Model.Group</em> <i class="fa fa-caret-right"></i>}</td>
+    <td colspan="1" class="subline">@Html.Raw(group)</td>
     <td colspan="2" class="subline">@Model.Site</td>
     <td></td>
     <td>@Html.DisplayFor(m => m.PriorTotal, new { @class = "priorval", mask = @Model.Decimal, ro = true, id = prefix+"prior"})</td>
