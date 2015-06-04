@@ -154,14 +154,15 @@ namespace ScoreCard.Models
                     var entries = list.Count(s => s.Total.HasValue && s.Total.Value > 0);
                     var gScore = new Score(list);                                   // create new score for group subtotal
                     gScore.LineId = l.LineId;                           
-                    gScore.avg = l.symbol == "%";
+                    gScore.avg = l.symbol == "%" || l.symbol == "quarterly";
+                    gScore.avgq = l.symbol == "%";
                     gScore.GroupId = g.Key;                                         // group subtotal has same groupid...
                     gScore.Group = g.First().Group;
                     gScore.Site = "All";                                            // its for all sites, a subtotal
                     gScore.SiteId = 0;
                     gScore.CanEdit = false;
                     if (entries>0)
-                        gScore.Comment = " " + (gScore.avg? "averaged": "summed")+ " over " + entries + " site" + (entries == 1 ? "" : "s");
+                        gScore.Comment = " " + (gScore.avgq? "averaged": "summed")+ " over " + entries + " site" + (entries == 1 ? "" : "s");
                     gScore.scores = list;                                           // have children sites be in subtotal 
                     groupScores.Add(gScore);
                     Debug.WriteLine("line " + l.item + ": " + g.First().Group + " " + groups[g.Key].Count() + " scores " + gScore.scores.Count());

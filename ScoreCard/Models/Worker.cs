@@ -205,10 +205,14 @@ namespace ScoreCard.Models
 
             var rights = new JavaScriptSerializer().Deserialize<int[][]>(jRights);
             var groups = new JavaScriptSerializer().Deserialize<int[]>(groupids);
-            var localrights = string.Join(",", groups.Select(g => rights[g].Length > 0 ? string.Join(",", rights[g].Select(s => "(" + g.ToString() + "," + s.ToString() + ")").ToArray()) : null).Where(t=>t != null).ToArray());
+            var localrights = string.Join(",", groups.Select((g,i) => rights[i].Length > 0 ? 
+                              string.Join(",", rights[i].Select(s => "(" + g.ToString() + "," + s.ToString() + ")").ToArray()) : null)
+                              .Where(t=>t != null).ToArray());
+
             using (scoreDB s = new scoreDB())
             {
-                var merge = string.Format(_responsibility, w.WorkerId, string.Join(",", lineids)) + string.Format(_permitted, localrights, w.WorkerId);
+                var merge = string.Format(_responsibility, w.WorkerId, string.Join(",", lineids));
+                merge += string.IsNullOrWhiteSpace(localrights) ? "" : string.Format(_permitted, localrights, w.WorkerId);
                 s.Execute(merge);
             }
         }

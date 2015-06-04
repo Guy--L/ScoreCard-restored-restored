@@ -118,7 +118,7 @@
             if (item == 0 && qrt > q)                 // last non-zero value
                 q = qrt;
         });
-        if (rw.hasClass('avg')) sum /= (n==0?1:n);
+        if (rw.hasClass('avg') || rw.hasClass('qtr')) sum /= (n==0?1:n);
         $('.yearval', rw).val(sum);     // total on row
         //cuetarget($('.yearval', rw), Number($('.targval', rw).val() * q), Number(4 * sum));           
         // color target according to last entered value

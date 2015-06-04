@@ -53,6 +53,7 @@ namespace ScoreCard.Models
         public int Decimal { get; set; }
         public bool CanEdit { get; set; }
         public bool avg { get; set; }
+        public bool avgq { get; set; }
         public List<Score> scores { get; set; }
 
         public Score()
@@ -98,7 +99,8 @@ namespace ScoreCard.Models
             LineId = ln.LineId;
 
             Decimal = ln.DecimalPoint;
-            avg = ln.symbol == "%";
+            avg = ln.symbol == "%" || ln.symbol == "quarterly";
+            avgq = ln.symbol == "%";
             if (avg)
             {
                 Total /= count();
@@ -221,6 +223,7 @@ namespace ScoreCard.Models
             ScoreId = ln.ScoreId;
             Decimal = ln.Decimal;
             avg = ln.avg;
+            avgq = ln.avgq;
 
             Q1 = (ln.Q1==0)?r.Sum(s => s.Q1):ln.Q1;
             Q2 = (ln.Q2 == 0) ? r.Sum(s => s.Q2) : ln.Q2;
@@ -895,7 +898,71 @@ INSERT INTO [dbo].[Score]  ([YearEnding],[LineId],[GroupId],[SiteId]) VALUES
 	(@@year,36,1,18),
 	(@@year,36,1,19),
 	(@@year,36,1,20),
-	(@@year,36,1,21)
+	(@@year,36,1,21),
+	(@@year,37,0,0),
+	(@@year,37,1,1),
+	(@@year,37,1,2),
+	(@@year,37,1,3),
+	(@@year,37,1,4),
+	(@@year,37,1,5),
+	(@@year,37,1,6),
+	(@@year,37,1,7),
+	(@@year,37,1,8),
+	(@@year,37,1,9),
+	(@@year,37,1,10),
+	(@@year,37,1,11),
+	(@@year,37,1,12),
+	(@@year,37,1,13),
+	(@@year,37,1,14),
+	(@@year,37,1,15),
+	(@@year,37,1,16),
+	(@@year,37,1,17),
+	(@@year,37,1,18),
+	(@@year,37,1,19),
+	(@@year,37,1,20),
+	(@@year,37,1,21),
+	(@@year,37,2,1),
+	(@@year,37,2,2),
+	(@@year,37,2,3),
+	(@@year,37,2,4),
+	(@@year,37,2,5),
+	(@@year,37,2,6),
+	(@@year,37,2,7),
+	(@@year,37,2,8),
+	(@@year,37,2,9),
+	(@@year,37,2,10),
+	(@@year,37,2,11),
+	(@@year,37,2,12),
+	(@@year,37,2,13),
+	(@@year,37,2,14),
+	(@@year,37,2,15),
+	(@@year,37,2,16),
+	(@@year,37,2,17),
+	(@@year,37,2,18),
+	(@@year,37,2,19),
+	(@@year,37,2,20),
+	(@@year,37,2,21),
+	(@@year,37,3,1),
+	(@@year,37,3,2),
+	(@@year,37,3,3),
+	(@@year,37,3,4),
+	(@@year,37,3,5),
+	(@@year,37,3,6),
+	(@@year,37,3,7),
+	(@@year,37,3,8),
+	(@@year,37,3,9),
+	(@@year,37,3,10),
+	(@@year,37,3,11),
+	(@@year,37,3,12),
+	(@@year,37,3,13),
+	(@@year,37,3,14),
+	(@@year,37,3,15),
+	(@@year,37,3,16),
+	(@@year,37,3,17),
+	(@@year,37,3,18),
+	(@@year,37,3,19),
+	(@@year,37,3,20),
+	(@@year,37,3,21)
 ";
     }
 
