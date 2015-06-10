@@ -81,6 +81,7 @@
     <None Include="ScoreDB.guydev.publish.xml" />
     <None Include="Data\Workers.sql" />
     <None Include="Data\BlankYear.sql" />
+    <None Include="Data\dbo.Line3.6a.data.sql" />
     <None Include="Data\dbo.Line2.9a.data.sql" />
   </ItemGroup>
 </Project>

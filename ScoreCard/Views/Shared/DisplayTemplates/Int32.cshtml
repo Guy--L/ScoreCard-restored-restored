@@ -4,8 +4,8 @@
     var points = ViewData["mask"] as int?;
     var div = 1;
     var imask = "'alias': 'numeric'";
-    if (points.HasValue && points.Value > 0) {
-        div = Enumerable.Repeat(10, points.Value).Aggregate((i, j) => i * j);
+    if (points.HasValue) {
+        div = points.Value > 0 ? Enumerable.Repeat(10, points.Value).Aggregate((i, j) => i * j) : 1;
         imask = "'alias': 'decimal', 'digits': "+points.Value;
     }        
     double number = ((double)(Model ?? 0))/div;
