@@ -156,13 +156,16 @@ namespace ScoreCard.Models
                     gScore.LineId = l.LineId;                           
                     gScore.avg = l.symbol == "%" || l.symbol == "quarterly";
                     gScore.avgq = l.symbol == "%";
+                    gScore.t8 = l.symbol == "%>=8";
                     gScore.GroupId = g.Key;                                         // group subtotal has same groupid...
                     gScore.Group = g.First().Group;
                     gScore.Site = "All";                                            // its for all sites, a subtotal
                     gScore.SiteId = 0;
                     gScore.CanEdit = false;
+
+                    var stat = gScore.t8 ? "scored" : (gScore.avgq ? "averaged" : "summed");
                     if (entries>0)
-                        gScore.Comment = " " + (gScore.avgq? "averaged": "summed")+ " over " + entries + " site" + (entries == 1 ? "" : "s");
+                        gScore.Comment = " " + stat + " over " + entries + " site" + (entries == 1 ? "" : "s");
                     gScore.scores = list;                                           // have children sites be in subtotal 
                     groupScores.Add(gScore);
                     Debug.WriteLine("line " + l.item + ": " + g.First().Group + " " + groups[g.Key].Count() + " scores " + gScore.scores.Count());

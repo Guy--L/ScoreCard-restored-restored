@@ -5,6 +5,7 @@
     bool exp = Model.scores.Count > 0;
     bool qtr = Model.symbol == "%";
     bool avg = qtr || Model.symbol == "quarterly";
+    bool t8 = Model.symbol == "%>=8";
     var prefix = Model.LineId + "_0_0_";
 }
 @if (Model.symbol == "blank")
@@ -16,7 +17,7 @@
 }
 else
 {
-    <tr data-lineid="@Model.LineId" data-scoreid="@Model.topdown.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"") @(avg?"avg":"") @(qtr ? "qtr" : "")">
+    <tr data-lineid="@Model.LineId" data-scoreid="@Model.topdown.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"") @(avg?"avg":"") @(qtr ? "qtr" : "") @(t8?"t8":"")">
         <td class="major"></td>
         <td class="minor">@Model.item</td>
         <td colspan="2">@Model.Description</td>

@@ -69,22 +69,29 @@
     {
         var sum = 0;
         var n = 0;
+        var t8 = rw.hasClass('t8');
+        var avg = t8;
 
         var scope = '[data-lineid=' + rw.data('lineid') + ']';
         var search = '[id^=' + pre + '][id$=' + suf + ']';
+        if (t8 && pre.split('_').length==2) {
+            t8 = false;
+        }
         $(search, scope).each(function () {
             var i = $(this).attr('id');
             var s = i.length - pre.length - suf.length;
             var x = i.substr(pre.length, s);
             if (x!='0') {
                 var item = Number($(this).val());
-                sum += item;
+                console.log(item);
                 if (item != 0) n++;
+                sum += t8?(item<8?0:1):item;
             }
             // console.log($(this).attr('id')+': '+x+' '+$(this).val() + ' E '+ sum);
         });
         // console.log('-----');
-        if (rw.hasClass('avg')) sum /= (n==0?1:n);
+        if (t8) sum *= 100;
+        if (rw.hasClass('avg')||avg) sum /= (n==0?1:n);
         return sum;
     }
     function rowcalc(target) {
@@ -133,6 +140,7 @@
             prefix = path[0]+'_';
             suffix = '_0_'+path[3];
             var upd = summer(rw, prefix, suffix);
+            console.log('upd: '+upd);
             var tar = $(linetr).closest('tr').data('scoreid');
             var hider = false;
             if ($(target).val()==$(linetr).val()) {
@@ -204,7 +212,7 @@
     function detail(e) {
         var rw = e.closest('tr');
         var next = rw.next();
-        if (!next.hasClass('actual'))
+        if (!next.hasClass('actual') || rw.hasClass('t8'))
             return null;
         if ($('.targval', rw).val() != $('.targval', next).val())
             return next;

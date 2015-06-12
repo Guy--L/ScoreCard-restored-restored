@@ -47,8 +47,16 @@ namespace ScoreCard.Models
         public static int? calc(this IEnumerable<Score> list, Func<Score, int?> member)
         {
             var f = list.First();
-            var c = f.t8 ? list.Where(s => member(s) >= 8).Sum(s => 1) : list.Sum(s => member(s));
-            if (f.t8 || f.avg) c /= list.divisor(s => member(s));
+            var avg = f.t8;
+
+            var t8 = avg && (f.scores==null || f.scores.Count() == 0);
+
+            var c = t8 ? list.Where(s => member(s) >= 800).Sum(s => 1) : list.Sum(s => member(s));
+
+            if (t8) c *= 100;
+            if (avg || f.avg) c /= list.divisor(s => member(s));
+            if (t8) c *= 100;
+
             return c;
         }
     }
