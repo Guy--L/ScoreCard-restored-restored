@@ -53,7 +53,7 @@ namespace ScoreCard.Models
 
         private static string _linelist = @";with linelist as (
 	            select cast(n.[order] as varchar(10)) as item, n.ParentLineId,
-	            1 as [level], n.[description], n.[order], n.LineId, n.MeasureId
+	            1 as [level], n.[description], n.[order], n.LineId, n.MeasureId, n.ShowTotal
 	            from line n
 	            where n.LineId = n.ParentLineId
 
@@ -61,14 +61,14 @@ namespace ScoreCard.Models
 
                 select cast(p.[item] + (case when p.[level] = 1 then '.' else '' end) + CONVERT(varchar(10), n.[order]) as varchar(10)) as item, 
 				n.ParentLineId,
-	            p.[level]+1 as [level], n.[description], n.[order], n.LineId, n.MeasureId
+	            p.[level]+1 as [level], n.[description], n.[order], n.LineId, n.MeasureId, n.ShowTotal
 	            from line n
 	            inner join linelist p on p.LineId = n.ParentLineId
 	            where n.LineId != n.ParentLineId
             )";
 
         private static string _outline = _linelist + @"
-            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], s.ScoreId, s.Comment,
+            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], q.ShowTotal, s.ScoreId, s.Comment,
             (
                 select isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0)
                 from score
@@ -143,7 +143,7 @@ namespace ScoreCard.Models
                     l.owner = q.FirstName[0] + ". " + q.LastName + (l.workers.Count>1?("+"+(l.workers.Count-1)):"");
                 }
                 var IsOwner = l.workers.Any(w => w.WorkerId == login.WorkerId);
-                l.CanEdit = (IsOwner || login.IsAdmin) && (login.GroupId != 5);     // && (l.scores.Count == 0) 
+                l.CanEdit = (IsOwner || login.IsAdmin) && (login.GroupId != 5) && (l.symbol != "%>=8");     // && (l.scores.Count == 0) 
 
                 var groups = l.scores.ToLookup(s => s.GroupId.Value);               // partition site scores by group
                 var groupScores = new List<Score>();                                // create group subtotals

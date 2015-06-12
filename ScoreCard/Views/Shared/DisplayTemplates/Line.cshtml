@@ -16,16 +16,24 @@
 }
 else
 {
-    <tr data-lineid="@Model.LineId" data-scoreid="@Model.topdown.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"") @(avg?"avg":"") @(avg ? "qtr" : "")">
+    <tr data-lineid="@Model.LineId" data-scoreid="@Model.topdown.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"") @(avg?"avg":"") @(qtr ? "qtr" : "")">
         <td class="major"></td>
         <td class="minor">@Model.item</td>
         <td colspan="2">@Model.Description</td>
         <td>@Model.symbol @if (exp)
         {<i class="fa fa-caret-right"></i>}</td>
         <td class="owner" title="@Model.owntip">@Model.owner</td>
-        <td>@Html.DisplayFor(m => m.topPriorTotal, new { @class = "priorval", mask = @Model.DecimalPoint, ro = true, id = prefix + "prior" })</td>
+        <td>
+        @if (Model.ShowTotal) { 
+            @Html.DisplayFor(m => m.topPriorTotal, new { @class = "priorval", mask = @Model.DecimalPoint, ro = true, id = prefix + "prior" })
+        }
+        </td>
         <td>@Html.DisplayFor(m => m.topTarget, new { @class = "targval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "target" })</td>
-        <td>@Html.DisplayFor(m => m.topTotal, new { @class = "yearval", mask = @Model.DecimalPoint, ro = true, id = prefix + "total" })</td>
+        <td>
+        @if (Model.ShowTotal) {
+            @Html.DisplayFor(m => m.topTotal, new { @class = "yearval", mask = @Model.DecimalPoint, ro = true, id = prefix + "total" })
+        }
+        </td>
         <td>@Html.DisplayFor(m => m.topQ1, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "1" })</td>
         <td>@Html.DisplayFor(m => m.topQ2, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "2" })</td>
         <td>@Html.DisplayFor(m => m.topQ3, new { @class = "quarval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "3" })</td>

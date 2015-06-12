@@ -1,6 +1,9 @@
-﻿SET IDENTITY_INSERT [dbo].[Group] ON
+﻿go;
+
+SET IDENTITY_INSERT [dbo].[Group] ON
 INSERT INTO [dbo].[Group] ([GroupId], [Group], [GroupName], [ADName]) VALUES (7, N'Shares', N'Recognition Shares', NULL)
 SET IDENTITY_INSERT [dbo].[Group] OFF
+go
 
 SET IDENTITY_INSERT [dbo].[Site] ON
 INSERT INTO [dbo].[Site] ([SiteId], [Site], [SiteName]) VALUES (22, N'Platinum', N'Platinum')
@@ -9,6 +12,7 @@ INSERT INTO [dbo].[Site] ([SiteId], [Site], [SiteName]) VALUES (24, N'Pearl', N'
 INSERT INTO [dbo].[Site] ([SiteId], [Site], [SiteName]) VALUES (25, N'Silver', N'Silver')
 INSERT INTO [dbo].[Site] ([SiteId], [Site], [SiteName]) VALUES (26, N'E-Card', N'E-Card')
 SET IDENTITY_INSERT [dbo].[Site] OFF
+go
 
 INSERT [dbo].[Score]  ([YearEnding],[LineId],[GroupId],[SiteId]) VALUES 
 	(2014,35,7,22),
@@ -21,3 +25,4 @@ INSERT [dbo].[Score]  ([YearEnding],[LineId],[GroupId],[SiteId]) VALUES
 	(2015,35,7,24),
 	(2015,35,7,25),
 	(2015,35,7,26)
+go

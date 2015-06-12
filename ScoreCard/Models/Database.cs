@@ -104,6 +104,17 @@ namespace ScoreCard.Models
 	}
 	
 
+	[TableName("Site")]
+	[PrimaryKey("SiteId")]
+	[ExplicitColumns]
+    public partial class Site : scoreDB.Record<Site>  
+    {		
+		[Column] public int SiteId { get; set; } 		
+		[Column("Site")] public string _Site { get; set; }
+		
+		[Column] public string SiteName { get; set; } 	
+	}
+
 	[TableName("Settings")]
 	[PrimaryKey("SettingsId", AutoIncrement=false)]
 	[ExplicitColumns]
@@ -111,40 +122,6 @@ namespace ScoreCard.Models
     {		
 		[Column] public int SettingsId { get; set; } 		
 		[Column] public bool AllowIonCorrection { get; set; } 	
-	}
-
-	[TableName("Line")]
-	[PrimaryKey("LineId")]
-	[ExplicitColumns]
-    public partial class Line : scoreDB.Record<Line>  
-    {		
-		[Column] public int LineId { get; set; } 		
-		[Column] public int ParentLineId { get; set; } 		
-		[Column] public string Order { get; set; } 		
-		[Column] public int MeasureId { get; set; } 		
-		[Column] public string Description { get; set; } 	
-	}
-
-	[TableName("Responsibility")]
-	[PrimaryKey("ResponsibilityId")]
-	[ExplicitColumns]
-    public partial class Responsibility : scoreDB.Record<Responsibility>  
-    {		
-		[Column] public int ResponsibilityId { get; set; } 		
-		[Column] public int WorkerId { get; set; } 		
-		[Column] public int LineId { get; set; } 	
-	}
-
-	[TableName("Measure")]
-	[PrimaryKey("MeasureId")]
-	[ExplicitColumns]
-    public partial class Measure : scoreDB.Record<Measure>  
-    {		
-		[Column] public int MeasureId { get; set; } 		
-		[Column] public string Symbol { get; set; } 		
-		[Column] public string Mask { get; set; } 		
-		[Column] public string Description { get; set; } 		
-		[Column] public int DecimalPoint { get; set; } 	
 	}
 
 	[TableName("Group")]
@@ -159,15 +136,50 @@ namespace ScoreCard.Models
 		[Column] public string ADName { get; set; } 	
 	}
 
-	[TableName("Site")]
-	[PrimaryKey("SiteId")]
+	[TableName("Permit")]
+	[PrimaryKey("PermitId")]
 	[ExplicitColumns]
-    public partial class Site : scoreDB.Record<Site>  
+    public partial class Permit : scoreDB.Record<Permit>  
     {		
-		[Column] public int SiteId { get; set; } 		
-		[Column("Site")] public string _Site { get; set; }
-		
-		[Column] public string SiteName { get; set; } 	
+		[Column] public int PermitId { get; set; } 		
+		[Column] public int WorkerId { get; set; } 		
+		[Column] public int GroupId { get; set; } 		
+		[Column] public int SiteId { get; set; } 	
+	}
+
+	[TableName("Measure")]
+	[PrimaryKey("MeasureId")]
+	[ExplicitColumns]
+    public partial class Measure : scoreDB.Record<Measure>  
+    {		
+		[Column] public int MeasureId { get; set; } 		
+		[Column] public string Symbol { get; set; } 		
+		[Column] public string Mask { get; set; } 		
+		[Column] public string Description { get; set; } 		
+		[Column] public int DecimalPoint { get; set; } 	
+	}
+
+	[TableName("Line")]
+	[PrimaryKey("LineId")]
+	[ExplicitColumns]
+    public partial class Line : scoreDB.Record<Line>  
+    {		
+		[Column] public int LineId { get; set; } 		
+		[Column] public int ParentLineId { get; set; } 		
+		[Column] public string Order { get; set; } 		
+		[Column] public int MeasureId { get; set; } 		
+		[Column] public string Description { get; set; } 		
+		[Column] public bool ShowTotal { get; set; } 	
+	}
+
+	[TableName("Presence")]
+	[PrimaryKey("PresenceId")]
+	[ExplicitColumns]
+    public partial class Presence : scoreDB.Record<Presence>  
+    {		
+		[Column] public int PresenceId { get; set; } 		
+		[Column] public int GroupId { get; set; } 		
+		[Column] public int SiteId { get; set; } 	
 	}
 
 	[TableName("Worker")]
@@ -194,16 +206,6 @@ namespace ScoreCard.Models
 		[Column] public int? SiteId { get; set; } 	
 	}
 
-	[TableName("Presence")]
-	[PrimaryKey("PresenceId")]
-	[ExplicitColumns]
-    public partial class Presence : scoreDB.Record<Presence>  
-    {		
-		[Column] public int PresenceId { get; set; } 		
-		[Column] public int GroupId { get; set; } 		
-		[Column] public int SiteId { get; set; } 	
-	}
-
 	[TableName("Score")]
 	[PrimaryKey("ScoreId")]
 	[ExplicitColumns]
@@ -223,15 +225,14 @@ namespace ScoreCard.Models
 		[Column] public int? SiteId { get; set; } 	
 	}
 
-	[TableName("Permit")]
-	[PrimaryKey("PermitId")]
+	[TableName("Responsibility")]
+	[PrimaryKey("ResponsibilityId")]
 	[ExplicitColumns]
-    public partial class Permit : scoreDB.Record<Permit>  
+    public partial class Responsibility : scoreDB.Record<Responsibility>  
     {		
-		[Column] public int PermitId { get; set; } 		
+		[Column] public int ResponsibilityId { get; set; } 		
 		[Column] public int WorkerId { get; set; } 		
-		[Column] public int GroupId { get; set; } 		
-		[Column] public int SiteId { get; set; } 	
+		[Column] public int LineId { get; set; } 	
 	}
 
 }

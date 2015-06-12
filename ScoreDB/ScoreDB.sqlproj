@@ -70,7 +70,6 @@
     <Build Include="Presence.sql" />
     <Build Include="Permit.sql" />
     <Build Include="Settings.sql" />
-    <Build Include="Data\Recognitions.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ScoreDB.refactorlog" />

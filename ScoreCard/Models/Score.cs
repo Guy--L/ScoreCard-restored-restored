@@ -30,18 +30,26 @@ namespace ScoreCard.Models
         }
     }
 
-    public static class MyExtensions 
+    public static class MyExtensions
     {
-        public static int divisor<Score>(this IEnumerable<Score> list,  Func<Score, int?> member)
+        public static int divisor(this IEnumerable<Score> list, Func<Score, int?> member)
         {
-            var count = list.Where(s=>member(s).HasValue && member(s)!=0).Sum(s=>1);
-            return count==0?1:count;
+            var count = list.Where(s => member(s).HasValue && member(s) != 0).Sum(s => 1);
+            return count == 0 ? 1 : count;
         }
 
         public static int? top(this Line ln, Func<Score, int?> m)
         {
             var topd = m(ln.topdown).HasValue && m(ln.topdown).Value != 0;
             return topd ? m(ln.topdown).Value : m(ln.bottomup).Value;
+        }
+
+        public static int? calc(this IEnumerable<Score> list, Func<Score, int?> member)
+        {
+            var f = list.First();
+            var c = f.t8 ? list.Where(s => member(s) >= 8).Sum(s => 1) : list.Sum(s => member(s));
+            if (f.t8 || f.avg) c /= list.divisor(s => member(s));
+            return c;
         }
     }
 
@@ -54,6 +62,8 @@ namespace ScoreCard.Models
         public bool CanEdit { get; set; }
         public bool avg { get; set; }
         public bool avgq { get; set; }
+        public bool t8 { get; set; }
+        public bool ShowTotal { get; set; }
         public List<Score> scores { get; set; }
 
         public Score()
@@ -97,10 +107,13 @@ namespace ScoreCard.Models
             Site = st._Site;
 
             LineId = ln.LineId;
+            ShowTotal = ln.ShowTotal;
 
             Decimal = ln.DecimalPoint;
             avg = ln.symbol == "%" || ln.symbol == "quarterly";
             avgq = ln.symbol == "%";
+            t8 = ln.symbol == "%>=8";
+
             if (avg)
             {
                 Total /= count();
@@ -118,12 +131,12 @@ namespace ScoreCard.Models
 
         public int count()
         {
-                var n =
-                      ((Q1.HasValue && Q1.Value != 0) ? 1 : 0)
-                    + ((Q2.HasValue && Q2.Value != 0) ? 1 : 0)
-                    + ((Q3.HasValue && Q3.Value != 0) ? 1 : 0)
-                    + ((Q4.HasValue && Q4.Value != 0) ? 1 : 0);
-                return n == 0 ? 1 : n;
+            var n =
+                    ((Q1.HasValue && Q1.Value != 0) ? 1 : 0)
+                + ((Q2.HasValue && Q2.Value != 0) ? 1 : 0)
+                + ((Q3.HasValue && Q3.Value != 0) ? 1 : 0)
+                + ((Q4.HasValue && Q4.Value != 0) ? 1 : 0);
+            return n == 0 ? 1 : n;
         }
 
         //public string cue
@@ -225,54 +238,13 @@ namespace ScoreCard.Models
             avg = ln.avg;
             avgq = ln.avgq;
 
-            Q1 = (ln.Q1==0)?r.Sum(s => s.Q1):ln.Q1;
-            Q2 = (ln.Q2 == 0) ? r.Sum(s => s.Q2) : ln.Q2;
-            Q3 = (ln.Q3 == 0) ? r.Sum(s => s.Q3) : ln.Q3;
-            Q4 = (ln.Q4 == 0) ? r.Sum(s => s.Q4) : ln.Q4;
-            Total = (ln.Total == 0) ? r.Sum(s => s.Total) : ln.Total;
-            Target = (ln.Target == 0) ? r.Sum(s => s.Target) : ln.Target;
-            PriorTotal = (ln.PriorTotal == 0) ? r.Sum(s => s.PriorTotal) : ln.PriorTotal;
-            if (avg)
-            {
-                if (ln.Q1 == 0) Q1 /= r.divisor(s => s.Q1);
-                if (ln.Q2 == 0) Q2 /= r.divisor(s => s.Q2);
-                if (ln.Q3 == 0) Q3 /= r.divisor(s => s.Q3);
-                if (ln.Q4 == 0) Q4 /= r.divisor(s => s.Q4);
-                if (ln.Total == 0) Total /= r.divisor(s => s.Total);
-                if (ln.Target == 0) Target /= r.divisor(s => s.Target);
-                if (ln.PriorTotal == 0) PriorTotal /= r.divisor(s => s.PriorTotal);
-            }
-        }
-
-        public void Attach(List<Score> p)
-        {
-            Q1 = p.Sum(s => s.Q1);
-            Q2 = p.Sum(s => s.Q2);
-            Q3 = p.Sum(s => s.Q3);
-            Q4 = p.Sum(s => s.Q4);
-            Total = p.Sum(s => s.Total);
-            Target = p.Sum(s => s.Target);
-            PriorTotal = p.Sum(s => s.PriorTotal);
-            Decimal = p.First().Decimal;
-            avg = p.First().avg;
-            if (avg)
-            {
-                Q1 /= p.divisor(s => s.Q1);
-                Q2 /= p.divisor(s => s.Q2);
-                Q3 /= p.divisor(s => s.Q3);
-                Q4 /= p.divisor(s => s.Q4);
-                Total /= p.divisor(s => s.Total);
-                Target /= p.divisor(s => s.Target);
-                PriorTotal /= p.divisor(s => s.PriorTotal);
-            }
-            GroupId = 0;
-            Group = "All";
-            if (p.Count == 1 && p.First().GroupId == 0)
-            {
-                ScoreId = p.First().ScoreId;
-                LineId = p.First().LineId;
-                p.Clear();
-            }
+            Q1 = (ln.Q1==0)?r.calc(s => s.Q1):ln.Q1;
+            Q2 = (ln.Q2 == 0) ? r.calc(s => s.Q2) : ln.Q2;
+            Q3 = (ln.Q3 == 0) ? r.calc(s => s.Q3) : ln.Q3;
+            Q4 = (ln.Q4 == 0) ? r.calc(s => s.Q4) : ln.Q4;
+            Total = (ln.Total == 0) ? r.calc(s => s.Total) : ln.Total;
+            Target = (ln.Target == 0) ? r.calc(s => s.Target) : ln.Target;
+            PriorTotal = (ln.PriorTotal == 0) ? r.calc(s => s.PriorTotal).Value : ln.PriorTotal;
         }
 
         public static string _blankyear = @"
@@ -987,5 +959,6 @@ INSERT INTO [dbo].[Score]  ([YearEnding],[LineId],[GroupId],[SiteId]) VALUES
 	(@@year,38,4,21),
 ";
     }
+
 
 }
