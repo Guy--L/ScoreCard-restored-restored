@@ -106,11 +106,21 @@ namespace ScoreCard.Models
 
         public int? topPriorTotal { get { return this.top(x => x.PriorTotal); } }
         public int? topTarget { get { return this.top(x => x.Target); } }
-        public int? topTotal { get { return this.top(x => x.Total); } }
         public int? topQ1 { get { return this.top(x => x.Q1 ); } }
         public int? topQ2 { get { return this.top(x => x.Q2 ); } }
         public int? topQ3 { get { return this.top(x => x.Q3 ); } }
         public int? topQ4 { get { return this.top(x => x.Q4 ); } }
+        public int? topTotal
+        {
+            get
+            {
+                return
+                    (topQ1.HasValue ? topQ1.Value : 0) +
+                    (topQ2.HasValue ? topQ2.Value : 0) +
+                    (topQ3.HasValue ? topQ3.Value : 0) +
+                    (topQ4.HasValue ? topQ4.Value : 0);
+            }
+        }
 
         public List<Score> scores { get; set; }
         public Score topdown { get; set; }
