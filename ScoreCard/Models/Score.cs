@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using NPoco;
@@ -34,7 +35,7 @@ namespace ScoreCard.Models
     {
         public static int divisor(this IEnumerable<Score> list, Func<Score, int?> member)
         {
-            var count = list.Where(s => member(s).HasValue && member(s) != 0).Sum(s => 1);
+            var count = list.Where(s => member(s).HasValue).Sum(s => 1);
             return count == 0 ? 1 : count;
         }
 
@@ -76,16 +77,20 @@ namespace ScoreCard.Models
 
         public Score()
         {
-            Q1 = Q2 = Q3 = Q4 = 0;
-            Target = 0;
         }
 
         private static string _update = @"update score set q{0} = {1} where scoreid = {2}";
-        public static void SaveQuarter(int year, int scoreid, int quarter, int value)
+        public static void SaveQuarter(int year, int scoreid, int quarter, int? value)
         {
+            dynamic val;
+            if (value.HasValue)
+                val = value.Value;
+            else
+                val = "null";
+
             using (scoreDB s = new scoreDB())
             {
-                    s.Execute(string.Format(_update, quarter, value, scoreid));
+                s.Execute(string.Format(_update, quarter, val, scoreid));
             }
         }
 
@@ -94,16 +99,22 @@ namespace ScoreCard.Models
         {
             using (scoreDB s = new scoreDB())
             {
-                    s.Execute(string.Format(_comment, comment, scoreid));
+                s.Execute(string.Format(_comment, comment, scoreid));
             }
         }
 
-        private static string _target = @"update score set target = '{0}' where scoreid = {1}";
-        public static void SaveTarget(int year, int scoreid, int target)
+        private static string _target = @"update score set target = {0} where scoreid = {1}";
+        public static void SaveTarget(int year, int scoreid, int? target)
         {
+            dynamic val;
+            if (target.HasValue)
+                val = target.Value;
+            else
+                val = "null";
+
             using (scoreDB s = new scoreDB())
             {
-                    s.Execute(string.Format(_target, target, scoreid));
+                s.Execute(string.Format(_target, val, scoreid));
             }
         }
 
@@ -124,7 +135,7 @@ namespace ScoreCard.Models
 
             if (avg)
             {
-                Total /= count();
+                Total /= count(true);
                 PriorTotal /= 4;
             }
 
@@ -137,14 +148,10 @@ namespace ScoreCard.Models
             return this;                        // site-level score
         }
 
-        public int count()
+        public int count(bool normal)
         {
-            var n =
-                    ((Q1.HasValue && Q1.Value != 0) ? 1 : 0)
-                + ((Q2.HasValue && Q2.Value != 0) ? 1 : 0)
-                + ((Q3.HasValue && Q3.Value != 0) ? 1 : 0)
-                + ((Q4.HasValue && Q4.Value != 0) ? 1 : 0);
-            return n == 0 ? 1 : n;
+            var n = (Q1.HasValue?1:0) + (Q2.HasValue?1:0) + (Q3.HasValue?1:0) + (Q4.HasValue?1:0);
+            return (n == 0 && normal) ? 1 : n;
         }
 
         //public string cue
@@ -184,6 +191,7 @@ namespace ScoreCard.Models
             Q3 = t.Q3;
             Q4 = t.Q4;
             Total = Q1 + Q2 + Q3 + Q4;
+            Debug.WriteLine("1Total " + Total + ".");
             Comment = t.Comment;
         }
 
@@ -205,6 +213,7 @@ namespace ScoreCard.Models
             Q3 = t.Q3;
             Q4 = t.Q4;
             Total = Q1 + Q2 + Q3 + Q4;
+            Debug.WriteLine("2Total " + Total + ".");
             Comment = t.Comment;
         }
 
@@ -223,7 +232,6 @@ namespace ScoreCard.Models
                     Q2 = 0, 
                     Q3 = 0, 
                     Q4 = 0, 
-                    Total = 0, 
                     Target = 0, 
                     PriorTotal = 0, 
                     avg = r.First().avg, 
@@ -251,6 +259,7 @@ namespace ScoreCard.Models
             Q3 = (ln.Q3 == 0) ? r.calc(s => s.Q3) : ln.Q3;
             Q4 = (ln.Q4 == 0) ? r.calc(s => s.Q4) : ln.Q4;
             Total = (ln.Total == 0) ? r.calc(s => s.Total) : ln.Total;
+            Debug.WriteLine("3Total " + Total + ".");
             Target = (ln.Target == 0) ? r.calc(s => s.Target) : ln.Target;
             PriorTotal = (ln.PriorTotal == 0) ? r.calc(s => s.PriorTotal).Value : ln.PriorTotal;
         }

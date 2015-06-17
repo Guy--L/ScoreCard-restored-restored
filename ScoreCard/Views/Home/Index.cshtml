@@ -82,10 +82,11 @@
             var s = i.length - pre.length - suf.length;
             var x = i.substr(pre.length, s);
             if (x!='0') {
-                var item = Number($(this).val());
-                console.log(item);
-                if (item != 0) n++;
-                sum += t8?(item<8?0:1):item;
+                var item = $(this).val();
+                if (item !== '') n++;
+                else item = 0;
+                var val = Number(item);
+                sum += t8?(val<8?0:1):val;
             }
             // console.log($(this).attr('id')+': '+x+' '+$(this).val() + ' E '+ sum);
         });
@@ -99,9 +100,11 @@
         var n = 0;
         rw = $(target).closest('tr');
         $('.quarval', rw).each(function() {
-            var item =  Number($(this).val());
-            sum += item
-            if (item != 0) n++;
+            var item = $(this).val();
+            if (item !== '') n++;
+            else item = 0;
+            var val = Number(item);
+            sum += val;
         });
         console.log(rw.hasClass('avg')+" for avg and n = "+n);
         if (rw.hasClass('avg')) sum /= (n==0?1:n);
@@ -117,9 +120,11 @@
         var sync = 0;
 
         $('.quarval', rw).each(function () {
-            var item = Number($(this).val());
-            sum += item;
-            if (item!=0) n++;
+            var item = $(this).val();
+            if (item!=='') n++;
+            else item = 0;
+            var val = Number(item);
+            sum += val;
             var p = $(this).attr('id').split('_');      // check for entries in value
             var qrt = p[p.length-1];
             if (item == 0 && qrt > q)                 // last non-zero value
@@ -269,13 +274,15 @@
             var target = $('[id$=_' + quarterid + ']', '[data-scoreid=' + scoreid + ']');
             var row = target.closest('tr');
             var scale = row.data('scale');
-            target.val(value / (+scale));
+            var ival = value==null?'':(value/(+scale));
+            target.val(ival);
             var path = target.attr('id').split('_');
             recalc(target, path);
         };
         card.client.reflectTarget = function (scoreid, value) {
             var target = $('[id$=_target]', '[data-scoreid=' + scoreid + ']');
-            target.val(value);
+            var ival = value==null?'':value;
+            target.val(ival);
             var path = target.attr('id').split('_');
             retarget(target, path);
         };
@@ -298,8 +305,10 @@
                     sid = -Number(row.data('lineid'));
                 var scale = row.data('scale');
                 var qid = Number(path[3]);
-                console.log('year, sid, qid, value '+@Model.Year+', '+sid+', '+qid+', '+Number($(this).val()*scale));
-                card.server.updateCell(@Model.Year, sid, qid, Number($(this).val()*scale));
+                console.log('..');
+                var ival = ($(this).val()==='')?null:Number($(this).val()*scale);
+                console.log('year, sid, qid, value '+@Model.Year+', '+sid+', '+qid+', '+ival);
+                card.server.updateCell(@Model.Year, sid, qid, ival);
                 var clr = recalc($(this), path);
                 if (clr > 0) {
                     card.server.updateCell(@Model.Year, clr, qid, 0);
@@ -312,8 +321,9 @@
                 if (sid == 0)
                     sid = -Number(row.data('lineid'));
                 var scale = row.data('scale');
-                console.log('year, sid, value '+@Model.Year+', '+sid+', '+Number($(this).val()*scale));
-                card.server.updateTarget(@Model.Year, sid, Number($(this).val()*scale));
+                var ival = ($(this).val()==='')?null:Number($(this).val()*scale);
+                console.log('year, sid, value '+@Model.Year+', '+sid+', '+ival);
+                card.server.updateTarget(@Model.Year, sid, ival);
                 var clr = retarget($(this), path);
                 if (clr > 0) {
                     card.server.updateTarget(@Model.Year, clr, 0);

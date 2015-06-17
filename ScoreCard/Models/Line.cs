@@ -114,11 +114,16 @@ namespace ScoreCard.Models
         {
             get
             {
-                return
+                var sum =
                     (topQ1.HasValue ? topQ1.Value : 0) +
                     (topQ2.HasValue ? topQ2.Value : 0) +
                     (topQ3.HasValue ? topQ3.Value : 0) +
                     (topQ4.HasValue ? topQ4.Value : 0);
+
+                if (topdown != null && (topdown.avg || topdown.avgq))
+                    sum /= topdown.count(true);
+
+                return sum;
             }
         }
 
@@ -161,7 +166,7 @@ namespace ScoreCard.Models
                 foreach (var g in groups)                                           // skip over the All site
                 {
                     var list = groups[g.Key].ToList();                              // get site scores in group
-                    var entries = list.Count(s => s.Total.HasValue && s.Total.Value > 0);
+                    var entries = list.Count(s => s.count(false) > 0);
                     var gScore = new Score(list);                                   // create new score for group subtotal
                     gScore.LineId = l.LineId;                           
                     gScore.avg = l.symbol == "%" || l.symbol == "quarterly";

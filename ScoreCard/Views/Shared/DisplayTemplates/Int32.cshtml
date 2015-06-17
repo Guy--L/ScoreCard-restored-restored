@@ -9,7 +9,7 @@
         imask = "'alias': 'decimal', 'digits': "+points.Value;
     }        
     double number = ((double)(Model ?? 0))/div;
-    var show = number == 0 ? "" : number.ToString();
+    var show = Model==null ? "" : number.ToString();
 }
 @if (ro.HasValue && ro.Value) { 
     @Html.TextBox("", show, new { data_inputmask = @Html.Raw(imask), @class = @ViewData["class"], @disabled=true, @id = @ViewData["id"] })

@@ -15,7 +15,7 @@ namespace ScoreCard.Hubs
             Groups.Add(Context.ConnectionId, newyear.ToString());
         }
 
-        public void UpdateCell(int year, int scoreid, int quarter, int value)
+        public void UpdateCell(int year, int scoreid, int quarter, int? value)
         {
             Score.SaveQuarter(year, scoreid, quarter, value);
             Clients.OthersInGroup(year.ToString()).reflectCell(scoreid, quarter, value);
