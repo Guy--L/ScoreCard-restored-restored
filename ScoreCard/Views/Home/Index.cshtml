@@ -85,7 +85,7 @@
                 var item = $(this).val();
                 if (item !== '') n++;
                 else item = 0;
-                var val = Number(item);
+                var val = +item;
                 sum += t8?(val<8?0:1):val;
             }
             // console.log($(this).attr('id')+': '+x+' '+$(this).val() + ' E '+ sum);
@@ -103,7 +103,7 @@
             var item = $(this).val();
             if (item !== '') n++;
             else item = 0;
-            var val = Number(item);
+            var val = +item;
             sum += val;
         });
         console.log(rw.hasClass('avg')+" for avg and n = "+n);
@@ -123,7 +123,7 @@
             var item = $(this).val();
             if (item!=='') n++;
             else item = 0;
-            var val = Number(item);
+            var val = +item;
             sum += val;
             var p = $(this).attr('id').split('_');      // check for entries in value
             var qrt = p[p.length-1];
@@ -300,13 +300,12 @@
             $('.quarval').on('change', function () {
                 var path = $(this).attr('id').split('_');
                 var row = $(this).closest('tr');
-                var sid = Number(row.data('scoreid'));
+                var sid = +row.data('scoreid');
                 if (sid == 0)
-                    sid = -Number(row.data('lineid'));
-                var scale = row.data('scale');
-                var qid = Number(path[3]);
-                console.log('..');
-                var ival = ($(this).val()==='')?null:Number($(this).val()*scale);
+                    sid = -row.data('lineid');
+                var scale = +row.data('scale');
+                var qid = +path[3];
+                var ival = ($(this).val()==='')?null: Math.floor(+$(this).val()*scale);
                 console.log('year, sid, qid, value '+@Model.Year+', '+sid+', '+qid+', '+ival);
                 card.server.updateCell(@Model.Year, sid, qid, ival);
                 var clr = recalc($(this), path);
@@ -317,11 +316,11 @@
             $('.targval').on('change', function() {
                 var path = $(this).attr('id').split('_');
                 var row = $(this).closest('tr');
-                var sid = Number(row.data('scoreid'));
+                var sid = +row.data('scoreid');
                 if (sid == 0)
-                    sid = -Number(row.data('lineid'));
-                var scale = row.data('scale');
-                var ival = ($(this).val()==='')?null:Number($(this).val()*scale);
+                    sid = -row.data('lineid');
+                var scale = +row.data('scale');
+                var ival = ($(this).val()==='')?null:Math.floor(+$(this).val()*scale);
                 console.log('year, sid, value '+@Model.Year+', '+sid+', '+ival);
                 card.server.updateTarget(@Model.Year, sid, ival);
                 var clr = retarget($(this), path);
