@@ -68,9 +68,12 @@ namespace ScoreCard.Models
             )";
 
         private static string _outline = _linelist + @"
-            select q.LineId, q.item, m.symbol, m.DecimalPoint, q.[description], q.ShowTotal, s.ScoreId, s.Comment,
+            select q.LineId, q.item, m.symbol, m.DecimalPoint, m.VerticalAvg, m.HorizontalAvg, q.[description], q.ShowTotal, s.ScoreId, s.Comment,
             (
-                select isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0)
+                select case 
+                    when coalesce(q1,q2,q3,q4,-1) = -1 then null 
+                    else isnull(q1,0) + isnull(q2,0) + isnull(q3,0) + isnull(q4,0) 
+                end
                 from score
 			    where yearending = {0}-1 and lineid = q.lineid and groupid = s.groupid and siteid = s.siteid and groupid != 0 and siteid != 0
             ) as [PriorTotal],
@@ -79,7 +82,10 @@ namespace ScoreCard.Models
             join Measure m on m.MeasureId = q.MeasureId
 			left join (
                 select groupid, [target], q1, q2, q3, q4, 
-					isnull(q1,0)+isnull(q2,0)+isnull(q3,0)+isnull(q4,0) as sumscore, 
+                    case 
+                        when coalesce(q1,q2,q3,q4,-1) = -1 then null 
+                        else isnull(q1,0) + isnull(q2,0) + isnull(q3,0) + isnull(q4,0) 
+                    end as sumscore, 
 					comment, scoreid, lineid, siteid 
                 from score
 			    where yearending = {0}) s 
@@ -114,13 +120,15 @@ namespace ScoreCard.Models
         {
             get
             {
+                var data = topQ1.HasValue || topQ2.HasValue || topQ3.HasValue || topQ4.HasValue;
+                if (!data) return null;
                 var sum =
                     (topQ1.HasValue ? topQ1.Value : 0) +
                     (topQ2.HasValue ? topQ2.Value : 0) +
                     (topQ3.HasValue ? topQ3.Value : 0) +
                     (topQ4.HasValue ? topQ4.Value : 0);
 
-                if (topdown != null && (topdown.avg || topdown.avgq))
+                if (topdown != null && topdown.havg)
                     sum /= topdown.count(true);
 
                 return sum;
@@ -139,6 +147,8 @@ namespace ScoreCard.Models
 
         [ResultColumn] public string item { get; set; }
         [ResultColumn] public string symbol { get; set; }
+        [ResultColumn] public bool horizontalavg { get; set; }
+        [ResultColumn] public bool verticalavg { get; set; }
         [ResultColumn] public int DecimalPoint { get; set; }
 
         public static List<Line> Card(int year, Worker login) 
@@ -168,17 +178,23 @@ namespace ScoreCard.Models
                     var list = groups[g.Key].ToList();                              // get site scores in group
                     var entries = list.Count(s => s.count(false) > 0);
                     var gScore = new Score(list);                                   // create new score for group subtotal
+                    
                     gScore.LineId = l.LineId;                           
                     gScore.avg = l.symbol == "%" || l.symbol == "quarterly";
                     gScore.avgq = l.symbol == "%";
+                    
+                    gScore.havg = l.horizontalavg;
+                    gScore.vavg = l.verticalavg;
+
                     gScore.t8 = l.symbol == "%>=8";
+                    gScore.recent = l.symbol == "recent";
                     gScore.GroupId = g.Key;                                         // group subtotal has same groupid...
                     gScore.Group = g.First().Group;
                     gScore.Site = "All";                                            // its for all sites, a subtotal
                     gScore.SiteId = 0;
                     gScore.CanEdit = false;
 
-                    var stat = gScore.t8 ? "scored" : (gScore.avgq ? "averaged" : "summed");
+                    var stat = gScore.t8 ? "scored" : (gScore.vavg ? "averaged" : "summed");
                     if (entries>0)
                         gScore.Comment = " " + stat + " over " + entries + " site" + (entries == 1 ? "" : "s");
                     gScore.scores = list;                                           // have children sites be in subtotal 

@@ -21,7 +21,7 @@ namespace ScoreCard.Hubs
             Clients.OthersInGroup(year.ToString()).reflectCell(scoreid, quarter, value);
         }
 
-        public void UpdateTarget(int year, int scoreid, int value)
+        public void UpdateTarget(int year, int scoreid, int? value)
         {
             Score.SaveTarget(year, scoreid, value);
             Clients.OthersInGroup(year.ToString()).reflectTarget(scoreid, value);

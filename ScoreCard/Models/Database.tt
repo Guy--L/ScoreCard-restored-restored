@@ -13,7 +13,6 @@
 	IncludeViews = true; 
 
     // Read schema 
-
 	var tables = LoadTables();	
 	tables["__RefactorLog"].Ignore = true;
 

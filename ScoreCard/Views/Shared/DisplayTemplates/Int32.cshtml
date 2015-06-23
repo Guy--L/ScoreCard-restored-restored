@@ -2,14 +2,13 @@
 @{
     var ro = ViewData["ro"] as bool?;
     var points = ViewData["mask"] as int?;
-    var div = 1;
+    double div = 1.0;
     var imask = "'alias': 'numeric'";
     if (points.HasValue) {
         div = points.Value > 0 ? Enumerable.Repeat(10, points.Value).Aggregate((i, j) => i * j) : 1;
         imask = "'alias': 'decimal', 'digits': "+points.Value;
     }        
-    double number = ((double)(Model ?? 0))/div;
-    var show = Model==null ? "" : number.ToString();
+    var show = Model.HasValue ? ((double)Model.Value/div).ToString(): "";
 }
 @if (ro.HasValue && ro.Value) { 
     @Html.TextBox("", show, new { data_inputmask = @Html.Raw(imask), @class = @ViewData["class"], @disabled=true, @id = @ViewData["id"] })

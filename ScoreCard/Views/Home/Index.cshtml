@@ -92,22 +92,26 @@
         });
         // console.log('-----');
         if (t8) sum *= 100;
-        if (rw.hasClass('avg')||avg) sum /= (n==0?1:n);
+        if (rw.hasClass('vavg')||avg) sum /= (n==0?1:n);
         return sum;
     }
     function rowcalc(target) {
         var sum = 0;
         var n = 0;
+        var lastitem = '';
         rw = $(target).closest('tr');
         $('.quarval', rw).each(function() {
             var item = $(this).val();
-            if (item !== '') n++;
+            if (item !== '') {
+                n++;
+                lastitem = item;
+            }
             else item = 0;
             var val = +item;
             sum += val;
         });
-        console.log(rw.hasClass('avg')+" for avg and n = "+n);
-        if (rw.hasClass('avg')) sum /= (n==0?1:n);
+        if (rw.hasClass('havg')) sum /= (n==0?1:n);
+        else if (rw.hasClass('recent')) sum = lastitem;
         $(target, rw).val(sum);
     }
     // id is line_group_site_(quarter|comment|total|prior|target)
@@ -118,10 +122,13 @@
         var rw = e.closest('tr');
         var q = 0;
         var sync = 0;
-
+        var lastitem = '';
         $('.quarval', rw).each(function () {
             var item = $(this).val();
-            if (item!=='') n++;
+            if (item!=='') {
+                n++;
+                lastitem = item;
+            }
             else item = 0;
             var val = +item;
             sum += val;
@@ -130,7 +137,8 @@
             if (item == 0 && qrt > q)                 // last non-zero value
                 q = qrt;
         });
-        if (rw.hasClass('avg') || rw.hasClass('qtr')) sum /= (n==0?1:n);
+        if (rw.hasClass('havg')) sum /= (n==0?1:n);
+        else if (rw.hasClass('recent')) sum = lastitem;
         $('.yearval', rw).val(sum);     // total on row
         //cuetarget($('.yearval', rw), Number($('.targval', rw).val() * q), Number(4 * sum));           
         // color target according to last entered value

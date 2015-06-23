@@ -156,7 +156,9 @@ namespace ScoreCard.Models
 		[Column] public string Symbol { get; set; } 		
 		[Column] public string Mask { get; set; } 		
 		[Column] public string Description { get; set; } 		
-		[Column] public int DecimalPoint { get; set; } 	
+		[Column] public int DecimalPoint { get; set; } 		
+		[Column] public bool VerticalAvg { get; set; } 		
+		[Column] public bool HorizontalAvg { get; set; } 	
 	}
 
 	[TableName("Line")]

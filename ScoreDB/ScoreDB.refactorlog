@@ -126,4 +126,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="SettingsId" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="f650681b-4aa4-4ec1-8c90-3d1ab5c9bede" ChangeDateTime="06/22/2015 20:30:59">
+    <Property Name="ElementName" Value="[dbo].[Measure].[Vertical]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Measure]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="VerticalAvg" />
+  </Operation>
 </Operations>
