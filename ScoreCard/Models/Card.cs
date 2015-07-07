@@ -9,6 +9,7 @@ namespace ScoreCard.Models
     {
         public int Year { get; set; }
         public List<Line> Lines { get; set; }
+        public bool NoScores { get; set; }
 
         public Card() { }
 

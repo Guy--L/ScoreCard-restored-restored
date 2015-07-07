@@ -981,7 +981,7 @@ INSERT INTO [dbo].[Score]  ([YearEnding],[LineId],[GroupId],[SiteId]) VALUES
 	(@@year,37,3,18),
 	(@@year,37,3,19),
 	(@@year,37,3,20),
-	(@@year,37,3,21)
+	(@@year,37,3,21),
 	(@@year,38,0,0),
 	(@@year,38,4,1),
 	(@@year,38,4,2),

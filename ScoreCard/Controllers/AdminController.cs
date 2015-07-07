@@ -124,6 +124,7 @@ namespace ScoreCard.Controllers
                 }
 
                 s.Execute(Score._blankyear, id);
+
                 return RedirectToAction("Workers");
             }
         }

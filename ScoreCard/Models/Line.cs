@@ -145,6 +145,8 @@ namespace ScoreCard.Models
 
         public bool CanEdit { get; set; }
 
+        public static bool NoScores { get; set; }
+
         [ResultColumn] public string item { get; set; }
         [ResultColumn] public string symbol { get; set; }
         [ResultColumn] public bool horizontalavg { get; set; }
@@ -153,6 +155,7 @@ namespace ScoreCard.Models
 
         public static List<Line> Card(int year, Worker login) 
         {
+            NoScores = true;
             List<Line> lines = null;
             ILookup<int,Worker> owned;
             using (scoreDB s = new scoreDB()) {
@@ -195,7 +198,7 @@ namespace ScoreCard.Models
                     gScore.CanEdit = false;
 
                     var stat = gScore.t8 ? "scored" : (gScore.vavg ? "averaged" : "summed");
-                    if (entries>0)
+                    if (entries>0 && gScore.Group != "Shares")
                         gScore.Comment = " " + stat + " over " + entries + " site" + (entries == 1 ? "" : "s");
                     gScore.scores = list;                                           // have children sites be in subtotal 
                     groupScores.Add(gScore);
@@ -233,6 +236,7 @@ namespace ScoreCard.Models
         public Line current;
         public Line Scores2Line(Line ln, Score sc, Group gr, Site st)
         {
+            Line.NoScores &= (sc == null);
             Score s = null;
             if (ln != null && current != null && current.LineId == ln.LineId)
             {
