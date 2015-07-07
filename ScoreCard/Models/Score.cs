@@ -148,7 +148,7 @@ namespace ScoreCard.Models
             vavg = ln.verticalavg;
 
             recent = ln.symbol == "recent";
-            avg = ln.symbol == "%" || ln.symbol == "quarterly";
+            avg = ln.symbol == "%" || ln.symbol == "sum";
             avgq = ln.symbol == "%";
             t8 = ln.symbol == "%>=8";
 

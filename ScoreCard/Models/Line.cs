@@ -72,12 +72,18 @@ namespace ScoreCard.Models
             (
                 select case 
                     when coalesce(q1,q2,q3,q4,-1) = -1 then null 
+                    when m.symbol = 'recent' then coalesce(q4,q3,q2,q1)
                     else isnull(q1,0) + isnull(q2,0) + isnull(q3,0) + isnull(q4,0) 
                 end
                 from score
 			    where yearending = {0}-1 and lineid = q.lineid and groupid = s.groupid and siteid = s.siteid and groupid != 0 and siteid != 0
             ) as [PriorTotal],
-			s.[target], s.q1, s.q2, s.q3, s.q4, s.sumscore as [Total], g.[Group], g.groupid, x.Site, x.SiteId
+			s.[target], s.q1, s.q2, s.q3, s.q4,
+            case
+                when m.symbol = 'recent' then s.calcscore
+                else s.sumscore
+            end as [Total], 
+            g.[Group], g.groupid, x.Site, x.SiteId
             from linelist q
             join Measure m on m.MeasureId = q.MeasureId
 			left join (
@@ -86,6 +92,7 @@ namespace ScoreCard.Models
                         when coalesce(q1,q2,q3,q4,-1) = -1 then null 
                         else isnull(q1,0) + isnull(q2,0) + isnull(q3,0) + isnull(q4,0) 
                     end as sumscore, 
+                    coalesce(q4,q3,q2,q1) as calcscore,
 					comment, scoreid, lineid, siteid 
                 from score
 			    where yearending = {0}) s 
@@ -122,11 +129,14 @@ namespace ScoreCard.Models
             {
                 var data = topQ1.HasValue || topQ2.HasValue || topQ3.HasValue || topQ4.HasValue;
                 if (!data) return null;
-                var sum =
+                int? sum =
                     (topQ1.HasValue ? topQ1.Value : 0) +
                     (topQ2.HasValue ? topQ2.Value : 0) +
                     (topQ3.HasValue ? topQ3.Value : 0) +
                     (topQ4.HasValue ? topQ4.Value : 0);
+
+                if (symbol == "recent")
+                    sum = topQ4 ?? topQ3 ?? topQ2 ?? topQ1;
 
                 if (topdown != null && topdown.havg)
                     sum /= topdown.count(true);
@@ -183,7 +193,7 @@ namespace ScoreCard.Models
                     var gScore = new Score(list);                                   // create new score for group subtotal
                     
                     gScore.LineId = l.LineId;                           
-                    gScore.avg = l.symbol == "%" || l.symbol == "quarterly";
+                    gScore.avg = l.symbol == "%" || l.symbol == "sum";
                     gScore.avgq = l.symbol == "%";
                     
                     gScore.havg = l.horizontalavg;

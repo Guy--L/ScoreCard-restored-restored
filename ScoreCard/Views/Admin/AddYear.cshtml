@@ -17,7 +17,7 @@
         $(function () {
             $('#cancel').on('click', function (e) {
                 e.preventDefault();
-                location.href = '@Url.Action("Workers", "Admin",null,Request.Url.Scheme)';
+                location.href = '@Url.Action("Index", "Home",null,Request.Url.Scheme)';
             });
             $('#createyear').on('click', function (e) {
                 e.preventDefault();

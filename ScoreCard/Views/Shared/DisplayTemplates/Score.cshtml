@@ -22,7 +22,11 @@
             @Html.DisplayFor(m => m.PriorTotal, new { @class = "priorval", mask = @Model.Decimal, ro = true, id = prefix + "prior" })
         }
     </td>
-    <td>@Html.DisplayFor(m => m.Target, new { @class = "targval", mask = @Model.Decimal, ro = !@Model.CanEdit, id = prefix + "target" })</td>
+    <td>
+        @if (!(rollup||actual)) { 
+        @Html.DisplayFor(m => m.Target, new { @class = "targval", mask = @Model.Decimal, ro = !@Model.CanEdit, id = prefix + "target" })
+        }
+    </td>
     <td>
         @if (Model.ShowTotal)
         {

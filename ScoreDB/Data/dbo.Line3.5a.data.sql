@@ -15,7 +15,7 @@ INSERT INTO [dbo].[Measure] ([MeasureId], [Symbol], [Mask], [Description], [Deci
 INSERT INTO [dbo].[Measure] ([MeasureId], [Symbol], [Mask], [Description], [DecimalPoint], [HorizontalAvg], [VerticalAvg]) VALUES (7, N'score', N'N', N'Score',					0, 0, 0)
 INSERT INTO [dbo].[Measure] ([MeasureId], [Symbol], [Mask], [Description], [DecimalPoint], [HorizontalAvg], [VerticalAvg]) VALUES (8, N'blank', N'0', N'Label',					0, 0, 0)
 INSERT INTO [dbo].[Measure] ([MeasureId], [Symbol], [Mask], [Description], [DecimalPoint], [HorizontalAvg], [VerticalAvg]) VALUES (9, N'decimal', N'N', N'Decimal',				1, 0, 0)
-INSERT INTO [dbo].[Measure] ([MeasureId], [Symbol], [Mask], [Description], [DecimalPoint], [HorizontalAvg], [VerticalAvg]) VALUES (10, N'quarterly', N'N', N'Quarterly',		2, 1, 0)
+INSERT INTO [dbo].[Measure] ([MeasureId], [Symbol], [Mask], [Description], [DecimalPoint], [HorizontalAvg], [VerticalAvg]) VALUES (10, N'sum', N'N', N'Sum',		2, 1, 0)
 INSERT INTO [dbo].[Measure] ([MeasureId], [Symbol], [Mask], [Description], [DecimalPoint], [HorizontalAvg], [VerticalAvg]) VALUES (11, N'%>=8', N'N', N'Threshold8',			2, 0, 0)
 INSERT INTO [dbo].[Measure] ([MeasureId], [Symbol], [Mask], [Description], [DecimalPoint], [HorizontalAvg], [VerticalAvg]) VALUES (12, N'recent', N'N', N'Recent',				0, 0, 0)
 SET IDENTITY_INSERT [dbo].[Measure] OFF

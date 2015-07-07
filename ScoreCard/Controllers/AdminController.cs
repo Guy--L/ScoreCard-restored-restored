@@ -102,14 +102,10 @@ namespace ScoreCard.Controllers
             return RedirectToAction("Workers");
         }
 
-        public ActionResult AddYear()
+        public ActionResult AddYear(int id)
         {
-            int nextyearending;
-            using (scoreDB s = new scoreDB())
-            {
-                nextyearending = s.Fetch<int>("select distinct yearending from score").Max() + 1;
-            }
-            return View(nextyearending);
+            TempData["oldyear"] = Session["oldyear"];
+            return View(id);
         }
 
         public ActionResult NewYear(int id)

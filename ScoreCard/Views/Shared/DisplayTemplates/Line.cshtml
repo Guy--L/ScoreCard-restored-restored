@@ -4,7 +4,7 @@
     Layout = null;
     bool exp = Model.scores.Count > 0;
     bool qtr = Model.symbol == "%";
-    bool avg = qtr || Model.symbol == "quarterly";
+    bool avg = qtr || Model.symbol == "sum";
     bool t8 = Model.symbol == "%>=8";
     var prefix = Model.LineId + "_0_0_";
 }
@@ -29,7 +29,9 @@ else
             @Html.DisplayFor(m => m.topPriorTotal, new { @class = "priorval", mask = @Model.DecimalPoint, ro = true, id = prefix + "prior" })
         }
         </td>
-        <td>@Html.DisplayFor(m => m.topTarget, new { @class = "targval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "target" })</td>
+        <td>
+            @*@Html.DisplayFor(m => m.topTarget, new { @class = "targval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "target" })*@
+        </td>
         <td>
         @if (Model.ShowTotal) {
             @Html.DisplayFor(m => m.topTotal, new { @class = "yearval", mask = @Model.DecimalPoint, ro = true, id = prefix + "total" })

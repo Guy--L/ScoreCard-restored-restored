@@ -22,6 +22,15 @@ textarea {
     max-width: 280px;
 }
 
+.yearcursor i {
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+.yearcursor i:hover {
+    color: red;
+}
+
 .navbar-inverse {
     background-color: rgb(7,39,158);
 }

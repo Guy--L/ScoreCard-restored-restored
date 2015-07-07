@@ -29,6 +29,11 @@ namespace ScoreCard.Controllers
                 return RedirectToAction(Setting.AllowCorrection?"ContactCorrection":"Contact");
 
             int? year = Session["year"] as int?;
+            int? oldyear = TempData["oldyear"] as int?;
+
+            if (oldyear.HasValue)
+                year = oldyear;
+
             year = year.HasValue ? year.Value : DateTime.Now.AddMonths(6).Year;
             Session["year"] = year;
             var card = new Card(year.Value, emp);
@@ -36,10 +41,10 @@ namespace ScoreCard.Controllers
             {
                 TempData["Year"] = year;
                 if (_worker.IsAdmin)
-                    return RedirectToAction("AddYear", "Admin");
+                    return RedirectToAction("AddYear", "Admin", new { id = year.Value });
                 return RedirectToAction("AskAdmin", "Home");
             }
-
+            Session["oldyear"] = year;
             TempData["Card"] = card;
             return View(card);
         }
