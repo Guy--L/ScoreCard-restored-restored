@@ -51,6 +51,7 @@ namespace ScoreCard.Controllers
         protected bool _timeout;
         protected string _user;
         protected Worker _worker;
+        protected string _fyear;
 
         //private static User _user;
         //protected bool _IsAdmin;
@@ -141,6 +142,7 @@ namespace ScoreCard.Controllers
         protected override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
+            ViewBag.FY = _fyear = Session["fyear"] as string;
         }
 
         //    if (context.HttpContext.Session == null || context.HttpContext.Session.IsNewSession)
