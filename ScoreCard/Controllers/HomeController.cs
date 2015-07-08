@@ -36,6 +36,8 @@ namespace ScoreCard.Controllers
 
             year = year.HasValue ? year.Value : DateTime.Now.AddMonths(6).Year;
             Session["year"] = year;
+            Session["fyear"] = string.Format("{0}-{1}", year%100 - 1, year%100);
+
             var card = new Card(year.Value, emp);
             if (Line.NoScores)
             {

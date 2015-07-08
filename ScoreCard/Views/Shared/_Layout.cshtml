@@ -27,7 +27,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-fixed-top">
-                    <li>@Html.ActionLink("Card", "Index", "Home")</li>
+                    <li>@Html.ActionLink("FY "+(string)ViewBag.FY+" Card", "Index", "Home")</li>
                     @if (ViewBag.Worker != null && ViewBag.Worker.IsAdmin)
                     {
                         <li>@Html.ActionLink("Users", "Workers", "Admin")</li>
