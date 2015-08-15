@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Upload Cover Letter for FY "+ViewBag.FY;
+}
+<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Message</h3>
+
+<div>
+        @using (Html.BeginForm("Upload", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <input type="File" name="file" id="file" value="Choose File" />
+            <br />
+            @Html.Bootstrap().SubmitButton().Class("btn-success");
+        }
+</div>

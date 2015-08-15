@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using ScoreCard.Models;
+using System.IO;
 
 namespace ScoreCard.Controllers
 {
@@ -47,7 +48,7 @@ namespace ScoreCard.Controllers
 
     public abstract class BaseController : Controller
     {
-        public static string built;
+        public static string version;
         protected bool _timeout;
         protected string _user;
         protected Worker _worker;
@@ -142,7 +143,16 @@ namespace ScoreCard.Controllers
         protected override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
-            ViewBag.FY = _fyear = Session["fyear"] as string;
+            var path = "~/Content/CoverLetters/" + _fyear + ".PDF";
+            if (System.IO.File.Exists(Server.MapPath(path)))
+                ViewBag.CoverLetter = path;
+            else
+                ViewBag.CoverLetter = null;
+
+            int? yr = Session["year"] as int?;
+            ViewBag.Prior = Score.yearsready.FirstOrDefault() < yr;
+            ViewBag.Next = Score.yearsready.LastOrDefault() > yr;
+            ViewBag.Year = yr;
         }
 
         //    if (context.HttpContext.Session == null || context.HttpContext.Session.IsNewSession)
@@ -185,9 +195,10 @@ namespace ScoreCard.Controllers
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             
-            ViewBag.built = built;
+            ViewBag.version = version;
             ViewBag.User = _user = Session["user"] as string;
             ViewBag.Worker = _worker = Session["worker"] as Worker;
+            ViewBag.FY = _fyear = Session["fyear"] as string;
 
             base.OnActionExecuting(filterContext);
         }

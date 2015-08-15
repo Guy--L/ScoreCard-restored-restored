@@ -35,9 +35,7 @@
                 <th rowspan="2">Owner</th>
                 <th>@(prior)</th>
                 <th colspan="2" class="yearcursor">
-                    <i class="fa fa-step-backward" title="go to scores for FY @prior"></i>
                     @(current)
-                    <i class="fa fa-step-forward" title="go to scores for FY @next"></i>
                 </th>
                 <th colspan="2">@(Model.Year-1)</th>
                 <th colspan="2">@(Model.Year)</th>
@@ -65,6 +63,11 @@
         } 
     </div>
 </div>
+
+@section undo {
+<li id="undo"><a href="#" class="urdo" title="Undo edits"><i class="fa fa-2x fa-undo"></i></a></li>
+<li id="redo"><a href="#" class="urdo" title="Redo edits"><i class="fa fa-2x fa-repeat"></i></a></li>
+}
 
 @section scripts {
 <script src="~/Scripts/jquery.signalR-2.2.0.min.js" type="text/javascript"></script>
@@ -280,13 +283,9 @@
         }
     }
     $(function () {
-        $("i").on("click", function(){
-            if ($(this).hasClass("fa-step-forward"))
-                location.href = '@Url.Action("Index","Home",null,Request.Url.Scheme)/' + (@Model.Year+1);
-            else
-                location.href = '@Url.Action("Index","Home",null,Request.Url.Scheme)/' + (@Model.Year-1);
+        $(":input").on('focus', function() {
+            $(this).inputmask();
         });
-        $(":input").inputmask();
         $('#scoreCard tr.line').on('click', { rows: 'group' }, toggler);
         $('#scoreCard tr.group').on('click', { rows: 'site' }, toggler);
         var card = $.connection.scoreHub;
@@ -310,10 +309,17 @@
             var target = $('[id$=_comment]', '[data-scoreid=' + scoreid + ']');
             target.val(comment);
         };
+        card.client.undoRedo = function (undo, redo) {
+            console.log("ur: "+undo+", "+redo);
+            if (undo > 0) $('#undo').show();
+            else $('#undo').hide();
+            if (redo > 0) $('#redo').show();
+            else $('#redo').hide();
+        };
         $.connection.hub.disconnected(function() {
             setTimeout(function() {
                 $.connection.hub.start();
-            }, 5000); // Re-start connection after 5 seconds
+            }, 1000); // Re-start connection after 5 seconds
         });
         $.connection.hub.start().done(function () {
             card.server.setYear(@Model.Year, @Model.Year);
@@ -332,6 +338,11 @@
                 if (clr > 0) {
                     card.server.updateCell(@Model.Year, clr, qid, 0);
                 }
+            });
+            $('a.urdo').on('click', function() {
+                var id = $(this).parent().attr('id');
+                if (id == 'undo') card.server.undo();
+                if (id == 'redo') card.server.redo();
             });
             $('.targval').on('change', function() {
                 var path = $(this).attr('id').split('_');

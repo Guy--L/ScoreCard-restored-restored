@@ -94,8 +94,21 @@ namespace ScoreCard.Models
         {
         }
 
-        private static string _update = @"update score set q{0} = {1} where scoreid = {2}";
-        public static void SaveQuarter(int year, int scoreid, int quarter, int? value)
+        public static List<int> yearsready;
+
+        public static void Step(string query)
+        {
+            using (scoreDB s = new scoreDB())
+                s.Execute(query);
+        }
+
+        private static string _urupdate = @"update score set q{0} = {1} where scoreid = {2}";
+        private static string _update = @"
+            declare @@old int
+            select @@old = q{0} from score where scoreid = {2} " + _urupdate + @"
+            select @@old";
+
+        public static string[] SaveScore(int scoreid, int quarter, int? value)
         {
             dynamic val;
             if (value.HasValue)
@@ -103,23 +116,45 @@ namespace ScoreCard.Models
             else
                 val = "null";
 
+            int? old = null;
             using (scoreDB s = new scoreDB())
             {
-                s.Execute(string.Format(_update, quarter, val, scoreid));
+                old = s.ExecuteScalar<int?>(string.Format(_update, quarter, val, scoreid));
             }
+            return new string[]
+            {
+                string.Format(_urupdate, quarter, old, scoreid),
+                string.Format(_urupdate, quarter, val, scoreid)
+            };
         }
 
-        private static string _comment = @"update score set comment = '{0}' where scoreid = {1}";
-        public static void SaveComment(int year, int scoreid, string comment)
+        private static string _urcomment = @"update score set comment = '{0}' where scoreid = {1}";
+        private static string _comment = @"
+            declare @@cmt varchar(50)
+            select @@cmt = comment from score where scoreid = {1} "+_urcomment+@"
+            select @@cmt";
+
+        public static string[] SaveScore(int scoreid, string comment)
         {
+            string old = null;
             using (scoreDB s = new scoreDB())
             {
-                s.Execute(string.Format(_comment, comment, scoreid));
+                old = s.ExecuteScalar<string>(string.Format(_comment, comment, scoreid));
             }
+            return new string[]
+            {
+                string.Format(_urcomment, old, scoreid),
+                string.Format(_urcomment, comment, scoreid)
+            };
         }
 
-        private static string _target = @"update score set target = {0} where scoreid = {1}";
-        public static void SaveTarget(int year, int scoreid, int? target)
+        private static string _urtarget = @"update score set target = {0} where scoreid = {1} ";
+        private static string _target = @"
+            declare @@old int
+            select @@old = target from score where scoreid = {1} "+_urtarget+@"
+            select @@old";
+
+        public static string[] SaveScore(int scoreid, int? target)
         {
             dynamic val;
             if (target.HasValue)
@@ -127,10 +162,16 @@ namespace ScoreCard.Models
             else
                 val = "null";
 
+            int? old = null;
             using (scoreDB s = new scoreDB())
             {
-                s.Execute(string.Format(_target, val, scoreid));
+                old = s.ExecuteScalar<string>(string.Format(_target, val, scoreid));
             }
+            return new string[]
+            {
+                string.Format(_urtarget, old, scoreid),
+                string.Format(_urtarget, val, scoreid)
+            };
         }
 
         public Score link(Line ln, Group gr, Site st)

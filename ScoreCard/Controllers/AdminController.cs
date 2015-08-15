@@ -102,9 +102,13 @@ namespace ScoreCard.Controllers
             return RedirectToAction("Workers");
         }
 
-        public ActionResult AddYear(int id)
+        public ActionResult AddYear(int? id)
         {
             TempData["oldyear"] = Session["oldyear"];
+            if (!id.HasValue)
+            {
+                id = (Score.yearsready.Count == 0) ? DateTime.Now.Year : (Score.yearsready.Max() + 1);
+            }
             return View(id);
         }
 
@@ -112,8 +116,7 @@ namespace ScoreCard.Controllers
         {
             using (scoreDB s = new scoreDB())
             {
-                var years = s.Fetch<int>("select distinct yearending from score");
-                if (years.Contains(id))
+                if (Score.yearsready.Contains(id))
                 {
                     Error("Cannot add templates for existing year " + id);
                     return RedirectToAction("Workers");
@@ -124,5 +127,30 @@ namespace ScoreCard.Controllers
                 return RedirectToAction("Workers");
             }
         }
+
+        public ActionResult Upload()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Upload(HttpPostedFileBase file)
+        {
+            var dir = Server.MapPath("~/Content/CoverLetters/");
+            if (!Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            var path = Path.Combine(dir, _fyear+".pdf");
+            var data = new byte[file.ContentLength];
+            file.InputStream.Read(data, 0, file.ContentLength);
+
+            using (var sw = new FileStream(path, FileMode.Create))
+            {
+                sw.Write(data, 0, data.Length);
+            }
+            return RedirectToAction("Index", "Home");
+        }
+
+
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ScoreCard.Models;
+using System.Diagnostics;
 
 namespace ScoreCard.Controllers
 {
@@ -48,6 +49,7 @@ namespace ScoreCard.Controllers
             }
             Session["oldyear"] = year;
             TempData["Card"] = card;
+            Debug.WriteLine(DateTime.Now.ToLongTimeString() + " left controller");
             return View(card);
         }
 

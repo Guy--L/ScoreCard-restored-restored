@@ -16,7 +16,6 @@
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="navbar-inner">
         <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -24,20 +23,51 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">ICO Global Value</a>
-                @*@Html.ActionLink("P&G ICO Global Value", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })*@
+                <div class="navbar-logo">
+                    <a class="navbar-brand" rel="home" href="http://www.pg.com" title="P&amp;G">
+                        <img src="~/Content/PGlogo.png">
+                    </a>
+                    <a class="navbar-link" rel="home" href="@Url.Action("Index", "Home")" title="Home">
+                        ICO Global Value
+                    </a>
+                </div>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav navbar-fixed-top">
-                    <li>@Html.ActionLink("FY "+(string)ViewBag.FY+" Card", "Index", "Home")</li>
+                <ul class="nav navbar-nav">
+                    <li><h3><div class="label label-large label-success">
+                    @if (ViewBag.Prior)
+                    {
+                        <i class="fa fa-chevron-circle-left" title="go to prior year"></i>
+                    }
+                    FY @ViewBag.FY ScoreCard
+                    @if (ViewBag.Next)
+                    {
+                        <i class="fa fa-chevron-circle-right" title="go to next year"></i>
+                    }
+                    </div></h3>
+                    </li>
+                    @if (ViewBag.CoverLetter != null)
+                    {
+                        <li><a class="navbar-link" href='@Url.Content(ViewBag.CoverLetter)'>Cover Letter</a></li>
+                    }
                     @if (ViewBag.Worker != null && ViewBag.Worker.IsAdmin)
                     {
-                        <li>@Html.ActionLink("Users", "Workers", "Admin")</li>
+                        <li class="dropdown">
+                            <a href="#" data-toggle="dropdown">Administer <span class="caret"></span></a>
+                            <ul class="dropdown-menu navbar-inverse">
+                                <li>@Html.ActionLink("Users", "Workers", "Admin")</li>
+                                <li>@Html.ActionLink("Initialize Year", "AddYear", "Admin")</li>
+                                <li>@Html.ActionLink("Upload PDF Cover Letter for "+(string)ViewBag.FY, "Upload", "Admin")</li>
+                            </ul>
+                        </li>
                     }
+                    <li></li>
                 </ul>
-                <p class="nav navbar-text navbar-right"><i class="fa fa-user"></i> Welcome @User.Identity.Name</p>
+                <ul class="nav navbar-nav pull-right">
+                    @RenderSection("undo", false)
+                    <li><a href="#"><i class="fa fa-user"></i> Welcome @User.Identity.Name</a></li>
+                </ul>
             </div>
-        </div>
         </div>
     </nav>
     <div class="container body-content">
@@ -45,16 +75,26 @@
         <hr />
         <footer>
             <p>&copy; @DateTime.Now.Year - P&amp;G ICO Global Value Tracking
-            <em class="pull-right"><small><a href="mailto:mark@steinersoftware.com">powered by Steiner Consulting</a></small></em>
+            <em class="pull-right"><small>@ViewBag.version</small></em>
             </p>
         </footer>
     </div>
 
     @Scripts.Render("~/bundles/jquery")
-    @Html.Raw(JSNLog.JavascriptLogging.Configure())
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/dataTables")
     @Scripts.Render("~/bundles/jquerymask")
     @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        $(function () {
+            $("i.fa-forward,i.fa-backward").on("click", function () {
+                if ($(this).hasClass("fa-forward"))
+                    location.href = '@Url.Action("Index", "Home", null, Request.Url.Scheme)/' + (@ViewBag.Year+1);
+                else
+                    location.href = '@Url.Action("Index", "Home", null, Request.Url.Scheme)/' + (@ViewBag.Year-1);
+            });
+        });
+    </script>
+
 </body>
 </html>

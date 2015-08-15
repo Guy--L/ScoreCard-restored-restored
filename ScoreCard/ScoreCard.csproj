@@ -55,8 +55,9 @@
     <Reference Include="Elmah.Mvc">
       <HintPath>..\packages\Elmah.MVC.2.1.1\lib\net40\Elmah.Mvc.dll</HintPath>
     </Reference>
-    <Reference Include="JSNLog">
-      <HintPath>..\packages\JSNLog.2.8.0.0\lib\net40\JSNLog.dll</HintPath>
+    <Reference Include="JSNLog, Version=2.9.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\JSNLog.2.9.1.0\lib\net40\JSNLog.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.0\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
@@ -166,7 +167,6 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\JSNLogConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -175,7 +175,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Hubs\ScoreHub.cs" />
+    <Compile Include="Hubs\URStack.cs" />
     <Compile Include="Models\Card.cs" />
+    <Compile Include="Models\Command.cs" />
     <Compile Include="Models\Database.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -186,6 +188,11 @@
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\Worker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -256,6 +263,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <None Include="Resources\Version.txt" />
     <Content Include="NuGet\readme.txt" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -317,8 +325,6 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\jsnlog.js" />
-    <Content Include="Scripts\jsnlog.min.js" />
     <Content Include="Scripts\maskedinput-binder.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
@@ -345,7 +351,6 @@
     <Content Include="Views\Shared\DisplayTemplates\Line.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Score.cshtml" />
     <Content Include="TwitterBootstrapMvcLicense.lic" />
-    <Content Include="Scripts\jsnlog.js.map" />
     <Content Include="Views\Shared\DisplayTemplates\Score.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Int32.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Int32.cshtml" />
@@ -356,6 +361,8 @@
     <Content Include="Views\Admin\Editor.cshtml" />
     <Content Include="Views\Admin\AddYear.cshtml" />
     <Content Include="Views\Home\AskAdmin.cshtml" />
+    <Content Include="Views\Admin\Upload.cshtml" />
+    <Content Include="Views\Admin\Reload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -368,6 +375,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -398,7 +411,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PreBuildEvent>%25USERPROFILE%25\AppData\Local\Atlassian\SourceTree\git_local\bin\git.exe describe --long --tags &gt;&gt; "$(ProjectDir)Version.txt"</PreBuildEvent>
+    <PreBuildEvent>%25USERPROFILE%25\AppData\Local\Atlassian\SourceTree\git_local\bin\git.exe describe --long --tags &gt; "$(ProjectDir)Resources\Version.txt"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

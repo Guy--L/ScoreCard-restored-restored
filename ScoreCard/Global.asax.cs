@@ -8,6 +8,8 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using ScoreCard.Models;
 using TwitterBootstrapMVC;
+using ScoreCard.Controllers;
+using ScoreCard.Properties;
 
 namespace ScoreCard
 {
@@ -20,6 +22,7 @@ namespace ScoreCard
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Bootstrap.Configure();
+            BaseController.version = Resources.Version;
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -33,11 +36,18 @@ namespace ScoreCard
 #endif
             //scheduleDB _db = new scheduleDB();
             HttpContext.Current.Session["user"] = user;
-            HttpContext.Current.Session["year"] = DateTime.Now.AddMonths(6).Year;
+            var yr = DateTime.Now.AddMonths(6).Year;
+            HttpContext.Current.Session["year"] = yr;
+            HttpContext.Current.Session["fyear"] = string.Format("{0}-{1}", yr % 100 - 1, yr % 100);
             string[] worker = user.ToString().Split('\\');
             user = worker[worker.Length - 1];
 
-            Worker emp = new Worker(user);
+            using (scoreDB s = new scoreDB())
+            {
+                Score.yearsready = s.Fetch<int>("select distinct yearending from score order by yearending");
+            }
+
+                Worker emp = new Worker(user);
             HttpContext.Current.Session["worker"] = emp;
 
             //HttpContext.Current.Session["authority"] = _db.Fetch<User>(string.Format(Models.User.get_role, user)).FirstOrDefault();

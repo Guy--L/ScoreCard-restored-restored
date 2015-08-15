@@ -45,8 +45,9 @@ div#logo {
     background-color: rgb(7,39,158);
 }
 
-.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
-    color: #ffffff;
+.navbar-inverse .navbar-nav > li > a:hover, 
+.navbar-inverse .navbar-nav > li > a:focus {
+    color: rgb(186,228,240);
     background-color: transparent;
 }
 
@@ -58,9 +59,62 @@ div#logo {
     color: #ffffff;
 }
 
+.navbar-inverse .navbar-link {
+    text-decoration: none;
+    color: rgb(170,214,176);
+}
+
 .nav > li > a:hover, .nav > li > a:focus {
     text-decoration: none;
     background-color: #ffff01;
+}
+
+.navbar-inverse a.navbar-brand {
+   display: inline-block;
+   color: rgb(170,214,176);
+   padding: 8px 15px 8px 8px;
+   -webkit-filter: invert(100%);
+}
+
+.navbar-nav > li > a.urdo {
+    padding-top: 10px;
+    padding-bottom: 8px;
+}
+.navbar-inverse a.navbar-brand img {
+    padding-top: 5px;
+}
+
+.navbar-nav li li.fa-chevron-circle-right,
+.navbar-nav li i.fa-chevron-circle-left {
+    color: #ffffff;
+    cursor: grab;
+}
+
+.navbar-nav li > i.fa-chevron-circle-right:hover,
+.navbar-nav li > i.fa-chevron-circle-left:hover {
+    color:rgb(186,228,240);
+    cursor: auto;
+}
+
+ul.nav li h3 {
+    margin-top: 0;
+    padding-top: 10px;
+}
+
+.navbar-logo {
+   float: left;
+   vertical-align: middle;
+   margin-right: 15px;
+   line-height: 49px;
+}
+
+ul.nav li {
+    display: inline-block;
+}
+
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+    color: rgb(7,39,158);
+    background-color:  rgb(170,214,176);
 }
 
 .table thead > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tfoot > tr > td {
@@ -73,6 +127,10 @@ div#logo {
     color: rgb(7,39,158);
     background-color: rgb(186,228,240);
     margin: 2px;
+}
+
+.dropdown-menu > li > a {
+    color: #ffffff;
 }
 
 .list-group-item span.badge {
