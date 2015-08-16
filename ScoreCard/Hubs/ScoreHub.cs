@@ -7,68 +7,112 @@ using ScoreCard.Models;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Hubs;
 
 namespace ScoreCard.Hubs
 {
-    public class DoScore : ICommand<string[]>
+    public class Target : ICommand
     {
-        private string[] _queries;
+        private int _scoreid;
+        private int? _value;
+        private int? _old;
+        private object _update;
 
-        public DoScore()
+        public Target(int scoreid, int? value)
         {
-            _queries = null;
+            _scoreid = scoreid;
+            _value = value;
         }
 
-        public DoScore(int scoreid, int quarter, int? value)
+        public string reflect { get { return "reflectTarget"; } }
+        public object[] parameters { get { return new object[] { _scoreid, _update }; } }
+
+        public void Do()
         {
-            _queries = Score.SaveScore(scoreid, quarter, value);
+            _update = _value;
+            _old = Score.SaveScore(_scoreid, _value);
         }
 
-        public DoScore(int scoreid, string comment)
+        public void Undo()
         {
-            _queries = Score.SaveScore(scoreid, comment);
+            _update = _old;
+            var check = Score.SaveScore(_scoreid, _old);
+            // if (check != _value)   interference
+        }
+    }
+
+    public class Cell : ICommand
+    {
+        private int _scoreid;
+        private int _quarter;
+        private int? _value;
+        private int? _old;
+        private object _update;
+
+        public Cell(int s, int q, int? v)
+        {
+            _scoreid = s;
+            _quarter = q;
+            _value = v;
+        }
+        public string reflect { get { return "reflectCell"; } }
+        public object[] parameters { get { return new object[] { _scoreid, _quarter, _update }; } }
+
+        public void Do()
+        {
+            _update = _value;
+            _old = Score.SaveScore(_scoreid, _quarter, _value);
         }
 
-        public DoScore(int scoreid, int? target)
+        public void Undo()
         {
-            _queries = Score.SaveScore(scoreid, target);
+            _update = _old;
+            var check = Score.SaveScore(_scoreid, _quarter, _old);
+        }
+    }
+
+    public class Comment : ICommand
+    {
+        private int _scoreid;
+        private string _comment;
+        private string _old;
+        private object _update;
+
+        public Comment(int scoreid, string value)
+        {
+            _scoreid = scoreid;
+            _comment = value;
         }
 
-        public string[] Do(string[] input)
+        public string reflect { get { return "reflectComment"; } }
+        public object[] parameters { get { return new object[] { _scoreid, _update }; } }
+
+        public void Do()
         {
-            if (_queries == null)
-            {
-                Score.Step(input[1]);
-                return input;
-            }
-            Score.Step(_queries[1]);
-            return _queries;
+            _update = _comment;
+            _old = Score.SaveScore(_scoreid, _comment);
         }
 
-        public string[] Undo(string[] input)
+        public void Undo()
         {
-            if (_queries == null)
-            {
-                Score.Step(input[0]);
-                return input;
-            }
-            Score.Step(_queries[0]);
-            return _queries;
+            _update = _old;
+            var check = Score.SaveScore(_scoreid, _old);
+            // if (check != _value)   interference
         }
     }
 
     [Authorize]
     public class ScoreHub : Hub
     {
-        private static Dictionary<string, URStack<string[]>> stack = new Dictionary<string, URStack<string[]>>();
+        private static Dictionary<string, URStack> stack = new Dictionary<string, URStack>();
 
         public override Task OnConnected()
         {
             var name = Thread.CurrentPrincipal.Identity.Name;
-            URStack<string[]> s;
+            URStack s;
             if (!stack.TryGetValue(name, out s))
             {
-                s = stack[name] = new URStack<string[]>();
+                s = stack[name] = new URStack();
                 Debug.WriteLine("added " + name);
             }
             Groups.Add(Context.ConnectionId, name);            // user may be in on multiple sessions
@@ -79,10 +123,10 @@ namespace ScoreCard.Hubs
         public override Task OnReconnected()
         {
             var name = Thread.CurrentPrincipal.Identity.Name;
-            URStack<string[]> s;
+            URStack s;
             if (!stack.TryGetValue(name, out s))
             {
-                s = stack[name] = new URStack<string[]>();
+                s = stack[name] = new URStack();
                 Debug.WriteLine("added " + name);
             }
             Clients.Group(name).undoRedo(s.UndoCount, s.RedoCount);
@@ -96,30 +140,36 @@ namespace ScoreCard.Hubs
             Groups.Add(cid, newyear.ToString());
         }
 
-        public void UpdateCell(int year, int scoreid, int quarter, int? value)
+        public void UpdateCell(int scoreid, int quarter, int? value)
         {
             var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
-            ur.Do(new DoScore(scoreid, quarter, value), null);
-            Clients.OthersInGroup(year.ToString()).reflectCell(scoreid, quarter, value);
+
+            ur.Do(new Cell(scoreid, quarter, value));
+            Clients.OthersInGroup(Clients.Caller.year.ToString()).reflectCell(scoreid, quarter, value);
+
             Clients.Group(name).undoRedo(ur.UndoCount, ur.RedoCount);
         }
 
-        public void UpdateTarget(int year, int scoreid, int? value)
+        public void UpdateTarget(int scoreid, int? value)
         {
             var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
-            ur.Do(new DoScore(year, scoreid, value), null);
-            Clients.OthersInGroup(year.ToString()).reflectTarget(scoreid, value);
+
+            ur.Do(new Target(scoreid, value));
+            Clients.OthersInGroup(Clients.Caller.year.ToString()).reflectTarget(scoreid, value);
+
             Clients.Group(name).undoRedo(ur.UndoCount, ur.RedoCount);
         }
 
-        public void UpdateComment(int year, int scoreid, string comment)
+        public void UpdateComment(int scoreid, string comment)
         {
             var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
-            ur.Do(new DoScore(scoreid, comment), null);
-            Clients.OthersInGroup(year.ToString()).reflectComment(scoreid, comment);
+
+            ur.Do(new Comment(scoreid, comment));
+            Clients.OthersInGroup(Clients.Caller.year.ToString()).reflectComment(scoreid, comment);
+
             Clients.Group(name).undoRedo(ur.UndoCount, ur.RedoCount);
         }
 
@@ -127,7 +177,9 @@ namespace ScoreCard.Hubs
         {
             var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
-            ur.Undo(null);
+            ICommand c = ur.Undo();
+
+            Clients.Group(Clients.Caller.year.ToString()).Invoke(c.reflect, c.parameters);
             Clients.Group(name).undoRedo(ur.UndoCount, ur.RedoCount);
         }
 
@@ -135,7 +187,9 @@ namespace ScoreCard.Hubs
         {
             var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
-            ur.Redo(null);
+            ICommand c = ur.Redo();
+
+            Clients.Group(Clients.Caller.year.ToString()).Invoke(c.reflect, c.parameters);
             Clients.Group(name).undoRedo(ur.UndoCount, ur.RedoCount);
         }
     }

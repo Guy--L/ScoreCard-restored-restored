@@ -6,10 +6,10 @@ using System.Web;
 
 namespace ScoreCard.Hubs
 {
-    public class URStack<T>
+    public class URStack
     {
-        private Stack<ICommand<T>> _Undo;
-        private Stack<ICommand<T>> _Redo;
+        private Stack<ICommand> _Undo;
+        private Stack<ICommand> _Redo;
 
         public int UndoCount
         {
@@ -32,76 +32,33 @@ namespace ScoreCard.Hubs
         }
         public void Reset()
         {
-            _Undo = new Stack<ICommand<T>>();
-            _Redo = new Stack<ICommand<T>>();
+            _Undo = new Stack<ICommand>();
+            _Redo = new Stack<ICommand>();
         }
 
-        public T Do(ICommand<T> cmd, T input)
+        public void Do(ICommand cmd)
         {
-            T output = cmd.Do(input);
             _Undo.Push(cmd);
             _Redo.Clear(); // Once we issue a new command, the redo stack clears
-            return output;
-        }
-        public T Undo(T input)
-        {
-            if (_Undo.Count > 0)
-            {
-                ICommand<T> cmd = _Undo.Pop();
-                T output = cmd.Undo(input);
-                _Redo.Push(cmd);
-                return output;
-            }
-            else
-            {
-                return input;
-            }
-        }
-        public T Redo(T input)
-        {
-            if (_Redo.Count > 0)
-            {
-                ICommand<T> cmd = _Redo.Pop();
-                T output = cmd.Do(input);
-                _Undo.Push(cmd);
-                return output;
-            }
-            else
-            {
-                return input;
-            }
         }
 
-        public void Push(ICommand<T> cmd)
+        public ICommand Undo()
         {
+            if (_Undo.Count == 0)
+                return null;
+            ICommand cmd = _Undo.Pop();
+            cmd.Undo();
+            _Redo.Push(cmd);
+            return cmd;
+        }
+        public ICommand Redo()
+        {
+            if (_Redo.Count == 0)
+                return null;
+            ICommand cmd = _Redo.Pop();
+            cmd.Do();
             _Undo.Push(cmd);
-            _Redo.Clear(); // Anytime we push a new command, the redo stack clears
-        }
-        public ICommand<T> UnPush()
-        {
-            if (_Undo.Count > 0)
-            {
-                ICommand<T> cmd = _Undo.Pop();
-                _Redo.Push(cmd);
-                return cmd;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        public ICommand<T> RePush(T input)
-        {
-            if (_Redo.Count > 0)
-            {
-                ICommand<T> cmd = _Redo.Pop();
-                _Undo.Push(cmd);
-                return cmd;
-            }
-            else
-            {
-                return null;
-            }
+            return cmd;
         }
     }
 }

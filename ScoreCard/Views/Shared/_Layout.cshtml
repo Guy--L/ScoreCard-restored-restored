@@ -25,7 +25,7 @@
                 </button>
                 <div class="navbar-logo">
                     <a class="navbar-brand" rel="home" href="http://www.pg.com" title="P&amp;G">
-                        <img src="~/Content/PGlogo.png">
+                        <img src="~/Content/logo.png">
                     </a>
                     <a class="navbar-link" rel="home" href="@Url.Action("Index", "Home")" title="Home">
                         ICO Global Value
@@ -37,12 +37,14 @@
                     <li><h3><div class="label label-large label-success">
                     @if (ViewBag.Prior)
                     {
-                        <i class="fa fa-chevron-circle-left" title="go to prior year"></i>
+                        <a href="#" class="yearnav" id="prioryr" title="go to prior year"><i class="fa fa-chevron-circle-left"></i></a>
                     }
-                    FY @ViewBag.FY ScoreCard
+                    &nbsp;FY @ViewBag.FY ScoreCard&nbsp;
                     @if (ViewBag.Next)
                     {
-                        <i class="fa fa-chevron-circle-right" title="go to next year"></i>
+                        <a href="#" class="yearnav" id="nextyr" title="go to next year">
+                            <i class="fa fa-chevron-circle-right"></i>
+                        </a>
                     }
                     </div></h3>
                     </li>
@@ -64,7 +66,22 @@
                     <li></li>
                 </ul>
                 <ul class="nav navbar-nav pull-right">
-                    @RenderSection("undo", false)
+                    <li id="undo">
+                        <a href="#" class="urdo" title="Undo edits">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-undo fa-stack-2x"></i>
+                                <strong class="fa-stack-1x text-success undo-text">0</strong>
+                            </span>
+                        </a>
+                    </li>
+                    <li id="redo">
+                        <a href="#" class="urdo" title="Redo edits">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-repeat fa-stack-2x"></i>
+                                <strong class="fa-stack-1x text-success repeat-text">0</strong>
+                            </span>
+                        </a>
+                    </li>
                     <li><a href="#"><i class="fa fa-user"></i> Welcome @User.Identity.Name</a></li>
                 </ul>
             </div>
@@ -87,14 +104,13 @@
     @RenderSection("scripts", required: false)
     <script type="text/javascript">
         $(function () {
-            $("i.fa-forward,i.fa-backward").on("click", function () {
-                if ($(this).hasClass("fa-forward"))
+            $("a.yearnav").on("click", function () {
+                if ($(this).attr('id')=='nextyr')
                     location.href = '@Url.Action("Index", "Home", null, Request.Url.Scheme)/' + (@ViewBag.Year+1);
                 else
                     location.href = '@Url.Action("Index", "Home", null, Request.Url.Scheme)/' + (@ViewBag.Year-1);
             });
         });
     </script>
-
 </body>
 </html>

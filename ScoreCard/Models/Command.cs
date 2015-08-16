@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace ScoreCard.Models
 {
-    public interface ICommand<T>
+    public interface ICommand
     {
-        T Do(T input);
-        T Undo(T input);
+        string reflect { get; }
+        object[] parameters { get; }
+        void Do();
+        void Undo();
     }
 }

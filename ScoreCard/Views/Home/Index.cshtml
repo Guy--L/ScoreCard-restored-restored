@@ -64,11 +64,6 @@
     </div>
 </div>
 
-@section undo {
-<li id="undo"><a href="#" class="urdo" title="Undo edits"><i class="fa fa-2x fa-undo"></i></a></li>
-<li id="redo"><a href="#" class="urdo" title="Redo edits"><i class="fa fa-2x fa-repeat"></i></a></li>
-}
-
 @section scripts {
 <script src="~/Scripts/jquery.signalR-2.2.0.min.js" type="text/javascript"></script>
 <script src="~/signalr/hubs" type="text/javascript"></script>
@@ -297,6 +292,7 @@
             target.val(ival);
             var path = target.attr('id').split('_');
             recalc(target, path);
+
         };
         card.client.reflectTarget = function (scoreid, value) {
             var target = $('[id$=_target]', '[data-scoreid=' + scoreid + ']');
@@ -322,6 +318,7 @@
             }, 1000); // Re-start connection after 5 seconds
         });
         $.connection.hub.start().done(function () {
+            card.state.year = @Model.Year;
             card.server.setYear(@Model.Year, @Model.Year);
             $('.quarval').on('change', function () {
                 var path = $(this).attr('id').split('_');
@@ -333,10 +330,10 @@
                 var qid = +path[3];
                 var ival = ($(this).val()==='')?null: Math.floor(+$(this).val()*scale);
                 console.log('year, sid, qid, value '+@Model.Year+', '+sid+', '+qid+', '+ival);
-                card.server.updateCell(@Model.Year, sid, qid, ival);
+                card.server.updateCell(sid, qid, ival);
                 var clr = recalc($(this), path);
                 if (clr > 0) {
-                    card.server.updateCell(@Model.Year, clr, qid, 0);
+                    card.server.updateCell(clr, qid, 0);
                 }
             });
             $('a.urdo').on('click', function() {
@@ -353,7 +350,7 @@
                 var scale = +row.data('scale');
                 var ival = ($(this).val()==='')?null:Math.floor(+$(this).val()*scale);
                 console.log('year, sid, value '+@Model.Year+', '+sid+', '+ival);
-                card.server.updateTarget(@Model.Year, sid, ival);
+                card.server.updateTarget(sid, ival);
                 @*var clr = retarget($(this), path);
                 if (clr > 0) {
                     card.server.updateTarget(@Model.Year, clr, 0);
@@ -366,7 +363,7 @@
                     sid = -Number(row.data('lineid'));
                 var val = $(this).val();
                 console.log('scoreid '+sid+', val '+ val);
-                card.server.updateComment(@Model.Year, sid, val);
+                card.server.updateComment(sid, val);
             });
         });
     });

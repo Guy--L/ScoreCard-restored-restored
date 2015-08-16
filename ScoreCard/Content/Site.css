@@ -73,25 +73,20 @@ div#logo {
    display: inline-block;
    color: rgb(170,214,176);
    padding: 8px 15px 8px 8px;
-   -webkit-filter: invert(100%);
 }
 
 .navbar-nav > li > a.urdo {
-    padding-top: 10px;
-    padding-bottom: 8px;
-}
-.navbar-inverse a.navbar-brand img {
     padding-top: 5px;
+    padding-bottom: 3px;
 }
 
-.navbar-nav li li.fa-chevron-circle-right,
+.navbar-nav li i.fa-chevron-circle-right,
 .navbar-nav li i.fa-chevron-circle-left {
     color: #ffffff;
-    cursor: grab;
 }
 
-.navbar-nav li > i.fa-chevron-circle-right:hover,
-.navbar-nav li > i.fa-chevron-circle-left:hover {
+.navbar-nav > li > a.yearnav:hover,
+.navbar-nav > li > a.yearnav:focus {
     color:rgb(186,228,240);
     cursor: auto;
 }
