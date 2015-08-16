@@ -64,6 +64,14 @@ div#logo {
     color: rgb(170,214,176);
 }
 
+.navbar-logo .navbar-link {
+    padding-top: 1px;
+}
+
+.navbar-inverse .navbar-link:hover {
+    color:rgb(186,228,240);
+}
+
 .nav > li > a:hover, .nav > li > a:focus {
     text-decoration: none;
     background-color: #ffff01;
@@ -85,8 +93,8 @@ div#logo {
     color: #ffffff;
 }
 
-.navbar-nav > li > a.yearnav:hover,
-.navbar-nav > li > a.yearnav:focus {
+a.yearnav:hover > i.fa,
+a.yearnav:focus > i.fa {
     color:rgb(186,228,240);
     cursor: auto;
 }

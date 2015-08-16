@@ -64,6 +64,45 @@
     </div>
 </div>
 
+@section yearnav {
+<li>
+    <h3>
+        <div class="label label-large label-success">
+            @if (ViewBag.Prior)
+            {
+                <a href="#" class="yearnav" id="prioryr" title="go to prior year"><i class="fa fa-chevron-circle-left"></i></a>
+            }
+            &nbsp;FY @ViewBag.FY ScoreCard&nbsp;
+            @if (ViewBag.Next)
+            {
+                <a href="#" class="yearnav" id="nextyr" title="go to next year">
+                    <i class="fa fa-chevron-circle-right"></i>
+                </a>
+            }
+        </div>
+    </h3>
+</li>    
+}
+
+@section unredo {
+<li id="undo">
+    <a href="#" class="urdo" title="Undo edits">
+        <span class="fa-stack fa-lg">
+            <i class="fa fa-undo fa-stack-2x"></i>
+            <strong class="fa-stack-1x text-success" id="undo-text">0</strong>
+        </span>
+    </a>
+</li>
+<li id="redo">
+    <a href="#" class="urdo" title="Redo edits">
+        <span class="fa-stack fa-lg">
+            <i class="fa fa-repeat fa-stack-2x"></i>
+            <strong class="fa-stack-1x text-success" id="redo-text">0</strong>
+        </span>
+    </a>
+</li>
+}
+
 @section scripts {
 <script src="~/Scripts/jquery.signalR-2.2.0.min.js" type="text/javascript"></script>
 <script src="~/signalr/hubs" type="text/javascript"></script>
@@ -276,8 +315,28 @@
                 $(this).addClass("underline");
             }
         }
+    } 
+    function urdisplay() {
+        var undo = $('#undo-text').text();
+        var redo = $('#redo-text').text();
+        console.log("ur display: " + undo + ", " + redo);
+        if (undo > 0) $('#undo').visible();
+        else $('#undo').invisible();
+        if (redo > 0) $('#redo').visible();
+        else $('#redo').invisible();
     }
     $(function () {
+        $.fn.invisible = function() {
+            return this.each(function() {
+                $(this).css("visibility", "hidden");
+            });
+        };
+        $.fn.visible = function() {
+            return this.each(function() {
+                $(this).css("visibility", "visible");
+            });
+        };
+        urdisplay();
         $(":input").on('focus', function() {
             $(this).inputmask();
         });
@@ -292,7 +351,6 @@
             target.val(ival);
             var path = target.attr('id').split('_');
             recalc(target, path);
-
         };
         card.client.reflectTarget = function (scoreid, value) {
             var target = $('[id$=_target]', '[data-scoreid=' + scoreid + ']');
@@ -306,11 +364,10 @@
             target.val(comment);
         };
         card.client.undoRedo = function (undo, redo) {
-            console.log("ur: "+undo+", "+redo);
-            if (undo > 0) $('#undo').show();
-            else $('#undo').hide();
-            if (redo > 0) $('#redo').show();
-            else $('#redo').hide();
+            console.log("ur received: "+undo+", "+redo);
+            $('#undo-text').text(undo);
+            $('#redo-text').text(redo);
+            urdisplay();
         };
         $.connection.hub.disconnected(function() {
             setTimeout(function() {
@@ -318,8 +375,8 @@
             }, 1000); // Re-start connection after 5 seconds
         });
         $.connection.hub.start().done(function () {
+            card.server.setYear(@Model.Year);
             card.state.year = @Model.Year;
-            card.server.setYear(@Model.Year, @Model.Year);
             $('.quarval').on('change', function () {
                 var path = $(this).attr('id').split('_');
                 var row = $(this).closest('tr');
@@ -337,6 +394,7 @@
                 }
             });
             $('a.urdo').on('click', function() {
+                console.log('urdo click');
                 var id = $(this).parent().attr('id');
                 if (id == 'undo') card.server.undo();
                 if (id == 'redo') card.server.redo();

@@ -113,7 +113,6 @@ namespace ScoreCard.Hubs
             if (!stack.TryGetValue(name, out s))
             {
                 s = stack[name] = new URStack();
-                Debug.WriteLine("added " + name);
             }
             Groups.Add(Context.ConnectionId, name);            // user may be in on multiple sessions
             Clients.Group(name).undoRedo(s.UndoCount, s.RedoCount);
@@ -127,16 +126,16 @@ namespace ScoreCard.Hubs
             if (!stack.TryGetValue(name, out s))
             {
                 s = stack[name] = new URStack();
-                Debug.WriteLine("added " + name);
             }
             Clients.Group(name).undoRedo(s.UndoCount, s.RedoCount);
             return base.OnReconnected();
         }
 
-        public void SetYear(int oldyear, int newyear)
+        public void SetYear(int newyear)
         {
+            var oldyear = Clients.Caller.year;
             var cid = Context.ConnectionId;
-            if (oldyear != newyear) Groups.Remove(cid, oldyear.ToString());
+            if (oldyear != null && oldyear != newyear) Groups.Remove(cid, oldyear.ToString());
             Groups.Add(cid, newyear.ToString());
         }
 
@@ -178,8 +177,10 @@ namespace ScoreCard.Hubs
             var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
             ICommand c = ur.Undo();
+            if (c == null) return;
 
-            Clients.Group(Clients.Caller.year.ToString()).Invoke(c.reflect, c.parameters);
+            string year = Clients.Caller.year.ToString();
+            Clients.Group(year).Invoke(c.reflect, c.parameters);
             Clients.Group(name).undoRedo(ur.UndoCount, ur.RedoCount);
         }
 
@@ -188,8 +189,10 @@ namespace ScoreCard.Hubs
             var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
             ICommand c = ur.Redo();
+            if (c == null) return;
 
-            Clients.Group(Clients.Caller.year.ToString()).Invoke(c.reflect, c.parameters);
+            string year = Clients.Caller.year.ToString();
+            Clients.Group(year).Invoke(c.reflect, c.parameters);
             Clients.Group(name).undoRedo(ur.UndoCount, ur.RedoCount);
         }
     }

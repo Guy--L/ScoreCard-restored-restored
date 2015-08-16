@@ -34,20 +34,7 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><h3><div class="label label-large label-success">
-                    @if (ViewBag.Prior)
-                    {
-                        <a href="#" class="yearnav" id="prioryr" title="go to prior year"><i class="fa fa-chevron-circle-left"></i></a>
-                    }
-                    &nbsp;FY @ViewBag.FY ScoreCard&nbsp;
-                    @if (ViewBag.Next)
-                    {
-                        <a href="#" class="yearnav" id="nextyr" title="go to next year">
-                            <i class="fa fa-chevron-circle-right"></i>
-                        </a>
-                    }
-                    </div></h3>
-                    </li>
+                    @RenderSection("yearnav", false)
                     @if (ViewBag.CoverLetter != null)
                     {
                         <li><a class="navbar-link" href='@Url.Content(ViewBag.CoverLetter)'>Cover Letter</a></li>
@@ -66,23 +53,18 @@
                     <li></li>
                 </ul>
                 <ul class="nav navbar-nav pull-right">
-                    <li id="undo">
-                        <a href="#" class="urdo" title="Undo edits">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-undo fa-stack-2x"></i>
-                                <strong class="fa-stack-1x text-success undo-text">0</strong>
-                            </span>
+                    @RenderSection("unredo", false)
+                    <li><a href="#">
+                        @if (ViewBag.Worker != null && ViewBag.Worker.IsAdmin)
+                        {
+                            <i class="fa fa-user-md"></i>
+                        }
+                        else
+                        {
+                            <i class="fa fa-user"></i>
+                        } Welcome @User.Identity.Name
                         </a>
                     </li>
-                    <li id="redo">
-                        <a href="#" class="urdo" title="Redo edits">
-                            <span class="fa-stack fa-lg">
-                                <i class="fa fa-repeat fa-stack-2x"></i>
-                                <strong class="fa-stack-1x text-success repeat-text">0</strong>
-                            </span>
-                        </a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-user"></i> Welcome @User.Identity.Name</a></li>
                 </ul>
             </div>
         </div>
@@ -104,6 +86,7 @@
     @RenderSection("scripts", required: false)
     <script type="text/javascript">
         $(function () {
+            urdisplay();
             $("a.yearnav").on("click", function () {
                 if ($(this).attr('id')=='nextyr')
                     location.href = '@Url.Action("Index", "Home", null, Request.Url.Scheme)/' + (@ViewBag.Year+1);
