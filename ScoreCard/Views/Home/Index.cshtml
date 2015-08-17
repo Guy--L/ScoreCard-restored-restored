@@ -319,7 +319,6 @@
     function urdisplay() {
         var undo = $('#undo-text').text();
         var redo = $('#redo-text').text();
-        console.log("ur display: " + undo + ", " + redo);
         if (undo > 0) $('#undo').visible();
         else $('#undo').invisible();
         if (redo > 0) $('#redo').visible();
@@ -364,7 +363,6 @@
             target.val(comment);
         };
         card.client.undoRedo = function (undo, redo) {
-            console.log("ur received: "+undo+", "+redo);
             $('#undo-text').text(undo);
             $('#redo-text').text(redo);
             urdisplay();
@@ -386,7 +384,6 @@
                 var scale = +row.data('scale');
                 var qid = +path[3];
                 var ival = ($(this).val()==='')?null: Math.floor(+$(this).val()*scale);
-                console.log('year, sid, qid, value '+@Model.Year+', '+sid+', '+qid+', '+ival);
                 card.server.updateCell(sid, qid, ival);
                 var clr = recalc($(this), path);
                 if (clr > 0) {
@@ -394,7 +391,6 @@
                 }
             });
             $('a.urdo').on('click', function() {
-                console.log('urdo click');
                 var id = $(this).parent().attr('id');
                 if (id == 'undo') card.server.undo();
                 if (id == 'redo') card.server.redo();
@@ -407,7 +403,6 @@
                     sid = -row.data('lineid');
                 var scale = +row.data('scale');
                 var ival = ($(this).val()==='')?null:Math.floor(+$(this).val()*scale);
-                console.log('year, sid, value '+@Model.Year+', '+sid+', '+ival);
                 card.server.updateTarget(sid, ival);
                 @*var clr = retarget($(this), path);
                 if (clr > 0) {
@@ -420,7 +415,6 @@
                 if (sid == 0)
                     sid = -Number(row.data('lineid'));
                 var val = $(this).val();
-                console.log('scoreid '+sid+', val '+ val);
                 card.server.updateComment(sid, val);
             });
         });

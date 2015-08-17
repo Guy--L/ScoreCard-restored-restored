@@ -313,6 +313,7 @@ namespace ScoreCard.Models
             Q3 = ln.Q3 ?? r.calc(s => s.Q3);
             Q4 = ln.Q4 ?? r.calc(s => s.Q4);
             Total = ln.Total ?? r.calc(s => s.Total);
+
             Target = ln.Target ?? r.calc(s => s.Target);
             PriorTotal = ln.PriorTotal ?? r.calc(s => s.PriorTotal);
         }

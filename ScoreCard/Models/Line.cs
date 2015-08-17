@@ -139,8 +139,10 @@ namespace ScoreCard.Models
                     sum = topQ4 ?? topQ3 ?? topQ2 ?? topQ1;
 
                 if (topdown != null && topdown.havg)
-                    sum /= topdown.count(true);
-
+                {
+                    var n = (topQ1.HasValue ? 1 : 0) + (topQ2.HasValue ? 1 : 0) + (topQ3.HasValue ? 1 : 0) + (topQ4.HasValue ? 1 : 0);
+                    sum /= n == 0 ? 1 : n;
+                }
                 return sum;
             }
         }
@@ -212,12 +214,10 @@ namespace ScoreCard.Models
                         gScore.Comment = " " + stat + " over " + entries + " site" + (entries == 1 ? "" : "s");
                     gScore.scores = list;                                           // have children sites be in subtotal 
                     groupScores.Add(gScore);
-                    Debug.WriteLine("line " + l.item + ": " + g.First().Group + " " + groups[g.Key].Count() + " scores " + gScore.scores.Count());
                 }
                 if (l.bottomup != null)
                     l.bottomup.Comment = " line differs from detail";
                 l.scores = groupScores;                                             // have subtotals be in total for line
-                Debug.WriteLine(groupScores.Count + " groups in line " + l.item);
                 l.scores.ForEach(s =>
                 {
                     if (s.scores != null) s.scores.ForEach(t =>
