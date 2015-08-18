@@ -220,6 +220,7 @@
             rowcalc('#' + path[0] + '_' + path[1] + '_0_total');        // line_group_0_total
             rowcalc('#' + path[0] + '___total');                      // line_0_0_total
         }
+        console.log("sync: "+sync);
         return sync;
     }
     /*
@@ -386,9 +387,9 @@
                 var ival = ($(this).val()==='')?null: Math.floor(+$(this).val()*scale);
                 card.server.updateCell(sid, qid, ival);
                 var clr = recalc($(this), path);
-                if (clr > 0) {
-                    card.server.updateCell(clr, qid, 0);
-                }
+                //if (clr > 0) {
+                //    card.server.updateCell(clr, qid, 0);
+                //}
             });
             $('a.urdo').on('click', function() {
                 var id = $(this).parent().attr('id');
