@@ -49,7 +49,6 @@ namespace ScoreCard.Controllers
             }
             Session["oldyear"] = year;
             TempData["Card"] = card;
-            Debug.WriteLine(DateTime.Now.ToLongTimeString() + " left controller");
             return View(card);
         }
 

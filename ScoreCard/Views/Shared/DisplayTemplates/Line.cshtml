@@ -30,7 +30,7 @@ else
         }
         </td>
         <td>
-            @*@Html.DisplayFor(m => m.topTarget, new { @class = "targval", mask = @Model.DecimalPoint, ro = !@Model.CanEdit, id = prefix + "target" })*@
+            @Html.DisplayFor(m => m.topTarget, new { @class = "targval", mask = @Model.DecimalPoint, ro = !(ViewBag.Worker != null && ViewBag.Worker.IsAdmin), id = prefix + "target" })
         </td>
         <td>
         @if (Model.ShowTotal) {
