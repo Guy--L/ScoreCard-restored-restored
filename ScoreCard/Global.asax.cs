@@ -30,12 +30,13 @@ namespace ScoreCard
 #if DEBUG
             var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             if (user == "GUYLISTER3546\\guy" || user == "NETFDOMAIN\\lister")
-                user = "lister.g.1";
+                //user = "lister.g.1";
+                user = "akif.r";
 #else
             var user = Thread.CurrentPrincipal.Identity.Name;
 #endif
-            //scheduleDB _db = new scheduleDB();
-            HttpContext.Current.Session["user"] = user;
+                //scheduleDB _db = new scheduleDB();
+                HttpContext.Current.Session["user"] = user;
             var yr = DateTime.Now.AddMonths(6).Year;
             HttpContext.Current.Session["year"] = yr;
             HttpContext.Current.Session["fyear"] = string.Format("{0}-{1}", yr % 100 - 1, yr % 100);
