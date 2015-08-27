@@ -65,10 +65,91 @@
                         } Welcome @User.Identity.Name
                         </a>
                     </li>
+                    <li><a href="#" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                        <i class="fa fa-info-circle"></i></a></li>
                 </ul>
             </div>
         </div>
     </nav>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h2 class="modal-title" id="myModalLabel">ScoreCard Description</h2>
+                </div>
+                <div class="modal-body">
+                    <h4>General Usage</h4>
+                    <p>
+                        This website provides simultaneous viewing and editing of line items that contribute to a year's ScoreCard.<br /><br />
+                        Cells that cannot be edited have an <span style="background-color: rgb(235, 235, 228);">off-white background color</span> and do not respond to mouse clicks.  The tab key skips over these cells.<br /><br />
+                        Cells that can be edited have a <span style="background-color: rgba(176, 225, 239, 0.20);">slighty blue background color</span>.  Clicking on the cell provides a blinking cursor and outline to indicate focus.  Data entered in these cells will be stored in the database as soon as focus moves away from the cell.<br /><br />
+                        THERE IS NO SAVE BUTTON.  Updates to the cell are immediately reflected to others viewing the ScoreCard.  Tabbing will move to the next available editable cell.<br /><br />
+                    </p>
+                    <h4>Permissions</h4>
+                    <p>
+                        Administrators control which users can edit cells from the line level to the functional area down to the local site level.<br /><br />
+                        Line Owners can edit their respective lines.<br /><br />
+                        Because this site is intended to replace local spreadsheets and avoid the file management required to rollup the data, all users can contribute their numbers on this one site.<br /><br />
+                        For that reason, it may be that only one line at the bottom level may be editable for some users.  Some drill-down clicks on page may be needed to uncover the editable rows.<br /><br />
+                    </p>
+                    <h4>Top Down Initial view</h4>
+                    <p>
+                        When the site first displays or after a page refresh, only the top level view is shown.  To see the contributing detail click on a row/line of interest and functional areas will be displayed.<br /><br />
+                        To see local sites beneath each functional area click again on the functional area row.<br /><br />
+                    </p>
+                    <p>
+                        The triangle next to the measure field indicates whether a row is expanded or not.  Underlines are provided as hints to the totals/averages.  Functional areas are separated with blue lines to make data easier to read.<br /><br />
+                        Roll-up calculations are the opposite of what one would expect on a normal spreadsheet in that the numbers are rolled up instead of down.<br /><br />
+                    </p>
+                    <h4>Line Owners' Top-Down Override Capability</h4>
+                    <p>
+                        Even though the numbers rollup from the detail lines, occasionally a line owner may want to display different numbers for the line than would be normally calculated.<br /><br />
+                        This is done by directly editing the cells at the line level.  Any numbers entered on at least one of the cells at the line level will introduce a top-down override.<br /><br />
+                        Normal bottom-up numbers will be displayed on the very next line with a comment indicating sums or averages when expanded.<br /><br />
+                        To remove an override line, delete all the cells' values using backspace and the normal rollup will accrue to the line item.<br /><br />
+                    </p>
+                    <h4>Fiscal Year</h4>
+                    <p>
+                        The page shows data for the four quarters of a single fiscal year.  A total from the prior fiscal year is on the leftmost number column.<br /><br />
+                        To move to another fiscal year, click on the arrows inside the green badge in the top nav bar.<br /><br />
+                        The currently viewd fiscal year is displayed in the green badge.<br /><br />
+                        Arrows to move to another year will only appear if records exist for that year.<br /><br />
+                    </p>
+                    <h4>Cover Letter</h4>
+                    <p>
+                        If a cover letter has been uploaded by an administrator for the currently viewed year, a link to a PDF will present on the nav bar.  PDFs are shown in various ways by the different browsers.<br /><br />
+                    </p>
+                    <h3>Undo/Redo</h3>
+                    <p>
+                        Because there is no Save button, the data is stored immediately upon hitting Tab or mousing away.  Therefore, any changes for a browser session can be undone by clicking on the Undo button.<br /><br />
+                        The undo buffer will persist as long as the browser session persists.  Close and reopen the browser to force a new session.<br /><br />
+                    </p>
+                    @if (ViewBag.Worker != null && ViewBag.Worker.IsAdmin)
+                    {
+                        <h2>Administer ScoreCard</h2>
+                        <h4>User Access</h4>
+                        <p>
+                            Adding a user to the list of users in this list allows them to view this site.<br /><br />
+                            To allow a user to edit portions of the site, the green badge at the right of the user row opens to a page where detailed permissions can be provisioned.<br /><br />
+                            Administrators can make other users administrators.  Only administrators will see the Administer link on the top nav bar.<br /><br />
+                        </p>
+                        <h4>Cover Letter Upload</h4>
+                        <p>
+                            Upload a cover letter for the currently viewed year.  It has to be a PDF file.  To upload letters for another year, navigate to that year before trying to upload.<br /><br />
+                        </p>
+                        <h4>Generate Template Records for a new Fiscal Year</h4>
+                        <p>
+                            Only current fiscal years are usually relevant.  At year's end in June, administrators should open up the next year for entry by generating line template records to hold the scores.
+                        </p>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
     <div class="container body-content">
         @RenderBody()
         <hr />
@@ -97,3 +178,4 @@
     </script>
 </body>
 </html>
+

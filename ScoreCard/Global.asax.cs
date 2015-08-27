@@ -30,8 +30,8 @@ namespace ScoreCard
 #if DEBUG
             var user = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             if (user == "GUYLISTER3546\\guy" || user == "NETFDOMAIN\\lister")
-                //user = "lister.g.1";
-                user = "akif.r";
+                user = "lister.g.1";
+                //user = "akif.r";
 #else
             var user = Thread.CurrentPrincipal.Identity.Name;
 #endif
