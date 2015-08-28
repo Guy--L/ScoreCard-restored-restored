@@ -32,14 +32,12 @@ namespace ScoreCard.Hubs
         {
             _update = _value;
             _old = Score.SaveScore(_scoreid, _value);
-            Debug.WriteLine("  do target: " + $"score {_scoreid}, value {_value}, old {_old}");
         }
 
         public void Undo()
         {
             _update = _old;
             var check = Score.SaveScore(_scoreid, _old);
-            Debug.WriteLine("undo target: " + $"score {_scoreid}, value {_value}, old {_old}");
             // if (check != _value)   interference
         }
     }
@@ -66,16 +64,12 @@ namespace ScoreCard.Hubs
         {
             _update = _value;
             _old = Score.SaveScore(_scoreid, _quarter, _value);
-            Debug.WriteLine("  do Cell: " + $"score {_scoreid}, qrtr {_quarter}, value {_value}, old {_old}");
-            Debug.Flush();
         }
 
         public void Undo()
         {
             _update = _old;
             var check = Score.SaveScore(_scoreid, _quarter, _old);
-            Debug.WriteLine("undo Cell: " + $"score {_scoreid}, qrtr {_quarter}, value {_value}, old {_old}");
-            Debug.Flush();
         }
     }
 
@@ -100,14 +94,12 @@ namespace ScoreCard.Hubs
         {
             _update = _comment;
             _old = Score.SaveScore(_scoreid, _comment);
-            Debug.WriteLine("  do Comment: " + $"score {_scoreid}, comment {_comment}, old {_old}");
         }
 
         public void Undo()
         {
             _update = _old;
             var check = Score.SaveScore(_scoreid, _old);
-            Debug.WriteLine("undo Comment: " + $"score {_scoreid}, comment {_comment}, old {_old}");
             // if (check != _value)   interference
         }
     }
