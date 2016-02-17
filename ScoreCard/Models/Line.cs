@@ -85,6 +85,7 @@ namespace ScoreCard.Models
             end as [Total], 
             g.[Group], g.groupid, x.Site, x.SiteId
             from linelist q
+			left join Hide h on h.LineId = q.LineId and {0} >= coalesce(h.StartYear, 0) and {0} <= coalesce(h.EndYear, 9999)
             join Measure m on m.MeasureId = q.MeasureId
 			left join (
                 select groupid, [target], q1, q2, q3, q4, 
@@ -99,6 +100,7 @@ namespace ScoreCard.Models
             on q.lineid = s.lineid
 			left join [group] g on s.groupid = g.groupid
             left join site x on s.siteid = x.siteid
+            where h.LineId is null
             order by item, groupid
         ";
 
