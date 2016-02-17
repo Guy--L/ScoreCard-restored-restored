@@ -133,4 +133,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="VerticalAvg" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="7a6d026a-102c-4caf-b0bf-ace1322510c8" ChangeDateTime="02/11/2016 16:08:35">
+    <Property Name="ElementName" Value="[dbo].[Lock].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Lock]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LockId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="cef5ebc5-2950-4047-8a4b-c5dd41817aff" ChangeDateTime="02/11/2016 16:10:17">
+    <Property Name="ElementName" Value="[dbo].[Hide].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Hide]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="HideId" />
+  </Operation>
 </Operations>

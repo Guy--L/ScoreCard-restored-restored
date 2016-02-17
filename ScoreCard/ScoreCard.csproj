@@ -263,7 +263,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Views\Shared\Instructions.cshtml" />
     <None Include="Resources\Version.txt" />
     <Content Include="NuGet\readme.txt" />
     <Content Include="Scripts\bootstrap.js" />

@@ -104,6 +104,45 @@ namespace ScoreCard.Models
 	}
 	
 
+	[TableName("Presence")]
+	[PrimaryKey("PresenceId")]
+	[ExplicitColumns]
+    public partial class Presence : scoreDB.Record<Presence>  
+    {		
+		[Column] public int PresenceId { get; set; } 		
+		[Column] public int GroupId { get; set; } 		
+		[Column] public int SiteId { get; set; } 	
+	}
+
+	[TableName("Responsibility")]
+	[PrimaryKey("ResponsibilityId")]
+	[ExplicitColumns]
+    public partial class Responsibility : scoreDB.Record<Responsibility>  
+    {		
+		[Column] public int ResponsibilityId { get; set; } 		
+		[Column] public int WorkerId { get; set; } 		
+		[Column] public int LineId { get; set; } 	
+	}
+
+	[TableName("Score")]
+	[PrimaryKey("ScoreId")]
+	[ExplicitColumns]
+    public partial class Score : scoreDB.Record<Score>  
+    {		
+		[Column] public int ScoreId { get; set; } 		
+		[Column] public int YearEnding { get; set; } 		
+		[Column] public int LineId { get; set; } 		
+		[Column] public int? Target { get; set; } 		
+		[Column] public int? Q1 { get; set; } 		
+		[Column] public int? Q2 { get; set; } 		
+		[Column] public int? Q3 { get; set; } 		
+		[Column] public int? Q4 { get; set; } 		
+		[Column] public int? Total { get; set; } 		
+		[Column] public string Comment { get; set; } 		
+		[Column] public int? GroupId { get; set; } 		
+		[Column] public int? SiteId { get; set; } 	
+	}
+
 	[TableName("Site")]
 	[PrimaryKey("SiteId")]
 	[ExplicitColumns]
@@ -113,75 +152,6 @@ namespace ScoreCard.Models
 		[Column("Site")] public string _Site { get; set; }
 		
 		[Column] public string SiteName { get; set; } 	
-	}
-
-	[TableName("Settings")]
-	[PrimaryKey("SettingsId", AutoIncrement=false)]
-	[ExplicitColumns]
-    public partial class Setting : scoreDB.Record<Setting>  
-    {		
-		[Column] public int SettingsId { get; set; } 		
-		[Column] public bool AllowIonCorrection { get; set; } 	
-	}
-
-	[TableName("Group")]
-	[PrimaryKey("GroupId")]
-	[ExplicitColumns]
-    public partial class Group : scoreDB.Record<Group>  
-    {		
-		[Column] public int GroupId { get; set; } 		
-		[Column("Group")] public string _Group { get; set; }
-		
-		[Column] public string GroupName { get; set; } 		
-		[Column] public string ADName { get; set; } 	
-	}
-
-	[TableName("Permit")]
-	[PrimaryKey("PermitId")]
-	[ExplicitColumns]
-    public partial class Permit : scoreDB.Record<Permit>  
-    {		
-		[Column] public int PermitId { get; set; } 		
-		[Column] public int WorkerId { get; set; } 		
-		[Column] public int GroupId { get; set; } 		
-		[Column] public int SiteId { get; set; } 	
-	}
-
-	[TableName("Measure")]
-	[PrimaryKey("MeasureId")]
-	[ExplicitColumns]
-    public partial class Measure : scoreDB.Record<Measure>  
-    {		
-		[Column] public int MeasureId { get; set; } 		
-		[Column] public string Symbol { get; set; } 		
-		[Column] public string Mask { get; set; } 		
-		[Column] public string Description { get; set; } 		
-		[Column] public int DecimalPoint { get; set; } 		
-		[Column] public bool VerticalAvg { get; set; } 		
-		[Column] public bool HorizontalAvg { get; set; } 	
-	}
-
-	[TableName("Line")]
-	[PrimaryKey("LineId")]
-	[ExplicitColumns]
-    public partial class Line : scoreDB.Record<Line>  
-    {		
-		[Column] public int LineId { get; set; } 		
-		[Column] public int ParentLineId { get; set; } 		
-		[Column] public string Order { get; set; } 		
-		[Column] public int MeasureId { get; set; } 		
-		[Column] public string Description { get; set; } 		
-		[Column] public bool ShowTotal { get; set; } 	
-	}
-
-	[TableName("Presence")]
-	[PrimaryKey("PresenceId")]
-	[ExplicitColumns]
-    public partial class Presence : scoreDB.Record<Presence>  
-    {		
-		[Column] public int PresenceId { get; set; } 		
-		[Column] public int GroupId { get; set; } 		
-		[Column] public int SiteId { get; set; } 	
 	}
 
 	[TableName("Worker")]
@@ -208,33 +178,85 @@ namespace ScoreCard.Models
 		[Column] public int? SiteId { get; set; } 	
 	}
 
-	[TableName("Score")]
-	[PrimaryKey("ScoreId")]
+	[TableName("Settings")]
+	[PrimaryKey("SettingsId", AutoIncrement=false)]
 	[ExplicitColumns]
-    public partial class Score : scoreDB.Record<Score>  
+    public partial class Setting : scoreDB.Record<Setting>  
     {		
-		[Column] public int ScoreId { get; set; } 		
-		[Column] public int YearEnding { get; set; } 		
-		[Column] public int LineId { get; set; } 		
-		[Column] public int? Target { get; set; } 		
-		[Column] public int? Q1 { get; set; } 		
-		[Column] public int? Q2 { get; set; } 		
-		[Column] public int? Q3 { get; set; } 		
-		[Column] public int? Q4 { get; set; } 		
-		[Column] public int? Total { get; set; } 		
-		[Column] public string Comment { get; set; } 		
-		[Column] public int? GroupId { get; set; } 		
-		[Column] public int? SiteId { get; set; } 	
+		[Column] public int SettingsId { get; set; } 		
+		[Column] public bool AllowIonCorrection { get; set; } 	
 	}
 
-	[TableName("Responsibility")]
-	[PrimaryKey("ResponsibilityId")]
+	[TableName("Hide")]
+	[PrimaryKey("HideId")]
 	[ExplicitColumns]
-    public partial class Responsibility : scoreDB.Record<Responsibility>  
+    public partial class Hide : scoreDB.Record<Hide>  
     {		
-		[Column] public int ResponsibilityId { get; set; } 		
+		[Column] public int HideId { get; set; } 		
+		[Column] public int LineId { get; set; } 		
+		[Column] public int? StartYear { get; set; } 		
+		[Column] public int? EndYear { get; set; } 	
+	}
+
+	[TableName("Lock")]
+	[PrimaryKey("LockId")]
+	[ExplicitColumns]
+    public partial class Lock : scoreDB.Record<Lock>  
+    {		
+		[Column] public int LockId { get; set; } 		
+		[Column] public int LineId { get; set; } 		
+		[Column] public int? StartYear { get; set; } 		
+		[Column] public int? EndYear { get; set; } 	
+	}
+
+	[TableName("Group")]
+	[PrimaryKey("GroupId")]
+	[ExplicitColumns]
+    public partial class Group : scoreDB.Record<Group>  
+    {		
+		[Column] public int GroupId { get; set; } 		
+		[Column("Group")] public string _Group { get; set; }
+		
+		[Column] public string GroupName { get; set; } 		
+		[Column] public string ADName { get; set; } 	
+	}
+
+	[TableName("Line")]
+	[PrimaryKey("LineId")]
+	[ExplicitColumns]
+    public partial class Line : scoreDB.Record<Line>  
+    {		
+		[Column] public int LineId { get; set; } 		
+		[Column] public int ParentLineId { get; set; } 		
+		[Column] public string Order { get; set; } 		
+		[Column] public int MeasureId { get; set; } 		
+		[Column] public string Description { get; set; } 		
+		[Column] public bool ShowTotal { get; set; } 	
+	}
+
+	[TableName("Measure")]
+	[PrimaryKey("MeasureId")]
+	[ExplicitColumns]
+    public partial class Measure : scoreDB.Record<Measure>  
+    {		
+		[Column] public int MeasureId { get; set; } 		
+		[Column] public string Symbol { get; set; } 		
+		[Column] public string Mask { get; set; } 		
+		[Column] public string Description { get; set; } 		
+		[Column] public int DecimalPoint { get; set; } 		
+		[Column] public bool VerticalAvg { get; set; } 		
+		[Column] public bool HorizontalAvg { get; set; } 	
+	}
+
+	[TableName("Permit")]
+	[PrimaryKey("PermitId")]
+	[ExplicitColumns]
+    public partial class Permit : scoreDB.Record<Permit>  
+    {		
+		[Column] public int PermitId { get; set; } 		
 		[Column] public int WorkerId { get; set; } 		
-		[Column] public int LineId { get; set; } 	
+		[Column] public int GroupId { get; set; } 		
+		[Column] public int SiteId { get; set; } 	
 	}
 
 }

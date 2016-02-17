@@ -153,6 +153,7 @@ namespace ScoreCard.Controllers
             ViewBag.Prior = Score.yearsready.FirstOrDefault() < yr;
             ViewBag.Next = Score.yearsready.LastOrDefault() > yr;
             ViewBag.Year = yr;
+            ViewBag.FY = _fyear = Session["fyear"] as string;
         }
 
         //    if (context.HttpContext.Session == null || context.HttpContext.Session.IsNewSession)
@@ -198,7 +199,6 @@ namespace ScoreCard.Controllers
             ViewBag.version = version;
             ViewBag.User = _user = Session["user"] as string;
             ViewBag.Worker = _worker = Session["worker"] as Worker;
-            ViewBag.FY = _fyear = Session["fyear"] as string;
 
             base.OnActionExecuting(filterContext);
         }
