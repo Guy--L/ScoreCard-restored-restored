@@ -51,6 +51,7 @@ namespace ScoreCard.Models
             where s.yearending = {0} or s.yearending is null and l.lineid is not null
         ";
 
+        // in the outline, item is the field containing the outline "number".  numbers are concatenated with points; whereas characters are not.  witness the like clause.
         private static string _linelist = @";with linelist as (
 	            select cast(n.[order] as varchar(10)) as item, n.ParentLineId,
 	            1 as [level], n.[description], n.[order], n.LineId, n.MeasureId, n.ShowTotal
@@ -59,7 +60,7 @@ namespace ScoreCard.Models
 
 	            union all
 
-                select cast(p.[item] + (case when p.[level] = 1 then '.' else '' end) + CONVERT(varchar(10), n.[order]) as varchar(10)) as item, 
+                select cast(p.[item] + (case when n.[order] not like '%[^0-9]%' then '.' else '' end) + CONVERT(varchar(10), n.[order]) as varchar(10)) as item, 
 				n.ParentLineId,
 	            p.[level]+1 as [level], n.[description], n.[order], n.LineId, n.MeasureId, n.ShowTotal
 	            from line n
@@ -228,6 +229,9 @@ namespace ScoreCard.Models
                     });
                 });
             });
+            var scoreTemplatesMissing = lines.Where(l => l.topdown == null && l.symbol != "blank").Select(n => n.LineId);
+            if (scoreTemplatesMissing.Any()) 
+                throw new Exception("Contact the programmer:  missing score records for line(s): " + string.Join(", ", scoreTemplatesMissing));
             return lines;
         }
 
