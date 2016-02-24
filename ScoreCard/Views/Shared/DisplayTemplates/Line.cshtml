@@ -20,7 +20,7 @@ else
     <tr data-lineid="@Model.LineId" data-scoreid="@Model.topdown.ScoreId" data-scale="@(Math.Pow(10,Model.DecimalPoint))" class="score @(exp?"line":"") @(avg?"havg":"") @(qtr ? "qtr" : "") @(t8?"t8":"")">
         <td class="major"></td>
         <td class="minor">@Model.item</td>
-        <td colspan="2">@Model.Description</td>
+        <td colspan="2" title="@Model.linetip">@Model.Description</td>
         <td>@Model.symbol @if (exp)
         {<i class="fa fa-caret-right"></i>}</td>
         <td class="owner" title="@Model.owntip">@Model.owner</td>

@@ -1,8 +1,8 @@
 ﻿declare @id int 
 
-update line set [Description] = 'Total expense fund managed (contracts/operations)' where lineid = 15
-update line set [Description] = 'Capital Projects Managed > 500M$ (appropriations)' where lineid = 19
-update line set [Description] = 'Capital Projects Managed < 500M$' where lineid = 20
+update line set [Description] = 'Total expense fund managed [contracts/operations]' where lineid = 15
+update line set [Description] = 'Capital Projects Managed > $500M [appropriations]' where lineid = 19
+update line set [Description] = 'Capital Projects Managed < $500M' where lineid = 20
 go
 
 CREATE TABLE [dbo].[Hide]

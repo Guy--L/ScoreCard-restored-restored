@@ -154,7 +154,8 @@ namespace ScoreCard.Models
         public Score topdown { get; set; }
         public Score bottomup { get; set; }
         public List<Worker> workers { get; set; }
-        public string owntip { get; set; }
+        public string owntip { get; set; } 
+        public string linetip { get; set; }
         public string owner { get; set; }
         public string ItemDesc { get { return item + " " + Description; } }
 
@@ -178,6 +179,15 @@ namespace ScoreCard.Models
                 owned = s.Fetch<Worker>(_lineowners).ToLookup(l => l.LineId);
             }
             lines.ForEach(l => {
+                if (l.Description.Contains("["))
+                {
+                    var left = l.Description.IndexOf('[');
+                    var right = l.Description.LastIndexOf(']');
+                    l.linetip = l.Description.Substring(left + 1, right - left - 2);
+                    l.Description = l.Description.Substring(0, left) + l.Description.Substring(right, l.Description.Length - right - 1);
+                }
+                else l.linetip = "";
+
                 l.workers = owned[l.LineId].ToList();
                 if (l.workers.Any())
                 {
