@@ -1,5 +1,4 @@
-﻿declare @id int 
-
+﻿
 update line set [Description] = 'Total expense fund managed [contracts/operations]' where lineid = 15
 update line set [Description] = 'Capital Projects Managed > $500M [appropriations]' where lineid = 19
 update line set [Description] = 'Capital Projects Managed < $500M' where lineid = 20
@@ -28,6 +27,7 @@ INSERT INTO [dbo].[Hide] ([HideId], [LineId], [StartYear], [EndYear]) VALUES (1,
 SET IDENTITY_INSERT [dbo].[Hide] OFF
 go
 
+declare @id int 
 INSERT INTO [dbo].[Line] ([ParentLineId], [Order], [MeasureId], [Description], [ShowTotal]) VALUES (17, N'1', 5, N'Integrated CMG performance indicator', 1)
 select @id = Scope_Identity()
 
@@ -98,7 +98,6 @@ INSERT INTO [dbo].[Score]  ([YearEnding],[LineId],[GroupId],[SiteId]) VALUES
 	(2016,@id,3,19),
 	(2016,@id,3,20),
 	(2016,@id,3,21)
-go
 
 insert into Responsibility (workerid, lineid)
 select workerid, @id from Responsibility where lineid = 17
