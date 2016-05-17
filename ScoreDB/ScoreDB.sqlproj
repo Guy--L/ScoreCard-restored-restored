@@ -85,5 +85,6 @@
     <None Include="Data\dbo.Line3.6a.data.sql" />
     <None Include="Data\dbo.Line3.5a.data.sql" />
     <None Include="Data\Update201602.sql" />
+    <None Include="Data\Update201605.sql" />
   </ItemGroup>
 </Project>
