@@ -317,25 +317,7 @@
             }
         }
     } 
-    function urdisplay() {
-        var undo = $('#undo-text').text();
-        var redo = $('#redo-text').text();
-        if (undo > 0) $('#undo').visible();
-        else $('#undo').invisible();
-        if (redo > 0) $('#redo').visible();
-        else $('#redo').invisible();
-    }
     $(function () {
-        $.fn.invisible = function() {
-            return this.each(function() {
-                $(this).css("visibility", "hidden");
-            });
-        };
-        $.fn.visible = function() {
-            return this.each(function() {
-                $(this).css("visibility", "visible");
-            });
-        };
         urdisplay();
         $(":input").on('focus', function() {
             $(this).inputmask();

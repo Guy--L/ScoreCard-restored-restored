@@ -7,4 +7,3 @@ INSERT INTO [dbo].[Hide]
            ,[EndYear])
      VALUES (29,2016,null)
 GO
-

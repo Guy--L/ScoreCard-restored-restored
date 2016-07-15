@@ -113,5 +113,11 @@ namespace ScoreCard.Controllers
 
             return View();
         }
+
+        public ActionResult About()
+        {
+            throw new Exception("Test Error");
+            return View();
+        }
     }
 }

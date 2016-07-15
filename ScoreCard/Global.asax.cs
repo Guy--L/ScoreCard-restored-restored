@@ -35,11 +35,8 @@ namespace ScoreCard
 #else
             var user = Thread.CurrentPrincipal.Identity.Name;
 #endif
-                //scheduleDB _db = new scheduleDB();
-                HttpContext.Current.Session["user"] = user;
-            var yr = DateTime.Now.AddMonths(6).Year;
-            HttpContext.Current.Session["year"] = yr;
-            HttpContext.Current.Session["fyear"] = string.Format("{0}-{1}", yr % 100 - 1, yr % 100);
+            //scheduleDB _db = new scheduleDB();
+            HttpContext.Current.Session["user"] = user;
             string[] worker = user.ToString().Split('\\');
             user = worker[worker.Length - 1];
 
@@ -47,8 +44,11 @@ namespace ScoreCard
             {
                 Score.yearsready = s.Fetch<int>("select distinct yearending from score order by yearending");
             }
+            var yr = Score.yearsready.Max();
+            HttpContext.Current.Session["year"] = yr;
+            HttpContext.Current.Session["fyear"] = string.Format("{0}-{1}", yr % 100 - 1, yr % 100);
 
-                Worker emp = new Worker(user);
+            Worker emp = new Worker(user);
             HttpContext.Current.Session["worker"] = emp;
 
             //HttpContext.Current.Session["authority"] = _db.Fetch<User>(string.Format(Models.User.get_role, user)).FirstOrDefault();

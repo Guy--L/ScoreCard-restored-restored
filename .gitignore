@@ -31,8 +31,7 @@ $tf*/
 error*.xml
 packages/*
 !packages/repositories.config
-Resources/BuildDate.txt
-mes/Resources/BuildDate.txt
 ._*.csv
-Test/BuildDate.txt
+BuildDate.txt
+ScoreCard/BuildDate.txt
 ~$$ScoreCard.~vsd
