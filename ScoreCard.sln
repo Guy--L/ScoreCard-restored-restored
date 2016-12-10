@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScoreCard", "ScoreCard\ScoreCard.csproj", "{2D741A9D-BBFB-434B-A0CB-363A423D9F6D}"
 EndProject
@@ -10,16 +10,22 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Demo|Any CPU = Demo|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{2D741A9D-BBFB-434B-A0CB-363A423D9F6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2D741A9D-BBFB-434B-A0CB-363A423D9F6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D741A9D-BBFB-434B-A0CB-363A423D9F6D}.Demo|Any CPU.ActiveCfg = Demo|Any CPU
+		{2D741A9D-BBFB-434B-A0CB-363A423D9F6D}.Demo|Any CPU.Build.0 = Demo|Any CPU
 		{2D741A9D-BBFB-434B-A0CB-363A423D9F6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D741A9D-BBFB-434B-A0CB-363A423D9F6D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B99FC7A-9B3E-401D-8328-299BFD1F7921}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B99FC7A-9B3E-401D-8328-299BFD1F7921}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B99FC7A-9B3E-401D-8328-299BFD1F7921}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9B99FC7A-9B3E-401D-8328-299BFD1F7921}.Demo|Any CPU.ActiveCfg = Demo|Any CPU
+		{9B99FC7A-9B3E-401D-8328-299BFD1F7921}.Demo|Any CPU.Build.0 = Demo|Any CPU
+		{9B99FC7A-9B3E-401D-8328-299BFD1F7921}.Demo|Any CPU.Deploy.0 = Demo|Any CPU
 		{9B99FC7A-9B3E-401D-8328-299BFD1F7921}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B99FC7A-9B3E-401D-8328-299BFD1F7921}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B99FC7A-9B3E-401D-8328-299BFD1F7921}.Release|Any CPU.Deploy.0 = Release|Any CPU
