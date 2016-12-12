@@ -22,14 +22,8 @@ textarea {
     max-width: 280px;
 }
 
-div#logo {
-    position: relative;
-    display: inline-block;
-    border: 0;
-    background-image: url('~/Content/PGLogo.png');
-    -webkit-filter: invert(100%);
-    height: 19px;
-    width: 42px;
+a.navbar-brand{
+    padding-bottom: 0;
 }
 
 .yearcursor i {

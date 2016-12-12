@@ -199,6 +199,7 @@
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\customLogo.png" />
     <Content Include="Content\DataTables\css\dataTables.autoFill.css" />
     <Content Include="Content\DataTables\css\dataTables.autoFill.min.css" />
     <Content Include="Content\DataTables\css\dataTables.bootstrap.css" />
@@ -257,6 +258,7 @@
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
     <Content Include="Content\logo.png" />
+    <Content Include="Content\Lusq.png" />
     <Content Include="Content\PGLogo.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
@@ -266,9 +268,8 @@
     <Content Include="DemoCxnStrings.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Properties\PublishProfiles\Demo.pubxml" />
+    <None Include="Properties\PublishProfiles\scorec - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\scorec - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\scorec-Demo - Web Deploy.pubxml" />
     <None Include="Resources\Version.txt" />
     <Content Include="NuGet\readme.txt" />
     <Content Include="Scripts\bootstrap.js" />

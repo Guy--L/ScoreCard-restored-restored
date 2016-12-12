@@ -15,7 +15,7 @@ namespace ScoreCard.Models
                 {
                     r = s.Fetch<Setting>().FirstOrDefault();
                 }
-                return r.AllowIonCorrection;
+                return r == null ? false : r.AllowIonCorrection;
             }
             set 
             {
