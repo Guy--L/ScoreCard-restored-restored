@@ -1,6 +1,6 @@
 ﻿(function ($) {
     $.ajax({
-        url: "/signalr/hubs",
+        url: "/signalr/",
         dataType: "script",
         async: false
     });

@@ -82,6 +82,7 @@
     <Build Include="Settings.sql" />
     <Build Include="Lock.sql" />
     <Build Include="Hide.sql" />
+    <Build Include="Data\pgWorker.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ScoreDB.refactorlog" />

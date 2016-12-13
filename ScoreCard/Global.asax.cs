@@ -32,7 +32,9 @@ namespace ScoreCard
             if (user == "GUYLISTER3546\\guy" || user == "NETFDOMAIN\\lister")
                 user = "lister.g.1";
                 //user = "akif.r";
-#else
+#elif DEMO
+            var user = "hayes.b";
+#else 
             var user = Thread.CurrentPrincipal.Identity.Name;
 #endif
             //scheduleDB _db = new scheduleDB();

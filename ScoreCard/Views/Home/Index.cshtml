@@ -105,7 +105,7 @@
 
 @section scripts {
 <script src="~/Scripts/jquery.signalR-2.2.0.min.js" type="text/javascript"></script>
-<script src="~/signalr/hubs" type="text/javascript"></script>
+<script src="http://scorec.azurewebsites.net/signalr/hubs" type="text/javascript"></script>
 <script type="text/javascript">
     function summer(rw, pre, suf)
     {
@@ -325,6 +325,7 @@
         $('#scoreCard tr.line').on('click', { rows: 'group' }, toggler);
         $('#scoreCard tr.group').on('click', { rows: 'site' }, toggler);
         var card = $.connection.scoreHub;
+        console.log(card);
         card.client.reflectCell = function (scoreid, quarterid, value) {
             var target = $('[id$=_' + quarterid + ']', '[data-scoreid=' + scoreid + ']');
             var row = target.closest('tr');
@@ -355,7 +356,9 @@
                 $.connection.hub.start();
             }, 1000); // Re-start connection after 5 seconds
         });
+        $.connection.hub.logging = true;
         $.connection.hub.start().done(function () {
+            console.log('connected to id '+$.connection.hub.id);
             card.server.setYear(@Model.Year);
             card.state.year = @Model.Year;
             $('.quarval').on('change', function () {
@@ -400,6 +403,8 @@
                 var val = $(this).val();
                 card.server.updateComment(sid, val);
             });
+        }).fail(function(error) {
+            console.log('could not connect signalr '+ error);
         });
     });
 </script>

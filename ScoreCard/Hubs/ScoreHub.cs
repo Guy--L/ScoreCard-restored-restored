@@ -104,14 +104,20 @@ namespace ScoreCard.Hubs
         }
     }
 
-    [Authorize]
     public class ScoreHub : Hub
     {
         private static Dictionary<string, URStack> stack = new Dictionary<string, URStack>();
 
+        private string name
+        {
+            get
+            {
+                return Context.Request.GetHttpContext().Request.UserHostAddress; 
+            }
+        }
+
         public override Task OnConnected()
         {
-            var name = Thread.CurrentPrincipal.Identity.Name;
             URStack s;
             if (!stack.TryGetValue(name, out s))
             {
@@ -124,7 +130,6 @@ namespace ScoreCard.Hubs
 
         public override Task OnReconnected()
         {
-            var name = Thread.CurrentPrincipal.Identity.Name;
             URStack s;
             if (!stack.TryGetValue(name, out s))
             {
@@ -144,7 +149,6 @@ namespace ScoreCard.Hubs
 
         public void UpdateCell(int scoreid, int quarter, int? value)
         {
-            var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
 
             ur.Do(new Cell(scoreid, quarter, value));
@@ -155,7 +159,6 @@ namespace ScoreCard.Hubs
 
         public void UpdateTarget(int scoreid, int? value)
         {
-            var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
 
             ur.Do(new Target(scoreid, value));
@@ -166,7 +169,6 @@ namespace ScoreCard.Hubs
 
         public void UpdateComment(int scoreid, string comment)
         {
-            var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
 
             ur.Do(new Comment(scoreid, comment));
@@ -177,7 +179,6 @@ namespace ScoreCard.Hubs
 
         public void Undo()
         {
-            var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
             ICommand c = ur.Undo();
             if (c == null) return;
@@ -189,7 +190,6 @@ namespace ScoreCard.Hubs
 
         public void Redo()
         {
-            var name = Thread.CurrentPrincipal.Identity.Name;
             var ur = stack[name];
             ICommand c = ur.Redo();
             if (c == null) return;
